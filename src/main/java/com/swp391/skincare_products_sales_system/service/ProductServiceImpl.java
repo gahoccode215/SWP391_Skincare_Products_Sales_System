@@ -1,5 +1,9 @@
 package com.swp391.skincare_products_sales_system.service;
 
+import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
+import com.swp391.skincare_products_sales_system.mapper.ProductMapper;
+import com.swp391.skincare_products_sales_system.pojo.Product;
 import com.swp391.skincare_products_sales_system.repository.ProductRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +13,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ProductServiceImpl {
+public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
+    ProductMapper productMapper;
 
+    @Override
+    public ProductResponse createProduct(ProductCreationRequest request) {
+        // trycatch
+        Product product = productMapper.toProduct(request);
+        return productMapper.toProductResponse(productRepository.save(product));
+    }
 }
