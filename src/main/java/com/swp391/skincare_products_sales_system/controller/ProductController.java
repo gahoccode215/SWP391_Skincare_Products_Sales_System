@@ -40,7 +40,7 @@ public class ProductController {
     @DeleteMapping("{id}")
     public ApiResponse<String> deleteProduct(@PathVariable String id) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        apiResponse.setResult("Deleted successfully.");
+        apiResponse.setResult(productService.deleteProduct(id));
         return apiResponse;
     }
 }
