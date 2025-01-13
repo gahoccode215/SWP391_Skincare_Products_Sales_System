@@ -15,6 +15,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,5 +57,10 @@ public class ProductServiceImpl implements ProductService {
         product.setDeleted(true);
         productRepository.save(product);
         return SuccessCode.DELETED_SUCCESS.getMessage();
+    }
+
+    @Override
+    public Page<ProductResponse> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productMapper::toProductResponse);
     }
 }
