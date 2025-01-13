@@ -3,6 +3,7 @@ package com.swp391.skincare_products_sales_system.service;
 import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
+import com.swp391.skincare_products_sales_system.dto.response.PaginationResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.SuccessCode;
@@ -16,8 +17,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +64,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).map(productMapper::toProductResponse);
+    public PaginationResponse<ProductResponse> getAllProducts(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<Product> productPage = productRepository.findAllByIsDeletedFalse(pageable);
+
+        List<ProductResponse> productResponses = productPage.getContent().stream()
+                .map(productMapper::toProductResponse)
+                .toList();
+        return PaginationResponse.<ProductResponse>builder()
+                .content(productResponses)
+                .currentPage(productPage.getNumber() + 1) // Convert to 1-based indexing
+                .totalPages(productPage.getTotalPages())
+                .totalItems(productPage.getTotalElements())
+                .build();
     }
+
+
 }
