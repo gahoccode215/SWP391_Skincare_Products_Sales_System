@@ -55,12 +55,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String deleteProduct(String productId) {
+    public ProductResponse deleteProduct(String productId) {
         Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND_EXCEPTION));
         product.setDeleted(true);
-        productRepository.save(product);
-        return SuccessCode.DELETED_SUCCESS.getMessage();
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
     @Override

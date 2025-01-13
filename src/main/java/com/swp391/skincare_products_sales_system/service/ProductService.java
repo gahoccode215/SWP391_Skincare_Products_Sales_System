@@ -14,6 +14,6 @@ public interface ProductService {
     ProductResponse createProduct(ProductCreationRequest request);
     ProductResponse updateProduct(String productId, ProductUpdateRequest request);
     ProductResponse getProduct(String productId);
-    String deleteProduct(String productId);
+    ProductResponse deleteProduct(String productId);
     PaginationResponse<ProductResponse> getAllProducts(int page, int size);
 }
