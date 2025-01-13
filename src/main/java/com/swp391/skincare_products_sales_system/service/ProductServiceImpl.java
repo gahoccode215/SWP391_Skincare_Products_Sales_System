@@ -31,4 +31,10 @@ public class ProductServiceImpl implements ProductService {
         productMapper.updateProduct(product, request);
         return productMapper.toProductResponse(productRepository.save(product));
     }
+
+    @Override
+    public ProductResponse getProduct(String productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found. "));
+        return productMapper.toProductResponse(product);
+    }
 }

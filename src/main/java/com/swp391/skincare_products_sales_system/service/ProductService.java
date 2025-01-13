@@ -7,4 +7,5 @@ import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 public interface ProductService {
     ProductResponse createProduct(ProductCreationRequest request);
     ProductResponse updateProduct(String productId, ProductUpdateRequest request);
+    ProductResponse getProduct(String productId);
 }
