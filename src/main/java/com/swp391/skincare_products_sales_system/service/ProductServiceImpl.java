@@ -37,4 +37,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found. "));
         return productMapper.toProductResponse(product);
     }
+
+    @Override
+    public void deleteProduct(String productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found. "));
+        product.setIsDeleted(true);
+        productRepository.save(product);
+    }
 }
