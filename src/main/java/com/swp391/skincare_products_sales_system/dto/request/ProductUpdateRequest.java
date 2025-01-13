@@ -1,4 +1,4 @@
-package com.swp391.skincare_products_sales_system.dto.response;
+package com.swp391.skincare_products_sales_system.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,8 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductResponse {
+public class ProductUpdateRequest {
     String title;
-    double price;
-    boolean isDeleted;
+    String price;
 }
