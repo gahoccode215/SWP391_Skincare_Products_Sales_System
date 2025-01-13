@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.service;
 
 import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.mapper.ProductMapper;
 import com.swp391.skincare_products_sales_system.pojo.Product;
@@ -21,6 +22,13 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse createProduct(ProductCreationRequest request) {
         // trycatch
         Product product = productMapper.toProduct(request);
+        return productMapper.toProductResponse(productRepository.save(product));
+    }
+
+    @Override
+    public ProductResponse updateProduct(String productId, ProductUpdateRequest request) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found. "));
+        productMapper.updateProduct(product, request);
         return productMapper.toProductResponse(productRepository.save(product));
     }
 }
