@@ -19,7 +19,6 @@ import lombok.experimental.FieldDefaults;
 public class User extends Base{
     String email;
     String password;
-    UserStatus userStatus;
     String firstName;
     String lastName;
     String phone;
