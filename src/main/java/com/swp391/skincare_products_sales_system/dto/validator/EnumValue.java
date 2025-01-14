@@ -1,24 +1,23 @@
-package com.swp391.skincare_products_sales_system.util;
+package com.swp391.skincare_products_sales_system.dto.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Check enum by regular expression
- */
-@Documented
-@Retention(RUNTIME)
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
+@Retention(RUNTIME)
+@Documented
 @Constraint(validatedBy = EnumPatternValidator.class)
-public @interface EnumPattern {
+public @interface EnumValue {
     String name();
-    String regexp();
-    String message() default "{name} must match {regexp}";
+    String message() default "{name} must be any of enum {enumClass}";
+    Class<? extends Enum<?>> enumClass();
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
