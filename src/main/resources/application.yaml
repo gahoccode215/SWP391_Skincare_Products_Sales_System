@@ -11,3 +11,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+open:
+  api:
+    title: API document
+    version: v1.0.0
+    description: API Service
+    serverUrl: http://localhost:8080/api/v1/skincare-products-sales-system
+    serverName: Server
+    license: https://github.com/swp391/skincare-products-sales-system

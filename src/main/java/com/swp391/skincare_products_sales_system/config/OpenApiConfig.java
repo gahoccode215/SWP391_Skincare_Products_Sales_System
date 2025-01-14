@@ -13,7 +13,7 @@ import java.util.List;
 @Configuration
 public class OpenApiConfig {
     @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI().info(new Info().title("API-service document").version("1.0").description("Description").license(new License().name("API license").url("https://github.com/swp391/skincare-products-sales-system"))).servers(List.of(new Server().url("http://localhost:8080/api/v1/skincare-products-sales-system").description("Server")));
+    public OpenAPI openAPI(@Value("${open.api.title}") String title, @Value("${open.api.version}") String version, @Value("${open.api.description}") String description, @Value("${open.api.serverUrl}") String serverUrl, @Value("${open.api.serverName}") String serverName, @Value("${open.api.license}") String license) {
+        return new OpenAPI().info(new Info().title(title).version(version).description(description).license(new License().name("API license").url(license))).servers(List.of(new Server().url(serverUrl).description(serverName)));
     }
 }
