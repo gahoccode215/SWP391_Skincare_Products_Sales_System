@@ -1,12 +1,11 @@
 package com.swp391.skincare_products_sales_system.pojo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table()
+@Table(name = "products")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,4 +16,8 @@ public class Product extends Base{
     String title;
     double price;
     String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    Category category;
 }

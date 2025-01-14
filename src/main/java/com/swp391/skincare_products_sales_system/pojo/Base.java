@@ -23,9 +23,9 @@ public abstract class Base implements Serializable {
     String id;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(updatable = false, name = "created_date")
     LocalDateTime createdDate;
 
-    @Column
-    boolean IsDeleted;
+    @Column(name = "is_deleted", nullable = false)
+    boolean isDeleted;
 }
