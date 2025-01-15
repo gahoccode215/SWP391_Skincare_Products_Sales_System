@@ -39,26 +39,29 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse updateProduct(String productId, ProductUpdateRequest request) {
-        Product product = productRepository.findById(productId).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND_EXCEPTION));
-        productMapper.updateProduct(product, request);
-        return productMapper.toProductResponse(productRepository.save(product));
+//        Product product = productRepository.findById(productId).orElseThrow(() ->
+//                new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND_EXCEPTION));
+//        productMapper.updateProduct(product, request);
+//        return productMapper.toProductResponse(productRepository.save(product));
+        return new ProductResponse();
     }
 
     @Override
     public ProductResponse getProduct(String productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND_EXCEPTION));
-        return productMapper.toProductResponse(product);
+//        Product product = productRepository.findById(productId).orElseThrow(() ->
+//                new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND_EXCEPTION));
+//        return productMapper.toProductResponse(product);
+        return new ProductResponse();
     }
 
     @Override
     @Transactional
     public ProductResponse deleteProduct(String productId) {
-        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND_EXCEPTION));
-        product.setDeleted(true);
-        return productMapper.toProductResponse(productRepository.save(product));
+//        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() ->
+//                new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND_EXCEPTION));
+//        product.setDeleted(true);
+//        return productMapper.toProductResponse(productRepository.save(product));
+        return new ProductResponse();
     }
 
     @Override
