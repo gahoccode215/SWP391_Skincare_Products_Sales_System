@@ -5,7 +5,7 @@ import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateReques
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.PaginationResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
-import com.swp391.skincare_products_sales_system.service.ProductServiceImpl;
+import com.swp391.skincare_products_sales_system.service.impl.ProductServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
