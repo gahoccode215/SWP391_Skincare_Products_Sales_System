@@ -4,10 +4,8 @@ import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequ
 import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.PaginationResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
-import com.swp391.skincare_products_sales_system.enums.ErrorCode;
-import com.swp391.skincare_products_sales_system.exception.ResourceNotFoundException;
 import com.swp391.skincare_products_sales_system.mapper.ProductMapper;
-import com.swp391.skincare_products_sales_system.pojo.Product;
+import com.swp391.skincare_products_sales_system.model.Product;
 import com.swp391.skincare_products_sales_system.repository.ProductRepository;
 import com.swp391.skincare_products_sales_system.service.ProductService;
 import jakarta.transaction.Transactional;

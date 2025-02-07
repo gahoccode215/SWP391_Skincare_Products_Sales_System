@@ -1,14 +1,10 @@
-package com.swp391.skincare_products_sales_system.pojo;
+package com.swp391.skincare_products_sales_system.model;
 
 import com.swp391.skincare_products_sales_system.util.Gender;
 import com.swp391.skincare_products_sales_system.util.GenderConverter;
-import com.swp391.skincare_products_sales_system.util.UserStatus;
-import com.swp391.skincare_products_sales_system.util.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
 

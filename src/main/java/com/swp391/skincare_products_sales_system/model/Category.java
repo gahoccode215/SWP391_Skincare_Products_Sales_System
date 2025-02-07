@@ -1,4 +1,4 @@
-package com.swp391.skincare_products_sales_system.pojo;
+package com.swp391.skincare_products_sales_system.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

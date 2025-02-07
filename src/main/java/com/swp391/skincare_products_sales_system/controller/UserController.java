@@ -1,6 +1,6 @@
 package com.swp391.skincare_products_sales_system.controller;
 
-import com.swp391.skincare_products_sales_system.dto.request.UserCreationRequest;
+
 import com.swp391.skincare_products_sales_system.dto.response.ResponseData;
 import com.swp391.skincare_products_sales_system.dto.response.ResponseError;
 import com.swp391.skincare_products_sales_system.service.UserService;
@@ -33,15 +33,15 @@ public class UserController {
     private final UserService userService;
 //    private static final String ERROR_MESSAGE = "errorMessage={}";
 
-    @Operation(method = "POST", summary = "Add new user", description = "Send a request via this API to create new user")
-    @PostMapping()
-    public ResponseData<String> createUser(@Valid @RequestBody UserCreationRequest request) {
-        log.info("Request add user, {} {}", request.getFirstName(), request.getLastName());
-        try {
-            String userId = userService.saveUser(request);
-            return new ResponseData<>(HttpStatus.CREATED.value(), "Create user successfully", userId);
-        } catch (Exception e) {
-            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Create user fail");
-        }
-    }
+//    @Operation(method = "POST", summary = "Add new user", description = "Send a request via this API to create new user")
+//    @PostMapping()
+//    public ResponseData<String> createUser(@Valid @RequestBody UserCreationRequest request) {
+//        log.info("Request add user, {} {}", request.getFirstName(), request.getLastName());
+//        try {
+//            String userId = userService.saveUser(request);
+//            return new ResponseData<>(HttpStatus.CREATED.value(), "Create user successfully", userId);
+//        } catch (Exception e) {
+//            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Create user fail");
+//        }
+//    }
 }

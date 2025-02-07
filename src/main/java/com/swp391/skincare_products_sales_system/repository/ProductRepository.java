@@ -1,6 +1,6 @@
 package com.swp391.skincare_products_sales_system.repository;
 
-import com.swp391.skincare_products_sales_system.pojo.Product;
+import com.swp391.skincare_products_sales_system.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
