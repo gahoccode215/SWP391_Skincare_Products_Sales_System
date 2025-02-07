@@ -1,8 +1,7 @@
 package com.swp391.skincare_products_sales_system.model;
 
-import com.swp391.skincare_products_sales_system.util.Gender;
-import com.swp391.skincare_products_sales_system.util.GenderConverter;
-import com.swp391.skincare_products_sales_system.util.UserStatus;
+import com.swp391.skincare_products_sales_system.enums.Gender;
+import com.swp391.skincare_products_sales_system.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -60,6 +59,6 @@ public class User extends AbstractEntity {
     @JoinTable(name = "tbl_user_has_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    Set<Role> roles;
 
 }

@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @ToString
 @Table(name = "tbl_role")
-public class Role extends AbstractEntity{
+public class Role extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -27,7 +27,7 @@ public class Role extends AbstractEntity{
     String description;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    Set<User> users;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

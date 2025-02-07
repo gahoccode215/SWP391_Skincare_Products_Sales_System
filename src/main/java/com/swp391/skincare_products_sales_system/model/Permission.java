@@ -1,4 +1,5 @@
 package com.swp391.skincare_products_sales_system.model;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tbl_permission")
-public class Permission extends AbstractEntity{
+public class Permission extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -27,5 +28,5 @@ public class Permission extends AbstractEntity{
     String description;
 
     @ManyToMany(mappedBy = "permissions")
-    private Set<Role> roles;
+    Set<Role> roles;
 }
