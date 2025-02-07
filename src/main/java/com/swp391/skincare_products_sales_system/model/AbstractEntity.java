@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @MappedSuperclass
-public class AbstractEntity {
+public abstract class AbstractEntity {
     @Column(name = "created_at", length = 255)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
