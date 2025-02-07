@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.controller;
 
 import com.swp391.skincare_products_sales_system.dto.request.LoginRequest;
+import com.swp391.skincare_products_sales_system.dto.request.LogoutRequest;
 import com.swp391.skincare_products_sales_system.dto.request.RefreshTokenRequest;
 import com.swp391.skincare_products_sales_system.dto.request.RegisterRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
@@ -57,6 +58,16 @@ public class AuthenticationController {
                 .code(HttpStatus.CREATED.value())
                 .message("Register successfully")
                 .result(authenticationService.register(request))
+                .build();
+    }
+    @PostMapping("/logout")
+    @Operation(summary = "Logout", description = "Invalidate JWT token to logout user")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<String> logout(@RequestBody LogoutRequest request) {
+        authenticationService.logout(request);
+        return ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Logout successfully")
                 .build();
     }
 }

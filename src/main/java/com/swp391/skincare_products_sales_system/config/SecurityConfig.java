@@ -28,7 +28,7 @@ public class SecurityConfig {
             "/auth/**",
             "/products/**",
             "/categories/**",
-            "/mock/**"
+//            "/mock/**"
     };
 
     @Bean

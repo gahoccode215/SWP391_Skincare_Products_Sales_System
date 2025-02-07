@@ -11,18 +11,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        globally_quoted_identifiers: true
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: debug
-        type:
-          descriptor:
-            sql:
-              BasicBinder: trace
+    database-platform: org.hibernate.dialect.MySQLDialect
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
 open:
   api:
     title: API document
@@ -33,5 +27,5 @@ open:
     license: https://github.com/gahoccode215/SWP391_Skincare_Products_Sales_System
 jwt:
   signerKey: ${JWT_SIGNER_KEY:1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij}
-  valid-duration: ${JWT_VALID_DURATION:20} # in second
+  valid-duration: ${JWT_VALID_DURATION:3600} # in second
   refreshable-duration: ${JWT_REFRESHABLE_DURATION:36000} # in seconds
