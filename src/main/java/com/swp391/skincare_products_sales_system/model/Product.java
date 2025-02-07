@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "tbl_product")
 @Getter
@@ -21,12 +24,6 @@ public class Product extends AbstractEntity {
 
     @Column(name = "name")
     String name;
-
-    @Column(name = "origin")
-    String origin; // Xuất xứ
-
-    @Column(name = "skin_type")
-    String skinType; // Loại da: Da dầu, da khô, hỗn hợp
 
     @Column(name = "feature")
     String feature; // Công dụng: Dưỡng ẩm, trị mụn, chống lão hóa
@@ -53,6 +50,26 @@ public class Product extends AbstractEntity {
     String expiryDate; // Ngày hết hạn
 
     @ManyToOne
-    @JoinColumn(name = "brand_id", nullable = false)
+    @JoinColumn(name = "brand_id")
     Brand brand;
+
+    @ManyToOne
+    @JoinColumn(name = "origin_id")
+    Origin origin;
+
+    @ManyToOne
+    @JoinColumn(name = "skin_type_id")
+    SkinType skinType;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    Category category;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "tbl_product_has_feature",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "feature_id")
+    )
+    Set<Feature> features;
 }

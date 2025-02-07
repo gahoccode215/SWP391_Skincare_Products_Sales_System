@@ -2,19 +2,21 @@ package com.swp391.skincare_products_sales_system.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@ToString
-@Table(name = "tbl_brand")
+@Table(name = "tbl_feature")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Brand extends AbstractEntity{
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
+public class Feature extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -22,9 +24,6 @@ public class Brand extends AbstractEntity{
     @Column(name = "name")
     String name;
 
-    @Column(name = "description")
-    String description; // Mô tả
-
-    @OneToMany(mappedBy = "brand")
+    @ManyToMany(mappedBy = "features")
     Set<Product> products;
 }
