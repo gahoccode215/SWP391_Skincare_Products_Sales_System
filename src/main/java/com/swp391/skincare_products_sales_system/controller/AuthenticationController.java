@@ -2,9 +2,11 @@ package com.swp391.skincare_products_sales_system.controller;
 
 import com.swp391.skincare_products_sales_system.dto.request.LoginRequest;
 import com.swp391.skincare_products_sales_system.dto.request.RefreshTokenRequest;
+import com.swp391.skincare_products_sales_system.dto.request.RegisterRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.LoginResponse;
 import com.swp391.skincare_products_sales_system.dto.response.RefreshTokenResponse;
+import com.swp391.skincare_products_sales_system.dto.response.RegisterResponse;
 import com.swp391.skincare_products_sales_system.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -46,5 +48,15 @@ public class AuthenticationController {
                 .code(HttpStatus.OK.value())
                 .message("Get new Access Token by old token successfully")
                 .result(result).build();
+    }
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Register new account", description = "API retrieve user attribute to create account")
+    public ApiResponse<RegisterResponse> register(@RequestBody RegisterRequest request){
+        return ApiResponse.<RegisterResponse>builder()
+                .code(HttpStatus.CREATED.value())
+                .message("Register successfully")
+                .result(authenticationService.register(request))
+                .build();
     }
 }
