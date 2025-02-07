@@ -18,7 +18,9 @@ public enum ErrorCode {
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1009, "Username or password not correct", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_EXISTED(1010, "Product not existed", HttpStatus.BAD_REQUEST),
-    CATEGORY_NOT_EXISTED(1011, "Category not existed", HttpStatus.BAD_REQUEST)
+    CATEGORY_NOT_EXISTED(1011, "Category not existed", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(1012, "Token invalid", HttpStatus.UNAUTHORIZED),
+    TOKEN_EXPIRED(1013, "Token has expired", HttpStatus.UNAUTHORIZED),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
