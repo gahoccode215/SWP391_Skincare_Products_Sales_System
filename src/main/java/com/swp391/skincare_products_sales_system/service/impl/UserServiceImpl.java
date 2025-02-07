@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(request.getPassword())
-//                .status(request.getUserStatus())
+                .status(request.getUserStatus())
                 .build();
         userRepository.save(user);
 

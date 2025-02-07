@@ -4,6 +4,7 @@ import com.swp391.skincare_products_sales_system.dto.request.UserCreationRequest
 import com.swp391.skincare_products_sales_system.dto.response.ResponseData;
 import com.swp391.skincare_products_sales_system.dto.response.ResponseError;
 import com.swp391.skincare_products_sales_system.service.UserService;
+import com.swp391.skincare_products_sales_system.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.Table;
@@ -25,14 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "User Controller")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+//@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
 
-    UserService userService;
-    private static final String ERROR_MESSAGE = "errorMessage={}";
+
+    private final UserService userService;
+//    private static final String ERROR_MESSAGE = "errorMessage={}";
 
     @Operation(method = "POST", summary = "Add new user", description = "Send a request via this API to create new user")
-    @PostMapping(value = "/")
+    @PostMapping()
     public ResponseData<String> createUser(@Valid @RequestBody UserCreationRequest request) {
         log.info("Request add user, {} {}", request.getFirstName(), request.getLastName());
         try {

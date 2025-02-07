@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Builder
 @Getter
-public class UserReponse implements Serializable {
+public class UserResponse implements Serializable {
     private Long id;
 
     private String firstName;
@@ -26,7 +26,6 @@ public class UserReponse implements Serializable {
     private Gender gender;
 
     private String username;
-
 
     private UserStatus status;
 }
