@@ -2,80 +2,64 @@ package com.swp391.skincare_products_sales_system.model;
 
 import com.swp391.skincare_products_sales_system.util.Gender;
 import com.swp391.skincare_products_sales_system.util.GenderConverter;
+import com.swp391.skincare_products_sales_system.util.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
+import java.util.Set;
 
 
 @Getter
 @Setter
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity(name = "tbl_user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "tbl_user")
 public class User extends Base {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
 
-    //    @Column(name = "email", unique = true, nullable = false)
-//    String email;
-//    @Column(name = "password", nullable = false)
-//    String password;
-//    @Column(name = "firstName")
-//    String firstName;
-//    @Column(name = "lastName")
-//    String lastName;
-//    @Column(name = "phone")
-//    String phone;
-//
-//    @Column(name = "date_of_birth")
-//    @Temporal(TemporalType.DATE)
-//    Date dateOfBirth;
-//
-//    @Enumerated(EnumType.STRING)
-//    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-//    @Column(name = "gender")
-//    Gender gender;
-//
-//    @Enumerated(EnumType.STRING)
-//    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-//    @Column(name = "status")
-//    UserStatus userStatus;
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "first_name", length = 255)
+    String firstName;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "last_name", length = 255)
+    String lastName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    Gender gender;
+
+    @Column(name = "email", length = 255)
+    String email;
+
+    @Column(name = "phone", length = 15)
+    String phone;
 
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+    Date birthday;
 
-    @Convert(converter = GenderConverter.class)
-    @Column(name = "gender")
-    private Gender gender;
+    @Column(name = "username", unique = true, nullable = false, length = 255)
+    String username;
 
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "password", length = 255, nullable = false)
+    String password;
 
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "password")
-    private String password;
-
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "type")
-//    private UserType type;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 255)
+    UserStatus status;
 
 
-//    @Column(name = "status")
-//    private UserStatus status;
-
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tbl_user_has_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
 }
