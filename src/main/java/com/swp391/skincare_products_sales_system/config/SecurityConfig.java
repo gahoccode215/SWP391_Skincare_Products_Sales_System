@@ -23,11 +23,13 @@ import org.springframework.web.filter.CorsFilter;
 @Slf4j
 public class SecurityConfig {
 
+
     private final String[] PUBLIC_ENDPOINTS = {
             "/users/**",
             "/auth/**",
             "/products/**",
             "/categories/**",
+            "/admin/origin/**"
 //            "/mock/**"
     };
 

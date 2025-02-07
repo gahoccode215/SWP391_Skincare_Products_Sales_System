@@ -2,9 +2,13 @@ package com.swp391.skincare_products_sales_system.exception;
 
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -19,36 +23,64 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = Exception.class)
-    ResponseEntity<ApiResponse<Void>> handlingRuntimeException(RuntimeException exception) {
-        log.error("Uncategorized exception: ", exception);
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
+    /**
+     * Xử lý lỗi validation khi dữ liệu request body không hợp lệ.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
 
-        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
 
-        return ResponseEntity.badRequest().body(apiResponse);
+        log.warn("Validation failed: {}", errors);
+        return ResponseEntity.badRequest()
+                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors));
     }
 
+    /**
+     * Xử lý lỗi validation trên Query Param hoặc Path Variable.
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleConstraintViolationException(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getConstraintViolations().forEach(violation ->
+                errors.put(violation.getPropertyPath().toString(), violation.getMessage()));
+
+        log.warn("Constraint validation failed: {}", errors);
+        return ResponseEntity.badRequest()
+                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors));
+    }
+
+    /**
+     * Xử lý lỗi không có quyền truy cập (401 Unauthorized).
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException exception) {
+        log.warn("Access Denied: {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ApiResponse<>(HttpStatus.FORBIDDEN.value(), ErrorCode.ACCESS_DENIED.getMessage(), null));
+    }
+
+    /**
+     * Xử lý lỗi có định nghĩa trong hệ thống (AppException).
+     */
     @ExceptionHandler(AppException.class)
-    ResponseEntity<ApiResponse<Void>> handlingAppException(AppException exception) {
-        log.error("App exception: ", exception);
-        ErrorCode errorCode = exception.getErrorCode();
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
-        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    public ResponseEntity<ApiResponse<Void>> handleAppException(AppException exception) {
+        log.error("Application error: {}", exception.getMessage());
+        return ResponseEntity.status(exception.getErrorCode().getStatusCode())
+                .body(new ApiResponse<>(exception.getErrorCode().getCode(), exception.getErrorCode().getMessage(), null));
     }
 
-
-    @ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<ApiResponse<Void>> handlingAccessDeniedException(AccessDeniedException exception) {
-        log.error("AccessDenied exception: ", exception);
-        ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
-        return ResponseEntity.status(errorCode.getStatusCode())
-                .body(apiResponse);
+    /**
+     * Xử lý tất cả các lỗi chưa được bắt trước đó (Exception.class).
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleUncaughtException(Exception exception) {
+        log.error("Uncaught exception: ", exception);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), null));
     }
 }
