@@ -26,7 +26,7 @@ public class CategoryController {
     @PostMapping
     @Operation(summary = "Create category", description = "API retrieve attribute to create category")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<CategoryResponse> createBrand(@RequestBody @Valid CategoryCreationRequest request) {
+    public ApiResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreationRequest request) {
         return ApiResponse.<CategoryResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Create category successfully")

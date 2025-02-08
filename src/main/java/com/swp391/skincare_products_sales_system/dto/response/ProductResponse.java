@@ -10,8 +10,11 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductResponse {
+    String id;
     String name;
+    Double price;
+    String brandName;
+    String categoryName;
     String description;
-    Long brand_id;
-    Long category_id;
+    String thumbnail;
 }
