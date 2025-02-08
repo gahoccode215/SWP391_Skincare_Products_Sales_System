@@ -4,29 +4,26 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
+@Entity
+@Table(name = "tbl_feature")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-@Table(name = "tbl_permission")
-public class Permission extends AbstractEntity {
+@ToString
+public class Feature extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     @Column(name = "name")
     String name;
 
-    @Column(name = "description")
-    String description;
-
-    @ManyToMany(mappedBy = "permissions")
-    Set<Role> roles;
+    @ManyToMany(mappedBy = "features")
+    Set<Product> products;
 }

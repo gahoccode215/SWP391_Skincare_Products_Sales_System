@@ -4,29 +4,26 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
+@Entity
+@Table(name = "tbl_origin")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-@Table(name = "tbl_permission")
-public class Permission extends AbstractEntity {
+public class Origin extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     @Column(name = "name")
-    String name;
+    String name; // Tên xuất xứ
 
-    @Column(name = "description")
-    String description;
-
-    @ManyToMany(mappedBy = "permissions")
-    Set<Role> roles;
+    @OneToMany(mappedBy = "origin", cascade = CascadeType.ALL)
+    Set<Product> products;
 }

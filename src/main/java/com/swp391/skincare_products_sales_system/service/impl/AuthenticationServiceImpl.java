@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import com.swp391.skincare_products_sales_system.constant.PredefinedRole;
 import com.swp391.skincare_products_sales_system.dto.request.LoginRequest;
+import com.swp391.skincare_products_sales_system.dto.request.LogoutRequest;
 import com.swp391.skincare_products_sales_system.dto.request.RefreshTokenRequest;
 import com.swp391.skincare_products_sales_system.dto.request.RegisterRequest;
 import com.swp391.skincare_products_sales_system.dto.response.LoginResponse;
@@ -36,6 +37,7 @@ import java.util.Set;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationServiceImpl implements AuthenticationService {
+
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     JwtUtil jwtUtil;
@@ -117,5 +119,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return RegisterResponse.builder()
                 .username(user.getUsername())
                 .build();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void logout(LogoutRequest request) {
+        SignedJWT signedJWT;
+        try {
+            signedJWT = jwtUtil.verifyToken(request.getToken(), false);
+        } catch (ParseException | JOSEException e) {
+            throw new AppException(ErrorCode.INVALID_TOKEN);
+        }
+        // Lấy thông tin từ token
+        String tokenId = null;
+        Date expiryTime = null;
+
+        try {
+            tokenId = signedJWT.getJWTClaimsSet().getJWTID();
+            expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        } catch (ParseException e) {
+            throw new AppException(ErrorCode.INVALID_TOKEN);
+        }
+
+        // Kiểm tra nếu token đã hết hạn
+        if (expiryTime.before(new Date())) {
+            throw new AppException(ErrorCode.INVALID_TOKEN);
+        }
+        // Lưu token vào danh sách invalidated token
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .token(tokenId)
+                .expiryTime(expiryTime)
+                .build();
+        invalidatedTokenRepository.save(invalidatedToken);
     }
 }
