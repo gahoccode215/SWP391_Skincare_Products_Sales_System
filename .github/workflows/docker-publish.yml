@@ -1,4 +1,4 @@
-name: Build & Push Docker Image
+name: Build, Push Docker Image & Deploy to Render
 
 on:
   push:
@@ -29,3 +29,10 @@ jobs:
 
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/swp391-skincare-api:latest
+
+      - name: Trigger Render Deploy
+        run: |
+          curl -X POST \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}
