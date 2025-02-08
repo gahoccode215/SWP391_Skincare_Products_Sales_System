@@ -5,7 +5,7 @@ server:
 
 spring:
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:prod}
   jpa:
     hibernate:
       ddl-auto: update  # Mặc định, từng môi trường có thể ghi đè
