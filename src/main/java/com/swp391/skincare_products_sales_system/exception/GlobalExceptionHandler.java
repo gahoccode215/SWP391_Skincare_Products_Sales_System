@@ -4,6 +4,7 @@ import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,10 +34,15 @@ public class GlobalExceptionHandler {
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
-
         log.warn("Validation failed: {}", errors);
         return ResponseEntity.badRequest()
-                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors));
+                .body(
+                        new ApiResponse<>(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Validation failed",
+                                errors
+                        )
+                );
     }
 
     /**
@@ -60,8 +66,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException exception) {
         log.warn("Access Denied: {}", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new ApiResponse<>(HttpStatus.FORBIDDEN.value(), ErrorCode.ACCESS_DENIED.getMessage(), null));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), ErrorCode.UNAUTHENTICATED.getMessage(), null));
+    }
+
+    /**
+     * Xử lý lỗi nhập data khong hop le
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        log.warn("Data violation: {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Data input invalid", null));
     }
 
     /**
@@ -81,6 +97,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleUncaughtException(Exception exception) {
         log.error("Uncaught exception: ", exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), null));
+                .body(new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage(), null));
     }
 }

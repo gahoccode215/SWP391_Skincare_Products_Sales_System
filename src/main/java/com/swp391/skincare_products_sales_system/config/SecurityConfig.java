@@ -29,7 +29,10 @@ public class SecurityConfig {
             "/auth/**",
             "/products/**",
             "/categories/**",
-            "/admin/origin/**"
+            "/admin/origins/**",
+            "/admin/skin-types/**",
+            "/admin/**",
+            "/**"
 //            "/mock/**"
     };
 

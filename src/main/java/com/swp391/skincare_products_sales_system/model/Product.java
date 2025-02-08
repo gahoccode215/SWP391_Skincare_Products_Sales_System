@@ -31,6 +31,9 @@ public class Product extends AbstractEntity {
     @Column(name = "price")
     Double price;
 
+    @Column(name = "slug")
+    String slug;
+
     @Column(name = "quantity_per_pack")
     Integer quantityPerPack; // Số lượng theo lô
 

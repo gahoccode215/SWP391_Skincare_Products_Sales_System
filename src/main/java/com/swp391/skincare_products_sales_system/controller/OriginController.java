@@ -1,6 +1,5 @@
-package com.swp391.skincare_products_sales_system.controller.admin;
+package com.swp391.skincare_products_sales_system.controller;
 
-import com.swp391.skincare_products_sales_system.dto.request.LogoutRequest;
 import com.swp391.skincare_products_sales_system.dto.request.OriginCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.OriginResponse;
@@ -15,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/origin")
+@RequestMapping("/origins")
 @Tag(name = "Origin Controller")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
