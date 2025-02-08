@@ -30,9 +30,11 @@ jobs:
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/swp391-skincare-api:latest
 
+      # Trigger Render Deploy khi Docker image đã push xong
       - name: Trigger Render Deploy
         run: |
-          curl -X POST \
-            -H "Accept: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}
+          curl -X POST "https://api.render.com/deploy/srv-xxxxxxxxxxxx" \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          --data '{"clearCache": false}'
