@@ -110,6 +110,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .gender(request.getGender())
+                .birthday(request.getBirthday())
                 .build();
         // Lấy Role từ Database gắn vào
         Role userRole = roleRepository.findByName(PredefinedRole.CUSTOMER_ROLE)
@@ -118,6 +120,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
         return RegisterResponse.builder()
                 .username(user.getUsername())
+                .gender(user.getGender())
+                .birthday(user.getBirthday())
                 .build();
     }
 

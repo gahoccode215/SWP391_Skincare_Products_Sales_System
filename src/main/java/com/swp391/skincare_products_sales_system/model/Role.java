@@ -26,7 +26,7 @@ public class Role extends AbstractEntity {
     @Column(name = "description")
     String description;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.REMOVE)
     Set<User> users;
 
     @ManyToMany(fetch = FetchType.EAGER)
