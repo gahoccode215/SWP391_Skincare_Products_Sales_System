@@ -48,12 +48,12 @@ public class ProductServiceImpl implements ProductService {
 
         // Xu ly truong hop FE muon bat dau voi page = 1
         int pageNo = 0;
-        if(request.getPage() > 0){
-            pageNo = request.getPage() - 1;
+        if(request.getPageNumber() > 0){
+            pageNo = request.getPageNumber() - 1;
         }
         // Tạo đối tượng Sort dựa trên yêu cầu về sắp xếp của người dùng
         Sort sort = Sort.by(Sort.Direction.fromString(request.getSortDirection()), request.getSortBy());
-        Pageable pageable = PageRequest.of(pageNo, request.getSize(), sort);
+        Pageable pageable = PageRequest.of(pageNo, request.getPageSize(), sort);
 
         // Tìm kiếm các sản phẩm thỏa mãn điều kiện lọc và phân trang
         Page<Product> productPage = productRepository.findAll(spec, pageable);

@@ -15,8 +15,8 @@ public class ProductSearchRequest {
     String category;
     Double minPrice;
     Double maxPrice;
-    Integer page = 0;
-    Integer size = 10;
+    Integer pageNumber = 0;
+    Integer pageSize = 10;
     String sortBy = "name";
     String sortDirection = "ASC";
 }

@@ -36,14 +36,14 @@ public class ProductController {
                 .result(productService.createProduct(request))
                 .build();
     }
-    @GetMapping("/search")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Search product", description = "API retrieve query to search product with filter, sort")
+    @Operation(summary = "Get products", description = "API retrieve query to get products with keyword, filter, sort")
     public ApiResponse<Page<ProductResponse>> searchProducts(@RequestBody ProductSearchRequest request) {
         Page<ProductResponse> products = productService.searchProducts(request);
         return ApiResponse.<Page<ProductResponse>>builder()
                 .code(HttpStatus.OK.value())
-                .message("Search products successfully")
+                .message("get products successfully")
                 .result(products)
                 .build();
     }
