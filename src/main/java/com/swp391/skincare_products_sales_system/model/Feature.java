@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -25,5 +26,6 @@ public class Feature extends AbstractEntity {
     String name;
 
     @ManyToMany(mappedBy = "features")
+    @JsonIgnore
     Set<Product> products;
 }

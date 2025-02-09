@@ -36,7 +36,7 @@ public class ProductController {
                 .result(productService.createProduct(request))
                 .build();
     }
-    @PostMapping("/search")
+    @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Search product", description = "API retrieve query to search product with filter, sort")
     public ApiResponse<Page<ProductResponse>> searchProducts(@RequestBody ProductSearchRequest request) {

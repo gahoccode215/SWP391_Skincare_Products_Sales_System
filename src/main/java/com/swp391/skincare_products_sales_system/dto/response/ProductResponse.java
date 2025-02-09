@@ -1,8 +1,11 @@
 package com.swp391.skincare_products_sales_system.dto.response;
 
 
+import com.swp391.skincare_products_sales_system.model.Feature;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +18,9 @@ public class ProductResponse {
     Double price;
     String brandName;
     String categoryName;
-    String description;
+    String originName;
+    String skinTypeType;
+
+    Set<FeatureResponse> featureNames;
     String thumbnail;
 }

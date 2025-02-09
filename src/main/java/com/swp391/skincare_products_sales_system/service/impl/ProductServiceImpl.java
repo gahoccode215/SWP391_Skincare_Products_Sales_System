@@ -38,14 +38,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Cacheable(value = "products", key = "#request")
     public Page<ProductResponse> searchProducts(ProductSearchRequest request) {
+        // Tạo Specification dựa trên các bộ lọc được cung cấp
         Specification<Product> spec = Specification.where(ProductSpecification.hasKeyword(request.getKeyword()))
                 .and(ProductSpecification.hasBrand(request.getBrand()))
                 .and(ProductSpecification.hasCategory(request.getCategory()))
+                .and(ProductSpecification.hasSkinType(request.getSkinType()))
                 .and(ProductSpecification.hasPriceBetween(request.getMinPrice(), request.getMaxPrice()));
 
-        Sort sort = Sort.by(Sort.Direction.fromString(request.getSortDirection()), request.getSortBy());
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
 
+        // Xu ly truong hop FE muon bat dau voi page = 1
+        int pageNo = 0;
+        if(request.getPage() > 0){
+            pageNo = request.getPage() - 1;
+        }
+        // Tạo đối tượng Sort dựa trên yêu cầu về sắp xếp của người dùng
+        Sort sort = Sort.by(Sort.Direction.fromString(request.getSortDirection()), request.getSortBy());
+        Pageable pageable = PageRequest.of(pageNo, request.getSize(), sort);
+
+        // Tìm kiếm các sản phẩm thỏa mãn điều kiện lọc và phân trang
         Page<Product> productPage = productRepository.findAll(spec, pageable);
 
         // Chuyển đổi từ Page<Product> → Page<ProductResponse> sử dụng MapStruct

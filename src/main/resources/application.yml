@@ -10,7 +10,7 @@ spring:
     hibernate:
       ddl-auto: update  # Mặc định, từng môi trường có thể ghi đè
     show-sql: true
-    database-platform: org.hibernate.dialect.MySQLDialect
+
 
   data:
     redis:
