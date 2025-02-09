@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public class User extends AbstractEntity {
 
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
-    Date birthday;
+    LocalDate birthday;
 
     @Column(name = "username", unique = true, nullable = false, length = 255)
     String username;

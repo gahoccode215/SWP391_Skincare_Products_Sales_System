@@ -24,25 +24,35 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    private static final String MIN_ATTRIBUTE = "min";
+
     /**
      * Xử lý lỗi validation khi dữ liệu request body không hợp lệ.
+     * Ex: username không hợp lệ => username không đủ ký tự
+     *     gender không hợp lệ => khác kiểu enum
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.put(error.getField(), error.getDefaultMessage());
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception) {
+        String enumKey = exception.getFieldError().getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+        Map<String, Object> attributes = null;
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
+            var constraintViolation = exception.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
+            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+            log.info(attributes.toString());
+        } catch (IllegalArgumentException e) {
         }
-        log.warn("Validation failed: {}", errors);
-        return ResponseEntity.badRequest()
-                .body(
-                        new ApiResponse<>(
-                                HttpStatus.BAD_REQUEST.value(),
-                                "Validation failed",
-                                errors
-                        )
-                );
+
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(
+                Objects.nonNull(attributes)
+                        ? mapAttribute(errorCode.getMessage(), attributes)
+                        : errorCode.getMessage());
+
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
     /**
@@ -57,7 +67,11 @@ public class GlobalExceptionHandler {
 
         log.warn("Constraint validation failed: {}", errors);
         return ResponseEntity.badRequest()
-                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors));
+                .body(new ApiResponse<>(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Validation failed",
+                        errors)
+                );
     }
 
     /**
@@ -97,6 +111,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleUncaughtException(Exception exception) {
         log.error("Uncaught exception: ", exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage(), null));
+                .body(new ApiResponse<>(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode(), ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage(), null));
+    }
+
+    private String mapAttribute(String message, Map<String, Object> attributes) {
+        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
+
+        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
     }
 }

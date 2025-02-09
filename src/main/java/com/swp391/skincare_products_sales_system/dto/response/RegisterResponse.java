@@ -4,6 +4,7 @@ import com.swp391.skincare_products_sales_system.enums.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -14,5 +15,5 @@ import java.util.Date;
 public class RegisterResponse {
     String username;
     Gender gender;
-    Date birthday;
+    LocalDate birthday;
 }

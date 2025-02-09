@@ -1,15 +1,19 @@
 package com.swp391.skincare_products_sales_system.dto.request;
 
 import com.swp391.skincare_products_sales_system.enums.Gender;
+import com.swp391.skincare_products_sales_system.validator.BirthdayConstraint;
 import com.swp391.skincare_products_sales_system.validator.GenderConstraint;
 import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -20,14 +24,15 @@ import java.util.Date;
 @ToString
 public class RegisterRequest implements Serializable {
 
-    @NotBlank(message = "username can not blank")
+    @Size(min = 6, message = "USERNAME_INVALID")
     String username;
-    @NotBlank(message = "password can not blank")
+
+    @Size(min = 6, message = "PASSWORD_INVALID")
     String password;
 
-    @NotNull(message = "birthday can not null")
-    Date birthday;
+    @BirthdayConstraint(min = 6, message = "BIRTHDAY_INVALID")
+    LocalDate birthday;
 
-    @GenderConstraint(message = "Gender must be one of the following: MALE, FEMALE, OTHER")
+    @GenderConstraint(message = "GENDER_INVALID")
     Gender gender;
 }
