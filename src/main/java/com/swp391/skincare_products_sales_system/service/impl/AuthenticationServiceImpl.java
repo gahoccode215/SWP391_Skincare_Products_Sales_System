@@ -112,7 +112,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         // Lấy Role từ Database gắn vào
-        Role userRole = roleRepository.findByName(PredefinedRole.USER_ROLE)
+        Role userRole = roleRepository.findByName(PredefinedRole.CUSTOMER_ROLE)
                 .orElseThrow(() -> new AppException(ErrorCode.REGISTER_ERROR));
         user.setRoles(Set.of(userRole));
         userRepository.save(user);
