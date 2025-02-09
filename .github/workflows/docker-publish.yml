@@ -33,8 +33,8 @@ jobs:
       # Trigger Render Deploy khi Docker image đã push xong
       - name: Trigger Render Deploy
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-xxxxxxxxxxxx" \
-          -H "Authorization: Bearer ${{ secrets.RENDER_SERVICE_ID }}" \
+          curl -X POST "https://api.render.com/deploy/${{ secrets.RENDER_SERVICE_ID }}" \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
           -H "Accept: application/json" \
           -H "Content-Type: application/json" \
           --data '{"clearCache": false}'
