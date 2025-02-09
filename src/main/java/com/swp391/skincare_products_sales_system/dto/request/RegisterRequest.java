@@ -24,15 +24,15 @@ import java.util.Date;
 @ToString
 public class RegisterRequest implements Serializable {
 
-    @Size(min = 6, message = "USERNAME_INVALID")
+    @Size(min = 6, message = "INVALID_USERNAME")
     String username;
 
-    @Size(min = 6, message = "PASSWORD_INVALID")
+    @Size(min = 6, message = "INVALID_PASSWORD")
     String password;
 
-    @BirthdayConstraint(min = 6, message = "BIRTHDAY_INVALID")
+    @BirthdayConstraint(min = 6, message = "INVALID_BIRTHDAY")
     LocalDate birthday;
 
-    @GenderConstraint(message = "GENDER_INVALID")
+    @GenderConstraint(message = "INVALID_GENDER")
     Gender gender;
 }

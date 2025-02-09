@@ -3,10 +3,7 @@ package com.swp391.skincare_products_sales_system.service.impl;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import com.swp391.skincare_products_sales_system.constant.PredefinedRole;
-import com.swp391.skincare_products_sales_system.dto.request.LoginRequest;
-import com.swp391.skincare_products_sales_system.dto.request.LogoutRequest;
-import com.swp391.skincare_products_sales_system.dto.request.RefreshTokenRequest;
-import com.swp391.skincare_products_sales_system.dto.request.RegisterRequest;
+import com.swp391.skincare_products_sales_system.dto.request.*;
 import com.swp391.skincare_products_sales_system.dto.response.LoginResponse;
 import com.swp391.skincare_products_sales_system.dto.response.RefreshTokenResponse;
 import com.swp391.skincare_products_sales_system.dto.response.RegisterResponse;
@@ -24,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
         SignedJWT signedJWT;
         try {
@@ -102,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public RegisterResponse register(RegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new AppException(ErrorCode.USERNAME_EXISTED);
@@ -126,7 +126,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void logout(LogoutRequest request) {
         SignedJWT signedJWT;
         try {
@@ -155,5 +155,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .expiryTime(expiryTime)
                 .build();
         invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Lấy username của người dùng hiện tại
+        log.info("username: {}", username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Kiểm tra mật khẩu cũ có đúng không
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_CHANGE_PASSWORD);
+        }
+
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp không
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.INVALID_CONFIRM_PASSWORD);
+        }
+
+        // Mã hóa mật khẩu mới
+        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+
+        // Cập nhật mật khẩu mới
+        user.setPassword(encodedNewPassword);
+        userRepository.save(user);
     }
 }

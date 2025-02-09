@@ -14,7 +14,7 @@ public class GenderValidator implements ConstraintValidator<GenderConstraint, Ge
     @Override
     public boolean isValid(Gender value, ConstraintValidatorContext context) {
         if (value == null) {
-            return true;  // Nếu giá trị là null thì bỏ qua
+            return false;
         }
 
         // Kiểm tra nếu giá trị có nằm trong các giá trị hợp lệ của Gender hay không

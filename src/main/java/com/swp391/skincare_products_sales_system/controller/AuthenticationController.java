@@ -1,9 +1,6 @@
 package com.swp391.skincare_products_sales_system.controller;
 
-import com.swp391.skincare_products_sales_system.dto.request.LoginRequest;
-import com.swp391.skincare_products_sales_system.dto.request.LogoutRequest;
-import com.swp391.skincare_products_sales_system.dto.request.RefreshTokenRequest;
-import com.swp391.skincare_products_sales_system.dto.request.RegisterRequest;
+import com.swp391.skincare_products_sales_system.dto.request.*;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.LoginResponse;
 import com.swp391.skincare_products_sales_system.dto.response.RefreshTokenResponse;
@@ -16,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.nimbusds.jose.JOSEException;
@@ -71,6 +69,17 @@ public class AuthenticationController {
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Logout successfully")
+                .build();
+    }
+    @PostMapping("/change-password")
+    @Operation(summary = "Change password", description = "Change password with new password")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        authenticationService.changePassword(request);
+        return ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Change password successfully")
                 .build();
     }
 }

@@ -8,20 +8,25 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
+    //10XX
     USERNAME_EXISTED(1001, "Username existed", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1002, "User not existed", HttpStatus.NOT_FOUND),
     PRODUCT_NOT_EXISTED(1003, "Product not existed", HttpStatus.BAD_REQUEST),
     CATEGORY_NOT_EXISTED(1004, "Category not existed", HttpStatus.BAD_REQUEST),
-    UNAUTHENTICATED(1100, "Unauthenticated", HttpStatus.UNAUTHORIZED),
-    INVALID_KEY(1001, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
-    INVALID_LOGIN(1102, "Username or password not correct", HttpStatus.BAD_REQUEST),
-    INVALID_TOKEN(1103, "Token invalid", HttpStatus.UNAUTHORIZED),
-    USERNAME_INVALID(1104, "Username must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    PASSWORD_INVALID(1105, "Password must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    BIRTHDAY_INVALID(1106, "Birthday must be at least {min} years", HttpStatus.BAD_REQUEST),
-    GENDER_INVALID(1107, "Gender invalid", HttpStatus.BAD_REQUEST),
-    REGISTER_ERROR(1103, "Register error", HttpStatus.BAD_REQUEST),
-    ACCESS_DENIED(1104, "Access Denied", HttpStatus.FORBIDDEN),
+    //11XX
+    INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
+    INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(1102, "Token invalid", HttpStatus.UNAUTHORIZED),
+    INVALID_USERNAME(1103, "Username must be at least {min} characters", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1104, "Password must be at least {min} characters", HttpStatus.BAD_REQUEST),
+    INVALID_BIRTHDAY(1105, "Birthday must be at least {min} years", HttpStatus.BAD_REQUEST),
+    INVALID_CONFIRM_PASSWORD(1106, "Confirm password not match with password", HttpStatus.BAD_REQUEST),
+    INVALID_CHANGE_PASSWORD(1007, "Old password not correct", HttpStatus.BAD_REQUEST),
+    INVALID_GENDER(1107, "Gender invalid", HttpStatus.BAD_REQUEST),
+    // 12XX
+    UNAUTHENTICATED(1201, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    // 13XX
+    REGISTER_ERROR(1301, "Register failed", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
