@@ -1,5 +1,3 @@
-# FE access to this link:
-https://swp391-skincare-products-sales-system.onrender.com/api/v1/swp391-skincare-products-sales-system/swagger-ui/index.html
 
 # Skincare Products Sales System API
 

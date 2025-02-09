@@ -71,3 +71,49 @@ SELECT (SELECT id FROM tbl_product WHERE slug='kem-duong-am-innisfree'), 1
 INSERT INTO tbl_product_has_feature (product_id, feature_id)
 SELECT (SELECT id FROM tbl_product WHERE slug='sua-rua-mat-the-ordinary'), 2
     WHERE NOT EXISTS (SELECT 1 FROM tbl_product_has_feature WHERE product_id = (SELECT id FROM tbl_product WHERE slug='sua-rua-mat-the-ordinary') AND feature_id = 2);
+
+INSERT INTO tbl_brand (id, name, description, created_at, updated_at, is_deleted)
+SELECT 4, 'Estée Lauder', 'Thương hiệu cao cấp chuyên chăm sóc sắc đẹp', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_brand WHERE id = 4);
+INSERT INTO tbl_brand (id, name, description, created_at, updated_at, is_deleted)
+SELECT 5, 'Clinique', 'Thương hiệu mỹ phẩm nổi tiếng về các sản phẩm chăm sóc da', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_brand WHERE id = 5);
+
+INSERT INTO tbl_category (id, name, slug, description, thumbnail, created_at, updated_at, is_deleted)
+VALUES
+    (UUID(), 'Mặt nạ', 'mat-na', 'Mặt nạ chăm sóc da', 'mat_na.jpg', NOW(), NOW(), 0),
+    (UUID(), 'Dầu gội', 'dau-goi', 'Chăm sóc tóc với các sản phẩm dầu gội', 'dau_goi.jpg', NOW(), NOW(), 0);
+
+INSERT INTO tbl_origin (id, name, created_at, updated_at, is_deleted)
+SELECT 4, 'Nhật Bản', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_origin WHERE id = 4);
+INSERT INTO tbl_origin (id, name, created_at, updated_at, is_deleted)
+SELECT 5, 'Hà Lan', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_origin WHERE id = 5);
+
+INSERT INTO tbl_feature (id, name, created_at, updated_at, is_deleted)
+SELECT 5, 'Chống nắng', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_feature WHERE id = 5);
+INSERT INTO tbl_feature (id, name, created_at, updated_at, is_deleted)
+SELECT 6, 'Dưỡng trắng', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_feature WHERE id = 6);
+
+INSERT INTO tbl_skin_type (id, type, created_at, updated_at, is_deleted)
+SELECT 4, 'Da hỗn hợp', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_skin_type WHERE id = 4);
+INSERT INTO tbl_skin_type (id, type, created_at, updated_at, is_deleted)
+SELECT 5, 'Da mụn', NOW(), NOW(), 0
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_skin_type WHERE id = 5);
+
+INSERT INTO tbl_product (id, name, feature, price, slug, quantity_per_pack, product_code, description, thumbnail, usage_instruction, expiry_date, brand_id, origin_id, skin_type_id, category_id, created_at, updated_at, is_deleted)
+VALUES
+    (UUID(), 'Kem chống nắng SunBlock', 'Chống nắng', 500000, 'kem-chong-nang-sunblock', 1, 'SP004', 'Chống tia UV, bảo vệ da khỏi ánh nắng', 'kem_chong_nang.jpg', 'Thoa đều trước khi ra ngoài', '2026-12-31', 4, 1, 2, (SELECT id FROM tbl_category WHERE slug='mat-na'), NOW(), NOW(), 0),
+    (UUID(), 'Dầu gội xả Dove', 'Dưỡng tóc', 150000, 'dau-goi-xa-dove', 1, 'SP005', 'Dầu gội dưỡng tóc mềm mượt', 'dau_goi_xa.jpg', 'Dùng mỗi ngày để tóc mềm mại', '2025-06-30', 5, 2, 1, (SELECT id FROM tbl_category WHERE slug='dau-goi'), NOW(), NOW(), 0);
+
+INSERT INTO tbl_product_has_feature (product_id, feature_id)
+SELECT (SELECT id FROM tbl_product WHERE slug='kem-chong-nang-sunblock'), 5
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_product_has_feature WHERE product_id = (SELECT id FROM tbl_product WHERE slug='kem-chong-nang-sunblock') AND feature_id = 5);
+INSERT INTO tbl_product_has_feature (product_id, feature_id)
+SELECT (SELECT id FROM tbl_product WHERE slug='dau-goi-xa-dove'), 6
+    WHERE NOT EXISTS (SELECT 1 FROM tbl_product_has_feature WHERE product_id = (SELECT id FROM tbl_product WHERE slug='dau-goi-xa-dove') AND feature_id = 6);
+
