@@ -10,8 +10,6 @@ spring:
     hibernate:
       ddl-auto: update # Mặc định, từng môi trường có thể ghi đè
     show-sql: true
-
-
   data:
     redis:
       port: 6379
