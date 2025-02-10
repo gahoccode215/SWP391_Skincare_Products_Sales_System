@@ -6,3 +6,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+server:
+  address: https://swp391-skincare-products-sales-system.onrender.com/

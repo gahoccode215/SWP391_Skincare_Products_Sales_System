@@ -7,11 +7,13 @@ import com.swp391.skincare_products_sales_system.model.Feature;
 import com.swp391.skincare_products_sales_system.model.Product;
 import org.mapstruct.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, imports = {Feature.class, Collectors.class})
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, imports = {Feature.class, Collectors.class, LocalDate.class, DateTimeFormatter.class})
 public interface ProductMapper {
     @Mapping(target = "brand.id", source = "brand_id")  // Mapping brand_id từ request vào brand.id
     @Mapping(target = "category.id", source = "category_id")  // Mapping category_id từ request vào category.id// Mapping category_id
@@ -19,6 +21,7 @@ public interface ProductMapper {
     @Mapping(target = "skinType.id", source = "skin_type_id")
     // Mapping danh sách feature_ids từ request sang Set<Feature>
     @Mapping(target = "features", expression = "java(request.getFeature_ids().stream().map(id -> new Feature(id)).collect(Collectors.toSet()))")
+    @Mapping(target = "expiryDate", source = "expiryDate")
     Product toProduct(ProductCreationRequest request);
 
     @Mapping(source = "brand.name", target = "brandName")
@@ -36,5 +39,12 @@ public interface ProductMapper {
         return features.stream()
                 .map(feature -> new FeatureResponse(feature.getId(), feature.getName()))
                 .collect(Collectors.toSet());
+    }
+    // Phương thức phụ trợ để chuyển đổi String -> LocalDate
+    default LocalDate parseExpiryDate(String expiryDate) {
+        if (expiryDate == null || expiryDate.isEmpty()) {
+            return null; // Trả về null nếu không có ngày hết hạn
+        }
+        return LocalDate.parse(expiryDate); // Chuyển đổi String sang LocalDate
     }
 }
