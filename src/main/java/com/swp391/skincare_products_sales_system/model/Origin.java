@@ -24,6 +24,6 @@ public class Origin extends AbstractEntity{
     @Column(name = "name")
     String name; // Tên xuất xứ
 
-    @OneToMany(mappedBy = "origin", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "origin")
     Set<Product> products;
 }

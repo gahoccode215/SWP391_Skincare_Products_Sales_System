@@ -1,13 +1,18 @@
 package com.swp391.skincare_products_sales_system.service.impl;
-
+import com.github.slugify.Slugify;
 import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.ProductSearchRequest;
+import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
+import com.swp391.skincare_products_sales_system.enums.ErrorCode;
+import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.mapper.ProductMapper;
-import com.swp391.skincare_products_sales_system.model.Product;
-import com.swp391.skincare_products_sales_system.repository.ProductRepository;
+import com.swp391.skincare_products_sales_system.model.*;
+import com.swp391.skincare_products_sales_system.repository.*;
 import com.swp391.skincare_products_sales_system.service.ProductService;
 import com.swp391.skincare_products_sales_system.specification.ProductSpecification;
+import com.swp391.skincare_products_sales_system.util.JwtUtil;
+import com.swp391.skincare_products_sales_system.util.SlugUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +34,40 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductServiceImpl implements ProductService {
 
+    JwtUtil jwtUtil;
+    Slugify slugify;
+    SlugUtil slugUtil;
     ProductRepository productRepository;
     ProductMapper productMapper;
+    BrandRepository brandRepository;
+    OriginRepository originRepository;
+    SkinTypeRepository skinTypeRepository;
+    CategoryRepository categoryRepository;
+    FeatureRepository featureRepository;
 
     @Override
+    @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
         Product product = productMapper.toProduct(request);
-        return productMapper.toProductResponse(productRepository.save(product));
+        Brand brand = brandRepository.findByIdAndIsDeletedFalse(request.getBrand_id())
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+        Origin origin = originRepository.findByIdAndIsDeletedFalse(request.getOrigin_id())
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+        SkinType skinType = skinTypeRepository.findByIdAndIsDeletedFalse(request.getSkin_type_id())
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+        Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id())
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Set<Feature> features = new HashSet<>(featureRepository.findAllByIdAndIsDeletedFalse(request.getFeature_ids()));
+
+        product.setBrand(brand);
+        product.setOrigin(origin);
+        product.setSkinType(skinType);
+        product.setCategory(category);
+        product.setFeatures(features);
+        product.setSlug(generateUniqueSlug(request.getName()));
+        productRepository.save(product);
+        return productMapper.toProductResponse(product);
     }
 
     @Override
@@ -60,5 +95,30 @@ public class ProductServiceImpl implements ProductService {
 
         // Chuyển đổi từ Page<Product> → Page<ProductResponse> sử dụng MapStruct
         return productPage.map(productMapper::toProductResponse);
+    }
+
+    @Override
+    public void deleteProduct(String productId) {
+
+    }
+
+    @Override
+    public ProductResponse updateProduct(ProductUpdateRequest request, String productId) {
+        return null;
+    }
+
+    @Override
+    public ProductResponse getProductById(String productId) {
+        return null;
+    }
+
+    private String generateUniqueSlug(String name) {
+        String baseSlug = slugify.slugify(name);
+        String uniqueSlug = baseSlug;
+
+        while (productRepository.existsBySlug(uniqueSlug)) {
+            uniqueSlug = baseSlug + "-" + slugUtil.generateRandomString(6);
+        }
+        return uniqueSlug;
     }
 }

@@ -27,8 +27,8 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping
-    @Operation(summary = "Create product", description = "API retrieve attribute to create product")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a product", description = "API retrieve product attribute to create product")
     public ApiResponse<ProductResponse> createProduct(@RequestBody @Valid ProductCreationRequest request) {
         return ApiResponse.<ProductResponse>builder()
                 .code(HttpStatus.CREATED.value())

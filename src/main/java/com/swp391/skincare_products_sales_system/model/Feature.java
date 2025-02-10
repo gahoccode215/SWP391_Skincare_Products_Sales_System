@@ -28,4 +28,8 @@ public class Feature extends AbstractEntity {
     @ManyToMany(mappedBy = "features")
     @JsonIgnore
     Set<Product> products;
+
+    public Feature(Long id) {
+        this.id = id;
+    }
 }

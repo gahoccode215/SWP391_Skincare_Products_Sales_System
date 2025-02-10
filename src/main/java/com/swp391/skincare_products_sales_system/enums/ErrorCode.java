@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     //10XX
+    RESOURCE_NOT_FOUND(1000, "Resource not found", HttpStatus.BAD_REQUEST),
     USERNAME_EXISTED(1001, "Username existed", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1002, "User not existed", HttpStatus.NOT_FOUND),
     PRODUCT_NOT_EXISTED(1003, "Product not existed", HttpStatus.BAD_REQUEST),

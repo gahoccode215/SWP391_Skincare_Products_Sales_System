@@ -2,31 +2,25 @@ package com.swp391.skincare_products_sales_system.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Set;
 
-@Entity
-@Table(name = "tbl_product")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Product extends AbstractEntity {
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "tbl_product")
+public class Product extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
     @Column(name = "name")
     String name;
-
-    @Column(name = "feature")
-    String feature; // Công dụng: Dưỡng ẩm, trị mụn, chống lão hóa
 
     @Column(name = "price")
     Double price;
@@ -40,7 +34,7 @@ public class Product extends AbstractEntity {
     @Column(name = "product_code")
     String productCode; // Mã sản phẩm
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     String description; // Mô tả sản phẩm
 
     @Column(name = "thumbnail")
@@ -50,21 +44,21 @@ public class Product extends AbstractEntity {
     String usageInstruction; // Hướng dẫn sử dụng
 
     @Column(name = "expiry_date")
-    String expiryDate; // Ngày hết hạn
+    LocalDate expiryDate; // Ngày hết hạn
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")
     Brand brand;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "origin_id")
     Origin origin;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "skin_type_id")
     SkinType skinType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     Category category;
 

@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,8 +17,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -25,22 +29,26 @@ import org.springframework.web.filter.CorsFilter;
 @Slf4j
 public class SecurityConfig {
 
+    @Value("${jwt.signerKey}")
+    private String SIGNER_KEY;
+
 
     private final String[] PUBLIC_ENDPOINTS = {
             "/users/**",
             "/auth/**",
             "/products/**",
             "/categories/**",
-            "/admin/origins/**",
-            "/admin/skin-types/**",
-            "/admin/**",
+            "/origins/**",
+            "/skin-types/**",
             "/**"
-//            "/mock/**"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, CustomJwtDecoder customJwtDecoder) throws Exception {
-        httpSecurity.authorizeHttpRequests(request
+        httpSecurity
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Kích hoạt CORS trong Security
+                .csrf(AbstractHttpConfigurer::disable) // Tắt CSRF
+                .authorizeHttpRequests(request
                 -> request.requestMatchers(PUBLIC_ENDPOINTS)
                 .permitAll()
                 .anyRequest()
@@ -63,15 +71,28 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
-
+        corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-
         return new CorsFilter(urlBasedCorsConfigurationSource);
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.setAllowedOrigins(List.of("https://swp391-skincare-products-sales-system.onrender.com"));
+//        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.setAllowedMethods(List.of("*"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
     }
 
     @Bean

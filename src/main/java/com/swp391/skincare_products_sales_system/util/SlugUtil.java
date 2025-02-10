@@ -22,4 +22,5 @@ public class SlugUtil {
         }
         return sb.toString();
     }
+
 }
