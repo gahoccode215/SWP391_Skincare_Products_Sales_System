@@ -57,7 +57,6 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
         Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id())
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-
         Set<Feature> features = new HashSet<>(featureRepository.findAllByIdAndIsDeletedFalse(request.getFeature_ids()));
 
         product.setBrand(brand);

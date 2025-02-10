@@ -4,6 +4,7 @@ package com.swp391.skincare_products_sales_system.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -22,4 +23,5 @@ public class ProductResponse {
     Set<FeatureResponse> featureNames;
     String thumbnail;
     String slug;
+    LocalDate expiryDate;
 }
