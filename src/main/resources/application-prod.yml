@@ -6,5 +6,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-server:
-  address: https://swp391-skincare-products-sales-system.onrender.com/
+
+open:
+  api:
+    title: API document
+    version: v1.0.0
+    description: API Service
+    serverUrl: ${SWAGGER_SERVER_URL:https://swp391-skincare-products-sales-system.onrender.com}
+    serverName: Server
+    license: https://github.com/gahoccode215/SWP391_Skincare_Products_Sales_System
