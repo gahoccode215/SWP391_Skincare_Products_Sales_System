@@ -2,6 +2,7 @@ package com.swp391.skincare_products_sales_system.controller;
 
 import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.ProductSearchRequest;
+import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.request.SkinTypeCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
@@ -44,11 +45,23 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Delete a product", description = "API delete product by its id")
-    public ApiResponse<Void> createProduct(@PathVariable String productId) {
+    public ApiResponse<Void> deleteProduct(@PathVariable String productId) {
         productService.deleteProduct(productId);
         return ApiResponse.<Void>builder()
-                .code(HttpStatus.CREATED.value())
+                .code(HttpStatus.OK.value())
                 .message("Delete product successfully")
+                .build();
+    }
+
+    @PutMapping("/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @Operation(summary = "Update a product", description = "API update product by its id")
+    public ApiResponse<ProductResponse> updateProduct(@RequestBody @Valid ProductUpdateRequest request, @PathVariable String productId) {
+        return ApiResponse.<ProductResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Update product successfully")
+                .result(productService.updateProduct(request, productId))
                 .build();
     }
 }

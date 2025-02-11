@@ -10,4 +10,5 @@ public interface ProductService {
     ProductResponse createProduct(ProductCreationRequest request);
     ProductPageResponse getProductsByCategorySlug(String slug, String sortBy, String order, int page, int size);
     void deleteProduct(String productId);
+    ProductResponse updateProduct(ProductUpdateRequest request, String productId);
 }

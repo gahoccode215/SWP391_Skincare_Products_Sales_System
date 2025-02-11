@@ -49,8 +49,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
         Product product = productMapper.toProduct(request);
-        Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-        product.setCategory(category);
+        if (request.getCategory_id() != null){
+            Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+            product.setCategory(category);
+        }
         product.setSlug(generateUniqueSlug(product.getName()));
         product.setIsDeleted(false);
         log.info("Product: {}", product);
@@ -90,6 +92,26 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
         product.setIsDeleted(true);
         productRepository.save(product);
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse updateProduct(ProductUpdateRequest request, String productId) {
+        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        if (request.getCategory_id() != null){
+            Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+            product.setCategory(category);
+        }
+        if(request.getName() != null ){
+            product.setName(request.getName());
+        }
+        if(request.getPrice() != null){
+            product.setPrice(request.getPrice());
+        }
+        if(request.getDescription() != null){
+            product.setDescription(request.getDescription());
+        }
+        return productMapper.toProductResponse(product);
     }
 
     private Sort getSort(String sortBy, String order) {
