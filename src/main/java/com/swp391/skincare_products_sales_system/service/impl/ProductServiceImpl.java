@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         if(request.getDescription() != null){
             product.setDescription(request.getDescription());
         }
-        return productMapper.toProductResponse(product);
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
     @Override

@@ -40,11 +40,22 @@ public class CategoryController {
     @Operation(summary = "Update a category (ADMIN, MANAGER)", description = "API retrieve category id to update category")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<CategoryResponse> updateCategory(@RequestBody @Valid CategoryUpdateRequest request, String categoryId) {
+    public ApiResponse<CategoryResponse> updateCategory(@RequestBody @Valid CategoryUpdateRequest request, @PathVariable String categoryId) {
         return ApiResponse.<CategoryResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Update category successfully")
                 .result(categoryService.updateCategory(request, categoryId))
+                .build();
+    }
+    @DeleteMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @Operation(summary = "Delete a category (ADMIN, MANAGER)", description = "API delete category by its id")
+    public ApiResponse<Void> deleteCategory(@PathVariable String categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Delete category successfully")
                 .build();
     }
 

@@ -46,7 +46,15 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
         category.setName(request.getName());
         category.setDescription(request.getDescription());
-        return categoryMapper.toCategoryResponse(category);
+        return categoryMapper.toCategoryResponse(categoryRepository.save(category));
+    }
+
+    @Override
+    @Transactional
+    public void deleteCategory(String id) {
+        Category category = categoryRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+        category.setIsDeleted(true);
+        categoryRepository.save(category);
     }
 
     private String generateUniqueSlug(String name) {

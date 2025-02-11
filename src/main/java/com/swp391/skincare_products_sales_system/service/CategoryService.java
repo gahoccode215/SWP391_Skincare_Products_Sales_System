@@ -7,4 +7,5 @@ import com.swp391.skincare_products_sales_system.dto.response.CategoryResponse;
 public interface CategoryService {
     CategoryResponse createCategory(CategoryCreationRequest request);
     CategoryResponse updateCategory(CategoryUpdateRequest request, String id);
+    void deleteCategory(String id);
 }
