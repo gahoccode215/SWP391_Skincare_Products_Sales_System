@@ -66,40 +66,9 @@ public class ProductController {
                 .result(productService.updateProduct(request, productId))
                 .build();
     }
-//    @GetMapping("/admin")
-//    @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-//    @Operation(summary = "Get all products for ADMIN", description = "API get all products are not deleted")
-//    public ApiResponse<ProductPageResponse> getAllProductsAdmin(
-//            @RequestParam(required = false) String sortBy,
-//            @RequestParam(required = false) String order,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size
-//    ) {
-//        return ApiResponse.<ProductPageResponse>builder()
-//                .code(HttpStatus.OK.value())
-//                .message("Get all products successfully")
-//                .result(productService.getProductsAdmin(sortBy, order, page, size))
-//                .build();
-//    }
-//    @GetMapping("/{slug}")
-//    @Operation(summary = "Get products by category slug", description = "API retrieve category slug to get all products with paging, sort")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ApiResponse<ProductPageResponse> getProductsByCategorySlug(
-//            @PathVariable String slug,
-//            @RequestParam(required = false) String sortBy,
-//            @RequestParam(required = false) String order,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//        return ApiResponse.<ProductPageResponse>builder()
-//                .code(HttpStatus.OK.value())
-//                .message("Get products successfully")
-//                .result(productService.getProductsByCategorySlug(slug, sortBy, order, page, size))
-//                .build();
-//    }
 
     @GetMapping
-    @Operation(summary = "Get all products for CUSTOMER", description = "Retrieve all active products with pagination, sorting, and filtering.")
+    @Operation(summary = "Get all products ", description = "Retrieve all active products with pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<ProductPageResponse> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
