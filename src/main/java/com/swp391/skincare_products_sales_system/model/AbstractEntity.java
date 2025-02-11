@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,4 +28,5 @@ public abstract class AbstractEntity {
 
     @Column(name = "is_deleted")
     Boolean isDeleted = false;
+
 }

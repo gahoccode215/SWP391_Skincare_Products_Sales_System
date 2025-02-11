@@ -1,13 +1,11 @@
 package com.swp391.skincare_products_sales_system.model;
 
 import com.swp391.skincare_products_sales_system.enums.Gender;
-import com.swp391.skincare_products_sales_system.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 
@@ -50,11 +48,6 @@ public class User extends AbstractEntity {
 
     @Column(name = "password", length = 255, nullable = false)
     String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 255)
-    UserStatus status;
-
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "tbl_user_has_role",
