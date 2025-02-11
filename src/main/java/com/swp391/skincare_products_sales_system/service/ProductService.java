@@ -4,6 +4,7 @@ import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequ
 import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import org.springframework.data.domain.Page;
 
 public interface ProductService {
@@ -13,5 +14,5 @@ public interface ProductService {
     ProductPageResponse getProducts(boolean admin, int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order);
     ProductResponse getProductBySlug(String slug);
     ProductResponse getProductById(String id);
-
+    void changeProductStatus(String productId, Status status);
 }

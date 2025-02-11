@@ -133,6 +133,13 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toProductResponse(product);
     }
 
+    @Override
+    @Transactional
+    public void changeProductStatus(String productId, Status status) {
+        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        productRepository.updateProductStatus(product.getId(), status);
+    }
+
     private Sort getSort(String sortBy, String order) {
         if (sortBy == null) {
             sortBy = Query.NAME; // mặc định là sắp xếp theo tên nếu không có sortBy

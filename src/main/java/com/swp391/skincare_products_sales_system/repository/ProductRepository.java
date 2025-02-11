@@ -6,11 +6,10 @@ import com.swp391.skincare_products_sales_system.model.Category;
 import com.swp391.skincare_products_sales_system.model.Origin;
 import com.swp391.skincare_products_sales_system.model.Product;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -42,4 +41,8 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
     @Query("SELECT c FROM Product c WHERE c.isDeleted = false")
     Page<Product> findAllByFilters(Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Product p SET p.status = :status WHERE p.id = :id AND p.isDeleted = false")
+    void updateProductStatus(@Param("id") String id, @Param("status") Status status);
 }

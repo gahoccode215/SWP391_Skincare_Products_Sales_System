@@ -5,6 +5,7 @@ import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateReques
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -88,6 +89,17 @@ public class AdminProductController {
                 .code(HttpStatus.OK.value())
                 .message("Get product successfully")
                 .result(productService.getProductById(productId))
+                .build();
+    }
+    @PutMapping("/{productId}/status")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Change product status", description = "API to change product status (ACTIVE/INACTIVE)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ApiResponse<Void> changeProductStatus(@PathVariable String productId, @RequestParam Status status){
+        productService.changeProductStatus(productId, status);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Change status successfully")
                 .build();
     }
 }

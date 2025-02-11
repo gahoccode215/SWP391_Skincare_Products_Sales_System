@@ -8,6 +8,7 @@ import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.dto.response.SkinTypeResponse;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.model.Product;
 import com.swp391.skincare_products_sales_system.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,5 +60,4 @@ public class ProductController {
                 .result(productService.getProducts(false, page, size, categorySlug, brandSlug, originSlug, sortBy, order))
                 .build();
     }
-
 }
