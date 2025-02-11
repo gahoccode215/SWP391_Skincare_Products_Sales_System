@@ -5,6 +5,7 @@ import com.swp391.skincare_products_sales_system.dto.request.CategoryUpdateReque
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.CategoryPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.CategoryResponse;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -66,6 +67,17 @@ public class AdminCategoryController {
                 .code(HttpStatus.OK.value())
                 .message("get category successfully")
                 .result(categoryService.getCategoryById(categoryId))
+                .build();
+    }
+    @PutMapping("/{categoryId}/status")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Change category status", description = "API to change category status (ACTIVE/INACTIVE)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ApiResponse<Void> changeCategoryStatus(@PathVariable String categoryId, @RequestParam Status status){
+        categoryService.changeCategoryStatus(categoryId, status);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Change status successfully")
                 .build();
     }
     @GetMapping

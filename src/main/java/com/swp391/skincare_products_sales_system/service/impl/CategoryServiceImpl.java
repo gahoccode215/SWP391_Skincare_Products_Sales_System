@@ -98,6 +98,13 @@ public class CategoryServiceImpl implements CategoryService {
         return response;
     }
 
+    @Override
+    @Transactional
+    public void changeCategoryStatus(String categoryId, Status status) {
+        Category category = categoryRepository.findByIdAndIsDeletedFalse(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+        categoryRepository.updateCategoryStatus(category.getId(), status);
+    }
+
     private String generateUniqueSlug(String name) {
         String baseSlug = slugify.slugify(name);
         String uniqueSlug = baseSlug;
