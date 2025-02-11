@@ -14,7 +14,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_product")
-public class Product extends AbstractEntity{
+public class Product extends AbstractEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -29,22 +30,22 @@ public class Product extends AbstractEntity{
     String slug;
 
     @Column(name = "quantity_per_pack")
-    Integer quantityPerPack; // Số lượng theo lô
+    Integer quantityPerPack;
 
     @Column(name = "product_code")
-    String productCode; // Mã sản phẩm
+    String productCode;
 
     @Column(name = "description", columnDefinition = "TEXT")
-    String description; // Mô tả sản phẩm
+    String description;
 
     @Column(name = "thumbnail")
     String thumbnail; // URL hình ảnh
 
     @Column(name = "usage_instruction")
-    String usageInstruction; // Hướng dẫn sử dụng
+    String usageInstruction;
 
     @Column(name = "expiry_date")
-    LocalDate expiryDate; // Ngày hết hạn
+    LocalDate expiryDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")

@@ -16,12 +16,7 @@ public class ProductResponse {
     String id;
     String name;
     Double price;
-    String brandName;
-    String categoryName;
-    String originName;
-    String skinTypeType;
-    Set<FeatureResponse> featureNames;
-    String thumbnail;
+//    String thumbnail;
     String slug;
-    LocalDate expiryDate;
+    String description;
 }

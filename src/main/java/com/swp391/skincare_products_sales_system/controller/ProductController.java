@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +29,7 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Create a product", description = "API retrieve product attribute to create product")
     public ApiResponse<ProductResponse> createProduct(@RequestBody @Valid ProductCreationRequest request) {
         return ApiResponse.<ProductResponse>builder()
@@ -36,15 +38,17 @@ public class ProductController {
                 .result(productService.createProduct(request))
                 .build();
     }
-    @GetMapping
+
+
+    @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get products", description = "API retrieve query to get products with keyword, filter, sort")
-    public ApiResponse<Page<ProductResponse>> searchProducts(@RequestBody ProductSearchRequest request) {
-        Page<ProductResponse> products = productService.searchProducts(request);
-        return ApiResponse.<Page<ProductResponse>>builder()
-                .code(HttpStatus.OK.value())
-                .message("get products successfully")
-                .result(products)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @Operation(summary = "Delete a product", description = "API delete product by its id")
+    public ApiResponse<Void> createProduct(@PathVariable String productId) {
+        productService.deleteProduct(productId);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.CREATED.value())
+                .message("Delete product successfully")
                 .build();
     }
 }
