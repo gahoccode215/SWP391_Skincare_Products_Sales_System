@@ -26,4 +26,6 @@ public class Origin extends AbstractEntity{
 
     @OneToMany(mappedBy = "origin")
     Set<Product> products;
+
+    String slug;
 }

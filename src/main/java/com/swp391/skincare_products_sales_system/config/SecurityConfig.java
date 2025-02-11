@@ -67,24 +67,21 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.setAllowedOrigins(List.of("https://swp391-skincare-products-sales-system.onrender.com"));
-//        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        corsConfiguration.setAllowedOrigins(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("*"));
-        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowedOrigins(List.of("https://swp391-skincare-products-sales-system.onrender.com"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         corsConfiguration.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
 
     @Bean
-    public WebSecurityCustomizer ignoreResources() {
-        return webSecurity -> webSecurity
-                .ignoring()
-                .requestMatchers("/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**", "/favicon.ico");
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+                "/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui/**",
+                "/swagger-ui.html", "/swagger-initializer.js", "/favicon.ico"
+        );
     }
 
     @Bean

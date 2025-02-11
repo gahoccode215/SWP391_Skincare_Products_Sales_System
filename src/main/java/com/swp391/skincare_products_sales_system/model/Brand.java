@@ -27,4 +27,5 @@ public class Brand extends AbstractEntity{
 
     @OneToMany(mappedBy = "brand")
     Set<Product> products;
+    String slug;
 }

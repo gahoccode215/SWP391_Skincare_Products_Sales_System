@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
-    Optional<Brand> findByIdAndIsDeletedFalse(Long id);
+    Optional<Brand> findBySlugAndIsDeletedFalse(String slug);
 }

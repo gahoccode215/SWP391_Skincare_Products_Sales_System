@@ -34,19 +34,5 @@ public class CategoryController {
                 .result(categoryService.createCategory(request))
                 .build();
     }
-    @GetMapping("/{slug}")
-    @Operation(summary = "Get products by category slug", description = "API retrieve category slug to get all products with paging, sort")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<ProductPageResponse> getProductsByCategorySlug(
-            @PathVariable String slug,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String order,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ApiResponse.<ProductPageResponse>builder()
-                .code(HttpStatus.OK.value())
-                .message("Get products successfully")
-                .result(productService.getProductsByCategorySlug(slug, sortBy, order, page, size))
-                .build();
-    }
+
 }

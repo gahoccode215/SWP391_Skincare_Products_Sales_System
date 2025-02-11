@@ -19,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,32 +60,6 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toProductResponse(productRepository.save(product));
     }
 
-    @Override
-    public ProductPageResponse getProductsByCategorySlug(String slug, String sortBy, String order, int page, int size) {
-        if (page > 0) {
-            page -= 1;
-        }
-        Category category = categoryRepository.findBySlugAndIsDeletedFalse(slug)
-                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-
-        Sort sort = getSort(sortBy, order);
-
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        Page<Product> products = productRepository.findAllByCategoryAndIsDeletedFalse(category, pageRequest);
-
-        List<ProductResponse> productResponses = products.getContent().stream()
-                .map(productMapper::toProductResponse)
-                .toList();
-        ProductPageResponse productPageResponse = new ProductPageResponse();
-        productPageResponse.setProductResponses(productResponses);
-        productPageResponse.setTotalElements(products.getTotalElements());
-        productPageResponse.setTotalPages(products.getTotalPages());
-        productPageResponse.setPageNumber(products.getNumber());
-        productPageResponse.setPageSize(products.getSize());
-
-        return productPageResponse;
-    }
 
     @Override
     @Transactional
@@ -112,6 +87,54 @@ public class ProductServiceImpl implements ProductService {
             product.setDescription(request.getDescription());
         }
         return productMapper.toProductResponse(product);
+    }
+
+    @Override
+    public ProductPageResponse getProductsAdmin(String sortBy, String order, int page, int size) {
+        if (page > 0) {
+            page -= 1;
+        }
+        Sort sort = getSort(sortBy, order);
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        Page<Product> products = productRepository.findByIsDeletedFalse(pageRequest);
+
+        List<ProductResponse> productResponses = products.getContent().stream()
+                .map(productMapper::toProductResponse)
+                .toList();
+        ProductPageResponse productPageResponse = new ProductPageResponse();
+        productPageResponse.setProductResponses(productResponses);
+        productPageResponse.setTotalElements(products.getTotalElements());
+        productPageResponse.setTotalPages(products.getTotalPages());
+        productPageResponse.setPageNumber(products.getNumber());
+        productPageResponse.setPageSize(products.getSize());
+
+        return productPageResponse;
+    }
+
+    @Override
+    public ProductPageResponse getProducts(int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
+        if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
+
+        Sort sort = getSort(sortBy, order);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Category category = categorySlug != null ? categoryRepository.findBySlugAndIsDeletedFalse(categorySlug).orElse(null) : null;
+        Brand brand = brandSlug != null ? brandRepository.findBySlugAndIsDeletedFalse(brandSlug).orElse(null) : null;
+        Origin origin = originSlug != null ? originRepository.findBySlugAndIsDeletedFalse(originSlug).orElse(null) : null;
+
+        Page<Product> products = productRepository.findAllByFilters(category, brand, origin, pageable);
+
+        // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
+        ProductPageResponse response = new ProductPageResponse();
+        response.setProductResponses(products.stream().map(productMapper::toProductResponse).collect(Collectors.toList()));
+        response.setTotalElements(products.getTotalElements());
+        response.setTotalPages(products.getTotalPages());
+        response.setPageNumber(products.getNumber());
+        response.setPageSize(products.getSize());
+
+        return response;
     }
 
     private Sort getSort(String sortBy, String order) {
