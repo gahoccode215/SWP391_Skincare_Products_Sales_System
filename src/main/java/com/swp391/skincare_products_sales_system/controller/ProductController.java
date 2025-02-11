@@ -96,4 +96,15 @@ public class ProductController {
                 .result(productService.getProductBySlug(slug))
                 .build();
     }
+    @GetMapping("/{productId}")
+    @Operation(summary = "Get a product by id", description = "Retrieve product id to get product detail")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<ProductResponse> getProductById(
+            @PathVariable(required = false) String productId) {
+        return ApiResponse.<ProductResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Get product successfully")
+                .result(productService.getProductById(productId))
+                .build();
+    }
 }

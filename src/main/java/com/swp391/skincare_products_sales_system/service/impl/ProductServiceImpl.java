@@ -7,6 +7,7 @@ import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateReques
 import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.mapper.ProductMapper;
 import com.swp391.skincare_products_sales_system.model.*;
@@ -54,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
             Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
             product.setCategory(category);
         }
+        product.setStatus(Status.ACTIVE);
         product.setSlug(generateUniqueSlug(product.getName()));
         product.setIsDeleted(false);
         log.info("Product: {}", product);
@@ -86,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         if(request.getDescription() != null){
             product.setDescription(request.getDescription());
         }
-        return productMapper.toProductResponse(product);
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
     @Override
@@ -140,6 +142,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getProductBySlug(String slug) {
         Product product = productRepository.findBySlugAndIsDeletedFalse(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        return productMapper.toProductResponse(product);
+    }
+
+    @Override
+    public ProductResponse getProductById(String id) {
+        Product product = productRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
         return productMapper.toProductResponse(product);
     }
 
