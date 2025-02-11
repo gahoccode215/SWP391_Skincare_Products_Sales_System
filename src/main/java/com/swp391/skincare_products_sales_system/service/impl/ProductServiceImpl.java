@@ -137,6 +137,12 @@ public class ProductServiceImpl implements ProductService {
         return response;
     }
 
+    @Override
+    public ProductResponse getProductBySlug(String slug) {
+        Product product = productRepository.findBySlugAndIsDeletedFalse(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        return productMapper.toProductResponse(product);
+    }
+
     private Sort getSort(String sortBy, String order) {
         if (sortBy == null) {
             sortBy = Query.NAME; // mặc định là sắp xếp theo tên nếu không có sortBy

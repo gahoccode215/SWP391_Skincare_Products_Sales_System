@@ -12,4 +12,5 @@ public interface ProductService {
     ProductResponse updateProduct(ProductUpdateRequest request, String productId);
     ProductPageResponse getProductsAdmin(String sortBy, String order, int page, int size);
     ProductPageResponse getProducts(int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order);
+    ProductResponse getProductBySlug(String slug);
 }

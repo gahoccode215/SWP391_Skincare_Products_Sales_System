@@ -21,9 +21,9 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
     boolean existsBySlug(String slug);
 
-    Page<Product> findAllByCategoryAndIsDeletedFalse(Category category, PageRequest pageRequest);
-
     Optional<Product> findByIdAndIsDeletedFalse(String id);
+
+    Optional<Product> findBySlugAndIsDeletedFalse(String id);
 
     Page<Product> findByIsDeletedFalse(PageRequest pageRequest);
 

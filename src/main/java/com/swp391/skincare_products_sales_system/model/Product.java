@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.swp391.skincare_products_sales_system.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,6 +47,10 @@ public class Product extends AbstractEntity {
 
     @Column(name = "expiry_date")
     LocalDate expiryDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    ProductStatus status = ProductStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")

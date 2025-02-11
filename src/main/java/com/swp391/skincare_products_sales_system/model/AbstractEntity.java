@@ -26,5 +26,5 @@ public abstract class AbstractEntity {
     Date updatedAt;
 
     @Column(name = "is_deleted")
-    Boolean isDeleted;
+    Boolean isDeleted = false;
 }

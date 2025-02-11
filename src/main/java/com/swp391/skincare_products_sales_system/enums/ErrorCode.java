@@ -12,8 +12,8 @@ public enum ErrorCode {
     RESOURCE_NOT_FOUND(1000, "Resource not found", HttpStatus.NOT_FOUND),
     USERNAME_EXISTED(1001, "Username existed", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1002, "User not existed", HttpStatus.NOT_FOUND),
-    PRODUCT_NOT_EXISTED(1003, "Product not existed", HttpStatus.BAD_REQUEST),
-    CATEGORY_NOT_EXISTED(1004, "Category not existed", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_EXISTED(1003, "Product not existed", HttpStatus.NOT_FOUND),
+    CATEGORY_NOT_EXISTED(1004, "Category not existed", HttpStatus.NOT_FOUND),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),
