@@ -25,54 +25,10 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     CategoryService categoryService;
 
-    @PostMapping
-    @Operation(summary = "Create category (ADMIN, MANAGER)", description = "API retrieve attribute to create category")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreationRequest request) {
-        return ApiResponse.<CategoryResponse>builder()
-                .code(HttpStatus.CREATED.value())
-                .message("Create category successfully")
-                .result(categoryService.createCategory(request))
-                .build();
-    }
-    @PutMapping("/{categoryId}")
-    @Operation(summary = "Update a category (ADMIN, MANAGER)", description = "API retrieve category id to update category")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<CategoryResponse> updateCategory(@RequestBody @Valid CategoryUpdateRequest request, @PathVariable String categoryId) {
-        return ApiResponse.<CategoryResponse>builder()
-                .code(HttpStatus.CREATED.value())
-                .message("Update category successfully")
-                .result(categoryService.updateCategory(request, categoryId))
-                .build();
-    }
-    @DeleteMapping("/{categoryId}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @Operation(summary = "Delete a category (ADMIN, MANAGER)", description = "API delete category by its id")
-    public ApiResponse<Void> deleteCategory(@PathVariable String categoryId) {
-        categoryService.deleteCategory(categoryId);
-        return ApiResponse.<Void>builder()
-                .code(HttpStatus.OK.value())
-                .message("Delete category successfully")
-                .build();
-    }
-    @GetMapping("/{categoryId}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @Operation(summary = "Get a category (ADMIN, MANAGER)", description = "API get category by its id")
-    public ApiResponse<CategoryResponse> getCategory(@PathVariable String categoryId) {
-        return ApiResponse.<CategoryResponse>builder()
-                .code(HttpStatus.OK.value())
-                .message("get category successfully")
-                .result(categoryService.getCategoryById(categoryId))
-                .build();
-    }
     @GetMapping
     @Operation(summary = "Get all categories  ", description = "Retrieve all active categories with pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<CategoryPageResponse> getAllProducts(
+    public ApiResponse<CategoryPageResponse> getAllCategories(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortBy,
@@ -80,7 +36,7 @@ public class CategoryController {
         return ApiResponse.<CategoryPageResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Get categories successfully")
-                .result(categoryService.getCategories(page, size, sortBy, order))
+                .result(categoryService.getCategories(false,page, size, sortBy, order))
                 .build();
     }
 

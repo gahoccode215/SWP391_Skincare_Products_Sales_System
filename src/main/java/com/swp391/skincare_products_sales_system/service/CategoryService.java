@@ -15,5 +15,5 @@ public interface CategoryService {
 
     CategoryResponse getCategoryById(String id);
 
-    CategoryPageResponse getCategories(int page, int size, String sortBy, String order);
+    CategoryPageResponse getCategories(boolean admin,int page, int size, String sortBy, String order);
 }

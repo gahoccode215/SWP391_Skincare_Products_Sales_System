@@ -76,14 +76,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryPageResponse getCategories(int page, int size, String sortBy, String order) {
+    public CategoryPageResponse getCategories(boolean admin, int page, int size, String sortBy, String order) {
         if (page > 0) page -= 1;
 
         Sort sort = getSort(sortBy, order);
         Pageable pageable = PageRequest.of(page, size, sort);
-
-
-        Page<Category> categories = categoryRepository.findAllByFilters(pageable);
+        Page<Category> categories;
+        if (admin) {
+            categories = categoryRepository.findAllByFilters(pageable);
+        } else {
+            categories = categoryRepository.findCategoriesByStatusAndDeletedFlag(Status.ACTIVE, pageable);
+        }
 
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         CategoryPageResponse response = new CategoryPageResponse();
@@ -104,6 +107,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return uniqueSlug;
     }
+
     private Sort getSort(String sortBy, String order) {
         if (sortBy == null) {
             sortBy = Query.NAME; // mặc định là sắp xếp theo tên nếu không có sortBy

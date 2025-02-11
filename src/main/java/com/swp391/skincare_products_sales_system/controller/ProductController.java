@@ -30,45 +30,20 @@ public class ProductController {
 
     ProductService productService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @Operation(summary = "Create a product (ADMIN, MANAGER)", description = "API retrieve product attribute to create product")
-    public ApiResponse<ProductResponse> createProduct(@RequestBody @Valid ProductCreationRequest request) {
-        return ApiResponse.<ProductResponse>builder()
-                .code(HttpStatus.CREATED.value())
-                .message("Create product successfully")
-                .result(productService.createProduct(request))
-                .build();
-    }
-
-
-    @DeleteMapping("/{productId}")
+    @GetMapping("/{slug}")
+    @Operation(summary = "Get a product by slug", description = "Retrieve product slug to get product detail")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @Operation(summary = "Delete a product (ADMIN, MANAGER)", description = "API delete product by its id")
-    public ApiResponse<Void> deleteProduct(@PathVariable String productId) {
-        productService.deleteProduct(productId);
-        return ApiResponse.<Void>builder()
-                .code(HttpStatus.OK.value())
-                .message("Delete product successfully")
-                .build();
-    }
-
-    @PutMapping("/{productId}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @Operation(summary = "Update a product (ADMIN, MANAGER)", description = "API update product by its id")
-    public ApiResponse<ProductResponse> updateProduct(@RequestBody @Valid ProductUpdateRequest request, @PathVariable String productId) {
+    public ApiResponse<ProductResponse> getProductBySlug(
+            @PathVariable(required = false) String slug) {
         return ApiResponse.<ProductResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Update product successfully")
-                .result(productService.updateProduct(request, productId))
+                .message("Get product successfully")
+                .result(productService.getProductBySlug(slug))
                 .build();
     }
 
-    @GetMapping
-    @Operation(summary = "Get all products  ", description = "Retrieve all active products with pagination, sorting, and filtering.")
+    @GetMapping()
+    @Operation(summary = "Get all products", description = "Retrieve all active products with pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<ProductPageResponse> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -81,30 +56,8 @@ public class ProductController {
         return ApiResponse.<ProductPageResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Get products successfully")
-                .result(productService.getProducts(page, size, categorySlug, brandSlug, originSlug, sortBy, order))
+                .result(productService.getProducts(false, page, size, categorySlug, brandSlug, originSlug, sortBy, order))
                 .build();
     }
 
-    @GetMapping("/{slug}")
-    @Operation(summary = "Get a product by slug", description = "Retrieve product slug to get product detail")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<ProductResponse> getProductBySlug(
-            @PathVariable(required = false) String slug) {
-        return ApiResponse.<ProductResponse>builder()
-                .code(HttpStatus.OK.value())
-                .message("Get product successfully")
-                .result(productService.getProductBySlug(slug))
-                .build();
-    }
-    @GetMapping("/{productId}")
-    @Operation(summary = "Get a product by id", description = "Retrieve product id to get product detail")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<ProductResponse> getProductById(
-            @PathVariable(required = false) String productId) {
-        return ApiResponse.<ProductResponse>builder()
-                .code(HttpStatus.OK.value())
-                .message("Get product successfully")
-                .result(productService.getProductById(productId))
-                .build();
-    }
 }

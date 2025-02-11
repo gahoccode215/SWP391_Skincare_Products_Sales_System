@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
         Product product = productMapper.toProduct(request);
-        if (request.getCategory_id() != null){
+        if (request.getCategory_id() != null) {
             Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
             product.setCategory(category);
         }
@@ -75,48 +75,25 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse updateProduct(ProductUpdateRequest request, String productId) {
         Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
-        if (request.getCategory_id() != null){
+        if (request.getCategory_id() != null) {
             Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
             product.setCategory(category);
         }
-        if(request.getName() != null ){
+        if (request.getName() != null) {
             product.setName(request.getName());
         }
-        if(request.getPrice() != null){
+        if (request.getPrice() != null) {
             product.setPrice(request.getPrice());
         }
-        if(request.getDescription() != null){
+        if (request.getDescription() != null) {
             product.setDescription(request.getDescription());
         }
         return productMapper.toProductResponse(productRepository.save(product));
     }
 
-    @Override
-    public ProductPageResponse getProductsAdmin(String sortBy, String order, int page, int size) {
-        if (page > 0) {
-            page -= 1;
-        }
-        Sort sort = getSort(sortBy, order);
-
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        Page<Product> products = productRepository.findByIsDeletedFalse(pageRequest);
-
-        List<ProductResponse> productResponses = products.getContent().stream()
-                .map(productMapper::toProductResponse)
-                .toList();
-        ProductPageResponse productPageResponse = new ProductPageResponse();
-        productPageResponse.setProductResponses(productResponses);
-        productPageResponse.setTotalElements(products.getTotalElements());
-        productPageResponse.setTotalPages(products.getTotalPages());
-        productPageResponse.setPageNumber(products.getNumber());
-        productPageResponse.setPageSize(products.getSize());
-
-        return productPageResponse;
-    }
 
     @Override
-    public ProductPageResponse getProducts(int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
+    public ProductPageResponse getProducts(boolean admin, int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
         if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
 
         Sort sort = getSort(sortBy, order);
@@ -125,8 +102,13 @@ public class ProductServiceImpl implements ProductService {
         Category category = categorySlug != null ? categoryRepository.findBySlugAndIsDeletedFalse(categorySlug).orElse(null) : null;
         Brand brand = brandSlug != null ? brandRepository.findBySlugAndIsDeletedFalse(brandSlug).orElse(null) : null;
         Origin origin = originSlug != null ? originRepository.findBySlugAndIsDeletedFalse(originSlug).orElse(null) : null;
+        Page<Product> products;
+        if (admin) {
+            products = productRepository.findAllByFilters(pageable);
+        } else {
+            products = productRepository.findAllByFilters(Status.ACTIVE, category, brand, origin, pageable);
+        }
 
-        Page<Product> products = productRepository.findAllByFilters(category, brand, origin, pageable);
 
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         ProductPageResponse response = new ProductPageResponse();
@@ -141,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getProductBySlug(String slug) {
-        Product product = productRepository.findBySlugAndIsDeletedFalse(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product = productRepository.findBySlugAndIsDeletedFalseAndStatus(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
         return productMapper.toProductResponse(product);
     }
 
