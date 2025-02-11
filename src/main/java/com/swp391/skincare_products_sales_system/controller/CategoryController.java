@@ -58,5 +58,17 @@ public class CategoryController {
                 .message("Delete category successfully")
                 .build();
     }
+    @GetMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @Operation(summary = "Get a category (ADMIN, MANAGER)", description = "API get category by its id")
+    public ApiResponse<CategoryResponse> getCategory(@PathVariable String categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return ApiResponse.<CategoryResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("get category successfully")
+                .result(categoryService.getCategoryById(categoryId))
+                .build();
+    }
 
 }

@@ -8,4 +8,5 @@ public interface CategoryService {
     CategoryResponse createCategory(CategoryCreationRequest request);
     CategoryResponse updateCategory(CategoryUpdateRequest request, String id);
     void deleteCategory(String id);
+    CategoryResponse getCategoryById(String id);
 }
