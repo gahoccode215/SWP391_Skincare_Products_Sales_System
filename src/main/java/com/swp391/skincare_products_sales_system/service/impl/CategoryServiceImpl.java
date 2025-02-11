@@ -1,14 +1,20 @@
 package com.swp391.skincare_products_sales_system.service.impl;
 
 import com.github.slugify.Slugify;
+import com.swp391.skincare_products_sales_system.constant.Query;
 import com.swp391.skincare_products_sales_system.dto.request.CategoryCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.CategoryUpdateRequest;
+import com.swp391.skincare_products_sales_system.dto.response.CategoryPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.CategoryResponse;
+import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.mapper.CategoryMapper;
+import com.swp391.skincare_products_sales_system.model.Brand;
 import com.swp391.skincare_products_sales_system.model.Category;
+import com.swp391.skincare_products_sales_system.model.Origin;
+import com.swp391.skincare_products_sales_system.model.Product;
 import com.swp391.skincare_products_sales_system.repository.CategoryRepository;
 import com.swp391.skincare_products_sales_system.service.CategoryService;
 import com.swp391.skincare_products_sales_system.util.SlugUtil;
@@ -16,8 +22,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +75,26 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryResponse(category);
     }
 
+    @Override
+    public CategoryPageResponse getCategories(int page, int size, String sortBy, String order) {
+        if (page > 0) page -= 1;
+
+        Sort sort = getSort(sortBy, order);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+
+        Page<Category> categories = categoryRepository.findAllByFilters(pageable);
+
+        // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
+        CategoryPageResponse response = new CategoryPageResponse();
+        response.setCategoryResponses(categories.stream().map(categoryMapper::toCategoryResponse).collect(Collectors.toList()));
+        response.setTotalElements(categories.getTotalElements());
+        response.setTotalPages(categories.getTotalPages());
+        response.setPageNumber(categories.getNumber());
+        response.setPageSize(categories.getSize());
+        return response;
+    }
+
     private String generateUniqueSlug(String name) {
         String baseSlug = slugify.slugify(name);
         String uniqueSlug = baseSlug;
@@ -72,4 +104,20 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return uniqueSlug;
     }
+    private Sort getSort(String sortBy, String order) {
+        if (sortBy == null) {
+            sortBy = Query.NAME; // mặc định là sắp xếp theo tên nếu không có sortBy
+        }
+
+        if (order == null || (!order.equals(Query.ASC) && !order.equals(Query.DESC))) {
+            order = Query.ASC; // mặc định là theo chiều tăng dần nếu không có order hoặc order không hợp lệ
+        }
+
+        // Kiểm tra trường sortBy và tạo Sort tương ứng
+        if (sortBy.equals(Query.PRICE)) {
+            return order.equals(Query.ASC) ? Sort.by(Query.PRICE).ascending() : Sort.by(Query.PRICE).descending();
+        }
+        return order.equals(Query.ASC) ? Sort.by(Query.NAME).ascending() : Sort.by(Query.NAME).descending();
+    }
+
 }

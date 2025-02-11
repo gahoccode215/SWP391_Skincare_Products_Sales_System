@@ -12,6 +12,7 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryResponse {
+    String id;
     String name;
     String description;
     String slug;

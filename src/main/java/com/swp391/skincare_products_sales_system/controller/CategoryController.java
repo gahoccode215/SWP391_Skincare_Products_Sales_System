@@ -27,7 +27,7 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Create category (ADMIN, MANAGER)", description = "API retrieve attribute to create category")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreationRequest request) {
         return ApiResponse.<CategoryResponse>builder()
@@ -38,7 +38,7 @@ public class CategoryController {
     }
     @PutMapping("/{categoryId}")
     @Operation(summary = "Update a category (ADMIN, MANAGER)", description = "API retrieve category id to update category")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<CategoryResponse> updateCategory(@RequestBody @Valid CategoryUpdateRequest request, @PathVariable String categoryId) {
         return ApiResponse.<CategoryResponse>builder()
@@ -49,7 +49,7 @@ public class CategoryController {
     }
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Delete a category (ADMIN, MANAGER)", description = "API delete category by its id")
     public ApiResponse<Void> deleteCategory(@PathVariable String categoryId) {
         categoryService.deleteCategory(categoryId);
@@ -60,14 +60,27 @@ public class CategoryController {
     }
     @GetMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Get a category (ADMIN, MANAGER)", description = "API get category by its id")
     public ApiResponse<CategoryResponse> getCategory(@PathVariable String categoryId) {
-        categoryService.deleteCategory(categoryId);
         return ApiResponse.<CategoryResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("get category successfully")
                 .result(categoryService.getCategoryById(categoryId))
+                .build();
+    }
+    @GetMapping
+    @Operation(summary = "Get all categories  ", description = "Retrieve all active categories with pagination, sorting, and filtering.")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<CategoryPageResponse> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String order) {
+        return ApiResponse.<CategoryPageResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Get categories successfully")
+                .result(categoryService.getCategories(page, size, sortBy, order))
                 .build();
     }
 
