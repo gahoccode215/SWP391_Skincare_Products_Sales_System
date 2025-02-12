@@ -61,12 +61,13 @@ public class AdminProductController {
                 .build();
     }
     @GetMapping()
-    @Operation(summary = "Get all products (ADMIN, MANAGER)  ", description = "Retrieve all products with pagination, sorting, and filtering.")
+    @Operation(summary = "Get all products with options: search, pagination, sort, filter (ADMIN, MANAGER)  ", description = "Retrieve all products with search, pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ApiResponse<ProductPageResponse> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword
 //            @RequestParam(required = false) String categorySlug,
 //            @RequestParam(required = false) String brandSlug,
 //            @RequestParam(required = false) String originSlug,
@@ -76,7 +77,7 @@ public class AdminProductController {
         return ApiResponse.<ProductPageResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Get products successfully")
-                .result(productService.getProducts(true, page, size, null, null, null, null, null))
+                .result(productService.getProducts(true,keyword, page,size, null, null, null, null, null))
                 .build();
     }
     @GetMapping("/{productId}")
@@ -93,7 +94,7 @@ public class AdminProductController {
     }
     @PutMapping("/{productId}/status")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Change product status", description = "API to change product status (ACTIVE/INACTIVE)")
+    @Operation(summary = "Change product status (ADMIN, MANAGER)", description = "API to change product status (ACTIVE/INACTIVE)")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ApiResponse<Void> changeProductStatus(@PathVariable String productId, @RequestParam Status status){
         productService.changeProductStatus(productId, status);

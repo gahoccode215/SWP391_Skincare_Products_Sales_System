@@ -30,12 +30,6 @@ public class Product extends AbstractEntity {
     @Column(name = "slug")
     String slug;
 
-    @Column(name = "quantity_per_pack")
-    Integer quantityPerPack;
-
-    @Column(name = "product_code")
-    String productCode;
-
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
 

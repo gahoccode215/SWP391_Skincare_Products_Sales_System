@@ -102,33 +102,21 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductPageResponse getProducts(boolean admin, int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
+    public ProductPageResponse getProducts(boolean admin, String keyword, int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
         if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
 
         Sort sort = getSort(sortBy, order);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Category category = categorySlug != null ? categoryRepository.findBySlugAndStatusAndIsDeletedFalse( categorySlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
-
-//        Category category = null;
-//        Origin origin = null;
-//        Brand brand = null;
-//        if (categorySlug != null) {
-//            category = categoryRepository.findBySlugAndStatusAndIsDeletedFalse(categorySlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-//        }
-//        if (brandSlug != null) {
-//            brand = brandRepository.findBySlugAndStatusAndIsDeletedFalse(brandSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-//        }
-//        if (originSlug != null) {
-//            origin = originRepository.findBySlugAndStatusAndIsDeletedFalse(originSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-//        }
+        Category category = categorySlug != null ? categoryRepository.findBySlugAndStatusAndIsDeletedFalse(categorySlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
         Brand brand = brandSlug != null ? brandRepository.findBySlugAndIsDeletedFalse(brandSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
         Origin origin = originSlug != null ? originRepository.findBySlugAndIsDeletedFalse(originSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
         Page<Product> products;
+
         if (admin) {
-            products = productRepository.findAllByFilters(pageable);
+            products = productRepository.findAllByFilters(keyword, null, category, brand, origin, pageable);
         } else {
-            products = productRepository.findAllByFilters(Status.ACTIVE, category, brand, origin, pageable);
+            products = productRepository.findAllByFilters(keyword, Status.ACTIVE, category, brand, origin, pageable);
         }
 
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
