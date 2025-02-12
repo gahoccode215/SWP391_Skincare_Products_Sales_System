@@ -28,13 +28,15 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
 
     boolean existsBySlug(String slug);
 
-    @Query("SELECT c FROM Category c WHERE c.isDeleted = false")
+    @Query("SELECT c FROM Category c WHERE c.isDeleted = false " +
+            "AND (c.name LIKE %:keyword% OR :keyword IS NULL) "
+            + "AND (:status is null OR c.status = :status)"
+    )
     Page<Category> findAllByFilters(
+            @Param("keyword") String keyword,
+            @Param("status") Status status,
             Pageable pageable);
 
-    @Query("SELECT c FROM Category c WHERE c.isDeleted = false " +
-            "AND (:status is null OR c.status = :status)")
-    Page<Category> findCategoriesByStatusAndDeletedFlag(@Param("status") Status status, Pageable pageable);
 
     @Modifying
     @Query("UPDATE Category c SET c.status = :status WHERE c.id = :id AND c.isDeleted = false")

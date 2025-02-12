@@ -36,6 +36,7 @@ public class AdminCategoryController {
                 .result(categoryService.createCategory(request))
                 .build();
     }
+
     @PutMapping("/{categoryId}")
     @Operation(summary = "Update a category (ADMIN, MANAGER)", description = "API retrieve category id to update category")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -47,6 +48,7 @@ public class AdminCategoryController {
                 .result(categoryService.updateCategory(request, categoryId))
                 .build();
     }
+
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -58,6 +60,7 @@ public class AdminCategoryController {
                 .message("Delete category successfully")
                 .build();
     }
+
     @GetMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -69,30 +72,33 @@ public class AdminCategoryController {
                 .result(categoryService.getCategoryById(categoryId))
                 .build();
     }
+
     @PutMapping("/{categoryId}/status")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Change category status", description = "API to change category status (ACTIVE/INACTIVE)")
+    @Operation(summary = "Change category status (ADMIN, MANAGER)", description = "API to change category status (ACTIVE/INACTIVE)")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ApiResponse<Void> changeCategoryStatus(@PathVariable String categoryId, @RequestParam Status status){
+    public ApiResponse<Void> changeCategoryStatus(@PathVariable String categoryId, @RequestParam Status status) {
         categoryService.changeCategoryStatus(categoryId, status);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
                 .message("Change status successfully")
                 .build();
     }
+
     @GetMapping
-    @Operation(summary = "Get all categories  ", description = "Retrieve all active categories with pagination, sorting, and filtering.")
+    @Operation(summary = "Get all categories (ADMIN, MANAGER)", description = "Retrieve all active categories with pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
 //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ApiResponse<CategoryPageResponse> getAllCategories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "100") int size,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String order) {
         return ApiResponse.<CategoryPageResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Get categories successfully")
-                .result(categoryService.getCategories(true,page, size, sortBy, order))
+                .result(categoryService.getCategories(true, keyword, page, size, sortBy, order))
                 .build();
     }
 }

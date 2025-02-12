@@ -27,20 +27,20 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     Optional<Product> findBySlugAndIsDeletedFalseAndStatus(@Param("slug") String slug);
 
 
-    @Query("SELECT DISTINCT p FROM Product p WHERE p.isDeleted = false " +
+    @Query("SELECT p FROM Product p WHERE p.isDeleted = false " +
+            "AND (p.name LIKE %:keyword% OR :keyword IS NULL) " +
             "AND (:category IS NULL OR p.category = :category) " +
             "AND (:brand IS NULL OR p.brand = :brand) " +
             "AND (:origin IS NULL OR p.origin = :origin)" +
             "AND (:status is null OR p.status = :status)")
     Page<Product> findAllByFilters(
+            @Param("keyword") String keyword,
             @Param("status") Status status,
             @Param("category") Category category,
             @Param("brand") Brand brand,
             @Param("origin") Origin origin,
             Pageable pageable);
 
-    @Query("SELECT c FROM Product c WHERE c.isDeleted = false")
-    Page<Product> findAllByFilters(Pageable pageable);
 
     @Modifying
     @Query("UPDATE Product p SET p.status = :status WHERE p.id = :id AND p.isDeleted = false")

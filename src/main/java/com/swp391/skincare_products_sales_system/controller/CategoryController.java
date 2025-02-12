@@ -29,14 +29,15 @@ public class CategoryController {
     @Operation(summary = "Get all categories  ", description = "Retrieve all active categories with pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<CategoryPageResponse> getAllCategories(
-            @RequestParam(required = false) int page,
-            @RequestParam(required = false) int size,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "100") int size,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String order) {
         return ApiResponse.<CategoryPageResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Get categories successfully")
-                .result(categoryService.getCategories(false,page, size, sortBy, order))
+                .result(categoryService.getCategories(false, keyword, page, size, sortBy, order))
                 .build();
     }
 

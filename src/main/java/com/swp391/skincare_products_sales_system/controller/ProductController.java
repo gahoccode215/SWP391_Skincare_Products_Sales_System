@@ -1,25 +1,15 @@
 package com.swp391.skincare_products_sales_system.controller;
 
-import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
-import com.swp391.skincare_products_sales_system.dto.request.ProductSearchRequest;
-import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
-import com.swp391.skincare_products_sales_system.dto.request.SkinTypeCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
-import com.swp391.skincare_products_sales_system.dto.response.SkinTypeResponse;
-import com.swp391.skincare_products_sales_system.enums.Status;
-import com.swp391.skincare_products_sales_system.model.Product;
 import com.swp391.skincare_products_sales_system.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,9 +34,10 @@ public class ProductController {
     }
 
     @GetMapping()
-    @Operation(summary = "Get all products", description = "Retrieve all active products with pagination, sorting, and filtering.")
+    @Operation(summary = "Get all products with options: search, pagination, sort, filter", description = "Retrieve all active products with search, pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<ProductPageResponse> getAllProducts(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String categorySlug,
@@ -57,7 +48,7 @@ public class ProductController {
         return ApiResponse.<ProductPageResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Get products successfully")
-                .result(productService.getProducts(false, page, size, categorySlug, brandSlug, originSlug, sortBy, order))
+                .result(productService.getProducts(false, keyword,page, size, categorySlug, brandSlug, originSlug, sortBy, order))
                 .build();
     }
 }

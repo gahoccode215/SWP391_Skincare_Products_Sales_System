@@ -6,15 +6,11 @@ import com.swp391.skincare_products_sales_system.dto.request.CategoryCreationReq
 import com.swp391.skincare_products_sales_system.dto.request.CategoryUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.CategoryPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.CategoryResponse;
-import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.mapper.CategoryMapper;
-import com.swp391.skincare_products_sales_system.model.Brand;
 import com.swp391.skincare_products_sales_system.model.Category;
-import com.swp391.skincare_products_sales_system.model.Origin;
-import com.swp391.skincare_products_sales_system.model.Product;
 import com.swp391.skincare_products_sales_system.repository.CategoryRepository;
 import com.swp391.skincare_products_sales_system.service.CategoryService;
 import com.swp391.skincare_products_sales_system.util.SlugUtil;
@@ -76,16 +72,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryPageResponse getCategories(boolean admin, int page, int size, String sortBy, String order) {
+    public CategoryPageResponse getCategories(boolean admin, String keyword, int page, int size, String sortBy, String order) {
         if (page > 0) page -= 1;
 
+        Pageable pageable;
         Sort sort = getSort(sortBy, order);
-        Pageable pageable = PageRequest.of(page, size, sort);
+        pageable = PageRequest.of(page, size, sort);
+
+
         Page<Category> categories;
         if (admin) {
-            categories = categoryRepository.findAllByFilters(pageable);
+            categories = categoryRepository.findAllByFilters(keyword, null, pageable);
         } else {
-            categories = categoryRepository.findCategoriesByStatusAndDeletedFlag(Status.ACTIVE, pageable);
+            categories = categoryRepository.findAllByFilters(keyword, Status.ACTIVE, pageable);
         }
 
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
