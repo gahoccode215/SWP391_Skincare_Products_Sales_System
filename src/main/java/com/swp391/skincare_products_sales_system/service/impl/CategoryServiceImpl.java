@@ -76,14 +76,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryPageResponse getCategories(int page, int size, String sortBy, String order) {
+    public CategoryPageResponse getCategories(boolean admin, int page, int size, String sortBy, String order) {
         if (page > 0) page -= 1;
 
         Sort sort = getSort(sortBy, order);
         Pageable pageable = PageRequest.of(page, size, sort);
-
-
-        Page<Category> categories = categoryRepository.findAllByFilters(pageable);
+        Page<Category> categories;
+        if (admin) {
+            categories = categoryRepository.findAllByFilters(pageable);
+        } else {
+            categories = categoryRepository.findCategoriesByStatusAndDeletedFlag(Status.ACTIVE, pageable);
+        }
 
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         CategoryPageResponse response = new CategoryPageResponse();
@@ -95,6 +98,13 @@ public class CategoryServiceImpl implements CategoryService {
         return response;
     }
 
+    @Override
+    @Transactional
+    public void changeCategoryStatus(String categoryId, Status status) {
+        Category category = categoryRepository.findByIdAndIsDeletedFalse(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+        categoryRepository.updateCategoryStatus(category.getId(), status);
+    }
+
     private String generateUniqueSlug(String name) {
         String baseSlug = slugify.slugify(name);
         String uniqueSlug = baseSlug;
@@ -104,6 +114,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return uniqueSlug;
     }
+
     private Sort getSort(String sortBy, String order) {
         if (sortBy == null) {
             sortBy = Query.NAME; // mặc định là sắp xếp theo tên nếu không có sortBy

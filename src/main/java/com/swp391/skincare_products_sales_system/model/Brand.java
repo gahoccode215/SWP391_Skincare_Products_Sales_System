@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,4 +29,8 @@ public class Brand extends AbstractEntity{
     @OneToMany(mappedBy = "brand")
     Set<Product> products;
     String slug;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    Status status = Status.ACTIVE;
 }

@@ -5,6 +5,7 @@ import com.swp391.skincare_products_sales_system.dto.request.CategoryUpdateReque
 import com.swp391.skincare_products_sales_system.dto.response.CategoryPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.CategoryResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
+import com.swp391.skincare_products_sales_system.enums.Status;
 
 public interface CategoryService {
     CategoryResponse createCategory(CategoryCreationRequest request);
@@ -15,5 +16,6 @@ public interface CategoryService {
 
     CategoryResponse getCategoryById(String id);
 
-    CategoryPageResponse getCategories(int page, int size, String sortBy, String order);
+    CategoryPageResponse getCategories(boolean admin,int page, int size, String sortBy, String order);
+    void changeCategoryStatus(String productId, Status status);
 }
