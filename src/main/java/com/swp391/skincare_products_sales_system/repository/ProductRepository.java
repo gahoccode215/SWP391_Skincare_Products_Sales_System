@@ -27,7 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     Optional<Product> findBySlugAndIsDeletedFalseAndStatus(@Param("slug") String slug);
 
 
-    @Query("SELECT p FROM Product p WHERE p.isDeleted = false " +
+    @Query("SELECT DISTINCT p FROM Product p WHERE p.isDeleted = false " +
             "AND (:category IS NULL OR p.category = :category) " +
             "AND (:brand IS NULL OR p.brand = :brand) " +
             "AND (:origin IS NULL OR p.origin = :origin)" +

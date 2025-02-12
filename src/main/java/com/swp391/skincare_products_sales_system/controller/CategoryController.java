@@ -29,8 +29,8 @@ public class CategoryController {
     @Operation(summary = "Get all categories  ", description = "Retrieve all active categories with pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<CategoryPageResponse> getAllCategories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) int page,
+            @RequestParam(required = false) int size,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String order) {
         return ApiResponse.<CategoryPageResponse>builder()

@@ -21,6 +21,11 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
 
     Optional<Category> findBySlugAndIsDeletedFalse(String slug);
 
+    @Query("SELECT c FROM Category c WHERE c.isDeleted = false " +
+            "AND c.status = com.swp391.skincare_products_sales_system.enums.Status.ACTIVE " +
+            "AND c.slug = :slug")
+    Optional<Category> findBySlugAndStatusAndIsDeletedFalse(@Param("slug") String slug);
+
     boolean existsBySlug(String slug);
 
     @Query("SELECT c FROM Category c WHERE c.isDeleted = false")
