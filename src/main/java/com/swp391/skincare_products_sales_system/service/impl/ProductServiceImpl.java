@@ -133,7 +133,6 @@ public class ProductServiceImpl implements ProductService {
         response.setTotalPages(products.getTotalPages());
         response.setPageNumber(products.getNumber());
         response.setPageSize(products.getSize());
-
         return response;
     }
 
