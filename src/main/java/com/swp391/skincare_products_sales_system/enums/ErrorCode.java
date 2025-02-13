@@ -14,6 +14,7 @@ public enum ErrorCode {
     USER_NOT_EXISTED(1002, "User not existed", HttpStatus.NOT_FOUND),
     PRODUCT_NOT_EXISTED(1003, "Product not existed", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_EXISTED(1004, "Category not existed", HttpStatus.NOT_FOUND),
+    IMAGE_NOT_FOUND(1005, "Image not found", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),

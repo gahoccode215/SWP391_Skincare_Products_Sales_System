@@ -7,10 +7,12 @@ import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateReques
 import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.mapper.ProductMapper;
 import com.swp391.skincare_products_sales_system.model.*;
 import com.swp391.skincare_products_sales_system.repository.*;
+import com.swp391.skincare_products_sales_system.service.CloudinaryUploadService;
 import com.swp391.skincare_products_sales_system.service.ProductService;
 import com.swp391.skincare_products_sales_system.util.SlugUtil;
 import lombok.AccessLevel;
@@ -23,7 +25,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -45,17 +49,24 @@ public class ProductServiceImpl implements ProductService {
     SkinTypeRepository skinTypeRepository;
     CategoryRepository categoryRepository;
     FeatureRepository featureRepository;
+    CloudinaryUploadService cloudinaryUploadService;
 
     @Override
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
         Product product = productMapper.toProduct(request);
-        if (request.getCategory_id() != null){
+        if (request.getCategory_id() != null) {
             Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
             product.setCategory(category);
         }
+        product.setStatus(Status.ACTIVE);
         product.setSlug(generateUniqueSlug(product.getName()));
         product.setIsDeleted(false);
+//        try {
+//            product.setThumbnail(cloudinaryUploadService.uploadImage(request.getThumbnail()));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         log.info("Product: {}", product);
         return productMapper.toProductResponse(productRepository.save(product));
     }
@@ -73,58 +84,40 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse updateProduct(ProductUpdateRequest request, String productId) {
         Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
-        if (request.getCategory_id() != null){
+        if (request.getCategory_id() != null) {
             Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
             product.setCategory(category);
         }
-        if(request.getName() != null ){
+        if (request.getName() != null) {
             product.setName(request.getName());
         }
-        if(request.getPrice() != null){
+        if (request.getPrice() != null) {
             product.setPrice(request.getPrice());
         }
-        if(request.getDescription() != null){
+        if (request.getDescription() != null) {
             product.setDescription(request.getDescription());
         }
-        return productMapper.toProductResponse(product);
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
-    @Override
-    public ProductPageResponse getProductsAdmin(String sortBy, String order, int page, int size) {
-        if (page > 0) {
-            page -= 1;
-        }
-        Sort sort = getSort(sortBy, order);
-
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        Page<Product> products = productRepository.findByIsDeletedFalse(pageRequest);
-
-        List<ProductResponse> productResponses = products.getContent().stream()
-                .map(productMapper::toProductResponse)
-                .toList();
-        ProductPageResponse productPageResponse = new ProductPageResponse();
-        productPageResponse.setProductResponses(productResponses);
-        productPageResponse.setTotalElements(products.getTotalElements());
-        productPageResponse.setTotalPages(products.getTotalPages());
-        productPageResponse.setPageNumber(products.getNumber());
-        productPageResponse.setPageSize(products.getSize());
-
-        return productPageResponse;
-    }
 
     @Override
-    public ProductPageResponse getProducts(int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
+    public ProductPageResponse getProducts(boolean admin, String keyword, int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
         if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
 
         Sort sort = getSort(sortBy, order);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Category category = categorySlug != null ? categoryRepository.findBySlugAndIsDeletedFalse(categorySlug).orElse(null) : null;
-        Brand brand = brandSlug != null ? brandRepository.findBySlugAndIsDeletedFalse(brandSlug).orElse(null) : null;
-        Origin origin = originSlug != null ? originRepository.findBySlugAndIsDeletedFalse(originSlug).orElse(null) : null;
+        Category category = categorySlug != null ? categoryRepository.findBySlugAndStatusAndIsDeletedFalse(categorySlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
+        Brand brand = brandSlug != null ? brandRepository.findBySlugAndIsDeletedFalse(brandSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
+        Origin origin = originSlug != null ? originRepository.findBySlugAndIsDeletedFalse(originSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
+        Page<Product> products;
 
-        Page<Product> products = productRepository.findAllByFilters(category, brand, origin, pageable);
+        if (admin) {
+            products = productRepository.findAllByFilters(keyword, null, category, brand, origin, pageable);
+        } else {
+            products = productRepository.findAllByFilters(keyword, Status.ACTIVE, category, brand, origin, pageable);
+        }
 
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         ProductPageResponse response = new ProductPageResponse();
@@ -138,8 +131,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getProductBySlug(String slug) {
-        Product product = productRepository.findBySlugAndIsDeletedFalse(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product = productRepository.findBySlugAndIsDeletedFalseAndStatus(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
         return productMapper.toProductResponse(product);
+    }
+
+    @Override
+    public ProductResponse getProductById(String id) {
+        Product product = productRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        return productMapper.toProductResponse(product);
+    }
+
+    @Override
+    @Transactional
+    public void changeProductStatus(String productId, Status status) {
+        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        productRepository.updateProductStatus(product.getId(), status);
     }
 
     private Sort getSort(String sortBy, String order) {
@@ -167,5 +173,9 @@ public class ProductServiceImpl implements ProductService {
             uniqueSlug = baseSlug + "-" + slugUtil.generateRandomString(6);
         }
         return uniqueSlug;
+    }
+
+    private String uploadProductImage(MultipartFile file) throws IOException {
+        return cloudinaryUploadService.uploadImage(file);
     }
 }
