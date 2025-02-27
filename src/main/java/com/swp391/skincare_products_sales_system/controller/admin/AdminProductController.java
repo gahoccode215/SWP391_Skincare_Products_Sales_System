@@ -67,17 +67,17 @@ public class AdminProductController {
     public ApiResponse<ProductPageResponse> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String keyword
-//            @RequestParam(required = false) String categorySlug,
-//            @RequestParam(required = false) String brandSlug,
-//            @RequestParam(required = false) String originSlug,
-//            @RequestParam(required = false) String sortBy,
-//            @RequestParam(required = false) String order
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String categorySlug,
+            @RequestParam(required = false) String brandSlug,
+            @RequestParam(required = false) String originSlug,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String order
     ) {
         return ApiResponse.<ProductPageResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Get products successfully")
-                .result(productService.getProducts(true,keyword, page,size, null, null, null, null, null))
+                .result(productService.getProducts(true,keyword, page,size, categorySlug, brandSlug, originSlug, sortBy, order))
                 .build();
     }
     @GetMapping("/{productId}")
