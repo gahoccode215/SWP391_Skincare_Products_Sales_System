@@ -10,10 +10,5 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
-    // Tìm tất cả các item trong một đơn hàng
-    List<OrderItem> findByOrder(Order order);
-
-    // Tìm theo id sản phẩm và đơn hàng
-    Optional<OrderItem> findByOrderAndProduct(Order order, Product product);
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 }

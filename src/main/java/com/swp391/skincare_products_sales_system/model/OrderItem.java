@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,24 +14,27 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderItem extends AbstractEntity {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Long id; // Mã sản phẩm trong đơn hàng
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     @JoinColumn(name = "order_id", nullable = false)
-    Order order;  // Đơn hàng mà sản phẩm này thuộc về
+    Order order; // Liên kết với đơn hàng
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "product_id", nullable = false)
-    Product product;
+    Product product; // Liên kết với sản phẩm
 
-    Integer quantity;  // Số lượng sản phẩm trong đơn hàng
+    Integer quantity; // Số lượng sản phẩm
+    Double price; // Giá sản phẩm
+    Double totalPrice; // Tổng giá trị của sản phẩm trong đơn hàng
 
-    Double price;  // Giá của sản phẩm tại thời điểm mua
-
-    public Double getTotalPrice() {
-        return this.quantity * this.price;
+    // Tính tổng giá trị của sản phẩm (price * quantity)
+    public Double calculateTotalPrice() {
+        return this.price * this.quantity;
     }
 }
