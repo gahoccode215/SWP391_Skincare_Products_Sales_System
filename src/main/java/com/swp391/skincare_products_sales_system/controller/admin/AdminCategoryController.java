@@ -27,9 +27,11 @@ public class AdminCategoryController {
 
     @PostMapping
     @Operation(summary = "Create category (ADMIN, MANAGER)", description = "API retrieve attribute to create category")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreationRequest request) {
+    public ApiResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreationRequest request
+    )  {
+
         return ApiResponse.<CategoryResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Create category successfully")
@@ -39,11 +41,12 @@ public class AdminCategoryController {
 
     @PutMapping("/{categoryId}")
     @Operation(summary = "Update a category (ADMIN, MANAGER)", description = "API retrieve category id to update category")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<CategoryResponse> updateCategory(@RequestBody @Valid CategoryUpdateRequest request, @PathVariable String categoryId) {
+
         return ApiResponse.<CategoryResponse>builder()
-                .code(HttpStatus.CREATED.value())
+                .code(HttpStatus.OK.value())
                 .message("Update category successfully")
                 .result(categoryService.updateCategory(request, categoryId))
                 .build();
@@ -51,7 +54,7 @@ public class AdminCategoryController {
 
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Delete a category (ADMIN, MANAGER)", description = "API delete category by its id")
     public ApiResponse<Void> deleteCategory(@PathVariable String categoryId) {
         categoryService.deleteCategory(categoryId);
@@ -63,20 +66,20 @@ public class AdminCategoryController {
 
     @GetMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Get a category (ADMIN, MANAGER)", description = "API get category by its id")
     public ApiResponse<CategoryResponse> getCategory(@PathVariable String categoryId) {
         return ApiResponse.<CategoryResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("get category successfully")
+                .message("get category detail successfully")
                 .result(categoryService.getCategoryById(categoryId))
                 .build();
     }
 
-    @PutMapping("/{categoryId}/status")
+    @PatchMapping("/change-status/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Change category status (ADMIN, MANAGER)", description = "API to change category status (ACTIVE/INACTIVE)")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ApiResponse<Void> changeCategoryStatus(@PathVariable String categoryId, @RequestParam Status status) {
         categoryService.changeCategoryStatus(categoryId, status);
         return ApiResponse.<Void>builder()
@@ -86,7 +89,7 @@ public class AdminCategoryController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all categories (ADMIN, MANAGER)", description = "Retrieve all active categories with pagination, sorting, and filtering.")
+    @Operation(summary = "Get all categories (ADMIN, MANAGER)", description = "Retrieve all brands with pagination, sorting, and filtering.")
     @ResponseStatus(HttpStatus.OK)
 //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ApiResponse<CategoryPageResponse> getAllCategories(
