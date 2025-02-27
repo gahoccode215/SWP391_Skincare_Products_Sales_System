@@ -16,6 +16,7 @@ public enum ErrorCode {
     CATEGORY_NOT_EXISTED(1004, "Category not existed", HttpStatus.NOT_FOUND),
     IMAGE_NOT_FOUND(1005, "Image not found", HttpStatus.BAD_REQUEST),
     BRAND_NOT_EXISTED(1006, "Brand not existed", HttpStatus.BAD_REQUEST),
+    ORIGIN_NOT_EXISTED(1007, "Origin not existed", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),

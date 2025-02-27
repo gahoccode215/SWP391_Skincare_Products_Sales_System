@@ -1,8 +1,10 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 import java.util.Set;
