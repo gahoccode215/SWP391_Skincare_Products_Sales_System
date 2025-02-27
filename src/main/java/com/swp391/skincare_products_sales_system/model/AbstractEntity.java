@@ -1,6 +1,5 @@
 package com.swp391.skincare_products_sales_system.model;
 
-import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,6 +15,7 @@ import java.util.Date;
 @MappedSuperclass
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class AbstractEntity {
+
     @Column(name = "created_at", length = 255)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -27,6 +27,7 @@ public abstract class AbstractEntity {
     Date updatedAt;
 
     @Column(name = "is_deleted")
-    Boolean isDeleted = false;
+    Boolean isDeleted;
+
 
 }

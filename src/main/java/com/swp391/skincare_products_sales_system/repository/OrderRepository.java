@@ -6,18 +6,18 @@ import com.swp391.skincare_products_sales_system.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Integer> {
-    // Tìm đơn hàng chưa hoàn thành (PENDING) của một người dùng cụ thể
-    Optional<Order> findByUserAndStatus(User user, OrderStatus status);
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    @Query("SELECT x FROM Order x WHERE x.username = :username")
+    Page<Order> findAllByFilters(
+            @Param("username") String username,
+            Pageable pageable);
 
-    // Tìm tất cả các đơn hàng của người dùng với phân trang
-    Page<Order> findByUser(User user, Pageable pageable);
-
-    // Tìm tất cả các đơn hàng có trạng thái PENDING (cho người dùng mới, chưa giao)
-    Page<Order> findByStatus(OrderStatus status, Pageable pageable);
+    Page<Order> findAll(Pageable pageable);
 }

@@ -9,7 +9,6 @@ import com.swp391.skincare_products_sales_system.dto.response.CategoryResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.mapper.CategoryMapper;
 import com.swp391.skincare_products_sales_system.model.Category;
 import com.swp391.skincare_products_sales_system.repository.CategoryRepository;
 import com.swp391.skincare_products_sales_system.service.CategoryService;
@@ -25,6 +24,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,33 +35,49 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
-    CategoryMapper categoryMapper;
-    private final SlugUtil slugUtil;
-    private final Slugify slugify;
+    Slugify slugify;
+    SlugUtil slugUtil;
+
 
     @Override
     @Transactional
-    public CategoryResponse createCategory(CategoryCreationRequest request) {
-        Category category = categoryMapper.toCategory(request);
+    public CategoryResponse createCategory(CategoryCreationRequest request)  {
+        Category category = Category.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .thumbnail(request.getThumbnail())
+                .build();
         category.setStatus(Status.ACTIVE);
         category.setIsDeleted(false);
         category.setSlug(generateUniqueSlug(category.getName()));
-        return categoryMapper.toCategoryResponse(categoryRepository.save(category));
+        categoryRepository.save(category);
+        return toCategoryResponse(category);
     }
 
     @Override
     @Transactional
-    public CategoryResponse updateCategory(CategoryUpdateRequest request, String id) {
-        Category category = categoryRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-        category.setName(request.getName());
-        category.setDescription(request.getDescription());
-        return categoryMapper.toCategoryResponse(categoryRepository.save(category));
+    public CategoryResponse updateCategory(CategoryUpdateRequest request, String categoryId)  {
+        Category category = categoryRepository.findByIdAndIsDeletedFalse(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+        if(request.getName() != null){
+            category.setName(request.getName());
+        }
+        if(request.getDescription() != null){
+            category.setDescription(request.getDescription());
+        }
+        if(request.getThumbnail() != null){
+            category.setThumbnail(request.getThumbnail());
+        }
+        if(request.getStatus() != null){
+            category.setStatus(request.getStatus());
+        }
+        categoryRepository.save(category);
+        return toCategoryResponse(category);
     }
 
     @Override
     @Transactional
-    public void deleteCategory(String id) {
-        Category category = categoryRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+    public void deleteCategory(String categoryId) {
+        Category category = categoryRepository.findByIdAndIsDeletedFalse(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
         category.setIsDeleted(true);
         categoryRepository.save(category);
     }
@@ -68,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse getCategoryById(String id) {
         Category category = categoryRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-        return categoryMapper.toCategoryResponse(category);
+        return toCategoryResponse(category);
     }
 
     @Override
@@ -89,7 +106,21 @@ public class CategoryServiceImpl implements CategoryService {
 
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         CategoryPageResponse response = new CategoryPageResponse();
-        response.setCategoryResponses(categories.stream().map(categoryMapper::toCategoryResponse).collect(Collectors.toList()));
+
+        List<CategoryResponse> categoryResponses = new ArrayList<>();
+
+        // Ánh xạ từng sản phẩm từ Page<Product> sang ProductResponse
+        for (Category category : categories.getContent()) {
+            CategoryResponse categoryResponse = new CategoryResponse();
+            categoryResponse.setId(category.getId());
+            categoryResponse.setName(category.getName());
+            categoryResponse.setDescription(category.getDescription());
+            categoryResponse.setStatus(category.getStatus());
+            categoryResponse.setSlug(category.getSlug());
+            categoryResponse.setThumbnail(category.getThumbnail());
+            categoryResponses.add(categoryResponse);
+        }
+        response.setCategoryResponses(categoryResponses);
         response.setTotalElements(categories.getTotalElements());
         response.setTotalPages(categories.getTotalPages());
         response.setPageNumber(categories.getNumber());
@@ -104,6 +135,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.updateCategoryStatus(category.getId(), status);
     }
 
+    // Generate a unique slug
     private String generateUniqueSlug(String name) {
         String baseSlug = slugify.slugify(name);
         String uniqueSlug = baseSlug;
@@ -113,7 +145,6 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return uniqueSlug;
     }
-
     private Sort getSort(String sortBy, String order) {
         if (sortBy == null) {
             sortBy = Query.NAME; // mặc định là sắp xếp theo tên nếu không có sortBy
@@ -124,10 +155,19 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         // Kiểm tra trường sortBy và tạo Sort tương ứng
-        if (sortBy.equals(Query.PRICE)) {
-            return order.equals(Query.ASC) ? Sort.by(Query.PRICE).ascending() : Sort.by(Query.PRICE).descending();
+        if (sortBy.equals(Query.NAME)) {
+            return order.equals(Query.ASC) ? Sort.by(Query.NAME).ascending() : Sort.by(Query.NAME).descending();
         }
         return order.equals(Query.ASC) ? Sort.by(Query.NAME).ascending() : Sort.by(Query.NAME).descending();
     }
-
+    private CategoryResponse toCategoryResponse(Category category){
+        return CategoryResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .description(category.getDescription())
+                .thumbnail(category.getThumbnail())
+                .slug(category.getSlug())
+                .status(category.getStatus())
+                .build();
+    }
 }

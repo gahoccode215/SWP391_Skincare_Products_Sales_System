@@ -24,6 +24,7 @@ import com.nimbusds.jwt.SignedJWT;
 @Slf4j
 @Component
 public class JwtUtil {
+
     private final InvalidatedTokenRepository invalidatedTokenRepository;
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
@@ -44,7 +45,7 @@ public class JwtUtil {
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
-                .issuer("swd392.com")
+                .issuer("swp391.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
@@ -67,12 +68,18 @@ public class JwtUtil {
 
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
-        if (!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getName());
-                if (!CollectionUtils.isEmpty(role.getPermissions()))
-                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
-            });
+
+        if (user.getRole() != null) {
+            // Thêm tiền tố "ROLE_" vào tên của role
+            stringJoiner.add("ROLE_" + user.getRole().getName()); // Thêm ROLE_ vào trước tên quyền
+
+            // Nếu role có permissions, thêm chúng vào phạm vi
+            if (!CollectionUtils.isEmpty(user.getRole().getPermissions())) {
+                user.getRole().getPermissions().forEach(permission -> {
+                    stringJoiner.add(permission.getName());
+                });
+            }
+        }
 
         return stringJoiner.toString();
     }
@@ -111,5 +118,14 @@ public class JwtUtil {
             isValid = false;
         }
         return IntrospectResponse.builder().valid(isValid).build();
+    }
+
+    public String extractUsername(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return signedJWT.getJWTClaimsSet().getSubject(); // Lấy username từ `subject`
+        } catch (ParseException e) {
+            throw new RuntimeException("Lỗi trích xuất username từ JWT token", e);
+        }
     }
 }

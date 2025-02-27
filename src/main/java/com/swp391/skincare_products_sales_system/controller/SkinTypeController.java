@@ -3,7 +3,6 @@ package com.swp391.skincare_products_sales_system.controller;
 import com.swp391.skincare_products_sales_system.dto.request.SkinTypeCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.SkinTypeResponse;
-import com.swp391.skincare_products_sales_system.service.SkinTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

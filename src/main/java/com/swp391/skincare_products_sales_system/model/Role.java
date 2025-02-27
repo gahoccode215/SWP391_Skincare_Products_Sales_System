@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,9 +14,9 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@ToString
 @Table(name = "tbl_role")
 public class Role extends AbstractEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -26,7 +27,10 @@ public class Role extends AbstractEntity {
     @Column(name = "description")
     String description;
 
-    @ManyToMany(mappedBy = "roles", cascade = CascadeType.REMOVE)
+
+
+    @JsonManagedReference  // Ngừng vòng lặp khi serialize các role
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     Set<User> users;
 
     @ManyToMany(fetch = FetchType.EAGER)

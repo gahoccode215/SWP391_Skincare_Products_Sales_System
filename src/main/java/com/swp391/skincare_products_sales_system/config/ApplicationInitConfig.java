@@ -26,6 +26,7 @@ import java.util.List;
 public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
 
+
     @NonFinal
     static final String ADMIN_USER_NAME = "admin";
 
@@ -55,7 +56,8 @@ public class ApplicationInitConfig {
                         .description("Delivery role")
                         .build());
                 Role expertRole = roleRepository.save(Role.builder()
-                        .name(PredefinedRole.EXPERT)
+
+                        .name(PredefinedRole.EXPERT_ROLE)
                         .description("Expert role")
                         .build());
                 Role adminRole = roleRepository.save(Role.builder()
@@ -63,54 +65,45 @@ public class ApplicationInitConfig {
                         .description("Admin role")
                         .build());
 
-                var roleAdmin = new HashSet<Role>();
-                roleAdmin.add(adminRole);
 
                 User admin = User.builder()
                         .username(ADMIN_USER_NAME)
                         .password(passwordEncoder.encode(ADMIN_PASSWORD))
-                        .roles(roleAdmin)
+                        .role(adminRole)
                         .build();
                 listAccount.add(admin);
 
-                var roleCustomer = new HashSet<Role>();
-                roleCustomer.add(customerRole);
                 User customer = User.builder()
                         .username("customer")
                         .password(passwordEncoder.encode("customer"))
-                        .roles(roleCustomer)
+                        .role(customerRole)
                         .build();
                 listAccount.add(customer);
-                var roleManager = new HashSet<Role>();
-                roleManager.add(managerRole);
+
                 User manager = User.builder()
                         .username("manager")
                         .password(passwordEncoder.encode("manager"))
-                        .roles(roleManager)
+                        .role(managerRole)
                         .build();
                 listAccount.add(manager);
-                var roleStaff = new HashSet<Role>();
-                roleStaff.add(staffRole);
                 User staff = User.builder()
                         .username("staff")
                         .password(passwordEncoder.encode("staff"))
-                        .roles(roleStaff)
+                        .role(staffRole)
                         .build();
                 listAccount.add(staff);
-                var roleDelivery = new HashSet<Role>();
-                roleDelivery.add(deliveryRole);
+
                 User delivery = User.builder()
                         .username("delivery")
                         .password(passwordEncoder.encode("delivery"))
-                        .roles(roleDelivery)
+                        .role(deliveryRole)
                         .build();
                 listAccount.add(delivery);
-                var roleExpert = new HashSet<Role>();
-                roleExpert.add(expertRole);
+
                 User expert = User.builder()
                         .username("expert")
                         .password(passwordEncoder.encode("expert"))
-                        .roles(roleExpert)
+                        .role(expertRole)
                         .build();
                 listAccount.add(expert);
                 userRepository.saveAll(listAccount);

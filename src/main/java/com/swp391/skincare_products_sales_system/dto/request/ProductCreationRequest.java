@@ -21,13 +21,8 @@ public class ProductCreationRequest {
     String name;
     Double price;
     String description;
-//    MultipartFile thumbnail;
-    //    String thumbnail;
-//    String usageInstruction;
-//    LocalDate expiryDate;
-//    Long brand_id;
-//    Long origin_id;
-//    Long skin_type_id;
+    String thumbnail;
+    Long brand_id;
     String category_id;
-//    Set<Long> feature_ids;
+    String size;
 }

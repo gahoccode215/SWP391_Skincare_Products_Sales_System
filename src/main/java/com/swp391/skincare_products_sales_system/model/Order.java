@@ -1,6 +1,9 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swp391.skincare_products_sales_system.enums.OrderStatus;
+import com.swp391.skincare_products_sales_system.enums.PaymentMethod;
+import com.swp391.skincare_products_sales_system.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,33 +23,38 @@ import java.util.Set;
 @Builder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Order extends AbstractEntity {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    User user;  // Người mua
+    Double totalAmount;
+    String orderInfo;
+    String username;
+    LocalDateTime orderDate;
+    @Enumerated(EnumType.STRING)
+    OrderStatus status;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    Set<OrderItem> orderItems = new HashSet<>(); // Các sản phẩm trong đơn hàng
-
-    Double totalPrice;  // Tổng giá trị đơn hàng
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id")
+    @JsonIgnore
+    Address address;
 
     @Enumerated(EnumType.STRING)
-    OrderStatus status;  // Trạng thái đơn hàng (Chưa giao, Đang giao, Đã giao)
+    PaymentStatus paymentStatus;
 
-    LocalDateTime orderDate;  // Ngày đặt hàng
 
-    LocalDateTime deliveryDate; // Ngày giao hàng
+    @Enumerated(EnumType.STRING)
+    PaymentMethod paymentMethod;
+    Double shippingFee;
 
-    // Thông tin giao hàng
-    String deliveryAddress;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore
+    List<OrderItem> orderItems;
 
-    // Cập nhật tổng giá trị của đơn hàng sau khi thêm hoặc sửa sản phẩm
-    public void updateTotalPrice() {
-        this.totalPrice = orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
-    }
+    String discountCode;
+    Double discountAmount;
+    String deliveryTime;
+
 }

@@ -17,6 +17,5 @@ public class CategoryCreationRequest {
     @NotBlank(message = "category name can not blank")
     String name;
     String description;
-//    String thumbnail;
-
+    String thumbnail;
 }
