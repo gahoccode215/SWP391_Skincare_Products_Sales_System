@@ -48,6 +48,9 @@ public class Product extends AbstractEntity{
     @JsonIgnore
     List<Batch> batches;
 
+    @Column(name = "stock")
+    Integer stock = 0;
+
 //    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
 //    @JsonIgnore
 //    List<FeedBack> feedBacks;

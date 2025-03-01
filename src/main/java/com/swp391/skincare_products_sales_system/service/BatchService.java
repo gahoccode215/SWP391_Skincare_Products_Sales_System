@@ -6,9 +6,6 @@ import com.swp391.skincare_products_sales_system.dto.response.BatchPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.BatchResponse;
 
 public interface BatchService {
-    BatchResponse importBatch(BatchCreationRequest request);
-    BatchResponse updateBatch(BatchUpdateRequest request, Long id);
-    void deleteBatch(Long id);
-    BatchResponse getBatchById(Long id);
-    BatchPageResponse getBatches(int page, int size, String sortBy, String order);
+    BatchResponse createBatch(BatchCreationRequest request);
+    BatchPageResponse getAllBatches(int page, int size);
 }

@@ -11,5 +11,5 @@ import java.util.List;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BatchPageResponse extends AbstractPageResponse {
-    List<BatchResponse> batchResponses;
+    List<BatchResponse> content;
 }

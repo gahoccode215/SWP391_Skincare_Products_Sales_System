@@ -12,9 +12,11 @@ import java.time.LocalDate;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BatchResponse {
-    Long id;
-    Product product;
+    String id;
+    String batchCode;
+    String productId;
     Integer quantity;
+    Double importPrice;
     LocalDate manufactureDate;
     LocalDate expirationDate;
 }
