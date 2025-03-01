@@ -1,10 +1,12 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,8 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_product")
-public class Product extends AbstractEntity {
-
+public class Product extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -34,31 +35,44 @@ public class Product extends AbstractEntity {
     String description;
 
     @Column(name = "thumbnail")
-    String thumbnail; // URL hình ảnh
+    String thumbnail;
 
-    @Column(name = "usage_instruction")
-    String usageInstruction;
-
-    @Column(name = "expiry_date")
-    LocalDate expiryDate;
+    @Column(name = "size")
+    String size;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     Status status = Status.ACTIVE;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonIgnore
+    List<Batch> batches;
+
+    @Column(name = "stock")
+    Integer stock = 0;
+
+//    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+//    @JsonIgnore
+//    List<FeedBack> feedBacks;
+
+
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "brand_id")
     Brand brand;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "origin_id")
     Origin origin;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "skin_type_id")
     SkinType skinType;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "category_id")
     Category category;
 

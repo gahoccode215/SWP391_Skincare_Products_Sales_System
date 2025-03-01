@@ -2,6 +2,7 @@ package com.swp391.skincare_products_sales_system.controller;
 
 import com.swp391.skincare_products_sales_system.dto.request.OriginCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
+import com.swp391.skincare_products_sales_system.dto.response.OriginPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.OriginResponse;
 import com.swp391.skincare_products_sales_system.service.OriginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,15 +22,20 @@ import org.springframework.web.bind.annotation.*;
 public class OriginController {
 
     OriginService originService;
-
-    @PostMapping
-    @Operation(summary = "Create origin", description = "API retrieve attribute to create origin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<OriginResponse> createOrigin(@RequestBody @Valid OriginCreationRequest request) {
-        return ApiResponse.<OriginResponse>builder()
-                .code(HttpStatus.CREATED.value())
-                .message("Create origin successfully")
-                .result(originService.createOrigin(request))
+    @GetMapping
+    @Operation(summary = "Get all origins (ADMIN, MANAGER)", description = "Retrieve all origins with pagination, sorting, and filtering.")
+    @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ApiResponse<OriginPageResponse> getAllBrands(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "100") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String order) {
+        return ApiResponse.<OriginPageResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Get brands successfully")
+                .result(originService.getAll(false, keyword, page, size, sortBy, order))
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.config;
 
 import com.swp391.skincare_products_sales_system.constant.PredefinedRole;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.model.Role;
 import com.swp391.skincare_products_sales_system.model.User;
 import com.swp391.skincare_products_sales_system.repository.RoleRepository;
@@ -38,85 +39,55 @@ public class ApplicationInitConfig {
         return args -> {
             if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
                 List<User> listAccount = new ArrayList<>();
-                Role customerRole =roleRepository.save(Role.builder()
-                        .name(PredefinedRole.CUSTOMER_ROLE)
-                        .description("User role")
-                        .build());
-                Role managerRole = roleRepository.save(Role.builder()
-                        .name(PredefinedRole.MANAGER_ROLE)
-                        .description("Manager role")
-                        .build());
-                Role staffRole = roleRepository.save(Role.builder()
-                        .name(PredefinedRole.STAFF)
-                        .description("Staff role")
-                        .build());
-                Role deliveryRole = roleRepository.save(Role.builder()
-                        .name(PredefinedRole.DELIVERY)
-                        .description("Delivery role")
-                        .build());
-                Role expertRole = roleRepository.save(Role.builder()
-                        .name(PredefinedRole.EXPERT)
-                        .description("Expert role")
-                        .build());
-                Role adminRole = roleRepository.save(Role.builder()
-                        .name(PredefinedRole.ADMIN_ROLE)
-                        .description("Admin role")
-                        .build());
+                Role customerRole = initRole(PredefinedRole.CUSTOMER_ROLE);
+                roleRepository.save(customerRole);
+                Role managerRole = initRole(PredefinedRole.MANAGER_ROLE);
+                roleRepository.save(managerRole);
+                Role staffRole = initRole(PredefinedRole.STAFF);
+                roleRepository.save(staffRole);
+                Role deliveryRole = initRole(PredefinedRole.DELIVERY);
+                roleRepository.save(deliveryRole);
+                Role expertRole = initRole(PredefinedRole.EXPERT_ROLE);
+                roleRepository.save(expertRole);
+                Role adminRole = initRole(PredefinedRole.ADMIN_ROLE);
+                roleRepository.save(adminRole);
 
-                var roleAdmin = new HashSet<Role>();
-                roleAdmin.add(adminRole);
-
-                User admin = User.builder()
-                        .username(ADMIN_USER_NAME)
-                        .password(passwordEncoder.encode(ADMIN_PASSWORD))
-                        .roles(roleAdmin)
-                        .build();
+                User admin = initAccount(ADMIN_USER_NAME, ADMIN_PASSWORD, adminRole);
                 listAccount.add(admin);
-
-                var roleCustomer = new HashSet<Role>();
-                roleCustomer.add(customerRole);
-                User customer = User.builder()
-                        .username("customer")
-                        .password(passwordEncoder.encode("customer"))
-                        .roles(roleCustomer)
-                        .build();
+                User customer = initAccount("customer", "customer", customerRole);
                 listAccount.add(customer);
-                var roleManager = new HashSet<Role>();
-                roleManager.add(managerRole);
-                User manager = User.builder()
-                        .username("manager")
-                        .password(passwordEncoder.encode("manager"))
-                        .roles(roleManager)
-                        .build();
+                User manager = initAccount("manager", "manager", managerRole);
                 listAccount.add(manager);
-                var roleStaff = new HashSet<Role>();
-                roleStaff.add(staffRole);
-                User staff = User.builder()
-                        .username("staff")
-                        .password(passwordEncoder.encode("staff"))
-                        .roles(roleStaff)
-                        .build();
+                User staff = initAccount("staff", "staff", staffRole);
                 listAccount.add(staff);
-                var roleDelivery = new HashSet<Role>();
-                roleDelivery.add(deliveryRole);
-                User delivery = User.builder()
-                        .username("delivery")
-                        .password(passwordEncoder.encode("delivery"))
-                        .roles(roleDelivery)
-                        .build();
+                User delivery = initAccount("delivery", "delivery", deliveryRole);
                 listAccount.add(delivery);
-                var roleExpert = new HashSet<Role>();
-                roleExpert.add(expertRole);
-                User expert = User.builder()
-                        .username("expert")
-                        .password(passwordEncoder.encode("expert"))
-                        .roles(roleExpert)
-                        .build();
+                User expert = initAccount("expert", "expert", expertRole);
                 listAccount.add(expert);
                 userRepository.saveAll(listAccount);
                 log.warn("admin user has been created with default password: admin, please change it");
             }
             log.info("Application initialization completed .....");
         };
+    }
+
+    private Role initRole(String role) {
+        Role newRole = Role.builder()
+                .name(role)
+                .description(role)
+                .build();
+        newRole.setIsDeleted(false);
+        return newRole;
+    }
+
+    private User initAccount(String username, String password, Role role) {
+        User user = User.builder()
+                .username(username)
+                .password(passwordEncoder.encode(password))
+                .role(role)
+                .status(Status.ACTIVE)
+                .build();
+        user.setIsDeleted(false);
+        return user;
     }
 }

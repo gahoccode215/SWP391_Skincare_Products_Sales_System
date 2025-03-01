@@ -18,14 +18,11 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String>, JpaSpecificationExecutor<Product> {
+    Optional<Product> findByIdAndIsDeletedFalse(String productId);
 
+    @Query("SELECT x FROM Product x WHERE x.id = :productId AND x.isDeleted = false AND x.status = com.swp391.skincare_products_sales_system.enums.Status.ACTIVE")
+    Optional<Product> findByIdAndIsDeletedFalseAndStatus(@Param("productId") String productId);
     boolean existsBySlug(String slug);
-
-    Optional<Product> findByIdAndIsDeletedFalse(String id);
-
-    @Query("SELECT p FROM Product p WHERE p.slug = :slug AND p.isDeleted = false AND p.status = com.swp391.skincare_products_sales_system.enums.Status.ACTIVE")
-    Optional<Product> findBySlugAndIsDeletedFalseAndStatus(@Param("slug") String slug);
-
 
     @Query("SELECT p FROM Product p WHERE p.isDeleted = false " +
             "AND (p.name LIKE %:keyword% OR :keyword IS NULL) " +
@@ -41,8 +38,10 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
             @Param("origin") Origin origin,
             Pageable pageable);
 
-
     @Modifying
-    @Query("UPDATE Product p SET p.status = :status WHERE p.id = :id AND p.isDeleted = false")
+    @Query("UPDATE Product x SET x.status = :status WHERE x.id = :id AND x.isDeleted = false")
     void updateProductStatus(@Param("id") String id, @Param("status") Status status);
+
+    @Query("SELECT x FROM Product x WHERE x.slug = :slug AND x.isDeleted = false AND x.status = com.swp391.skincare_products_sales_system.enums.Status.ACTIVE")
+    Optional<Product> findBySlugAndIsDeletedFalseAndStatus(@Param("slug") String slug);
 }

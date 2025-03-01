@@ -15,24 +15,43 @@ import java.time.LocalDate;
 @Builder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Batch extends AbstractEntity{
+public class Batch extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "batch_code", unique = true, nullable = false)
+    String batchCode; // Mã lô hàng
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
-    Product product; // Sản phẩm liên kết với lô này
+    Product product; // Mỗi batch thuộc về một sản phẩm
 
-    Double originalPrice;
+    @Column(name = "quantity", nullable = false)
+    Integer quantity; // Số lượng nhập
 
-    Integer quantity; // Số lượng của sản phẩm trong lô
-    LocalDate manufactureDate; // Ngày sản xuất
-    LocalDate expirationDate; // Ngày hết hạn
+    @Column(name = "import_price", nullable = false)
+    Double importPrice; // Giá nhập hàng
+
+    @Column(name = "manufacture_date", nullable = false)
+    LocalDate manufactureDate;
+
+    @Column(name = "expiration_date", nullable = false)
+    LocalDate expirationDate;
 
 
-    // Kiểm tra xem lô có còn sản phẩm không
-    public boolean isAvailable() {
-        return quantity > 0;
+    @PrePersist
+    @PreUpdate
+    private void validateDates() {
+        if (manufactureDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Ngày sản xuất không thể lớn hơn ngày hiện tại.");
+        }
+        if (manufactureDate.isAfter(expirationDate)) {
+            throw new IllegalArgumentException("Ngày sản xuất phải trước ngày hết hạn.");
+        }
+        if (expirationDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Ngày hết hạn không thể nhỏ hơn ngày hiện tại.");
+        }
     }
+
 }

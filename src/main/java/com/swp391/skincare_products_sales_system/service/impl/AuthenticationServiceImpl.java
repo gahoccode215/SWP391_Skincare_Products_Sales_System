@@ -8,6 +8,7 @@ import com.swp391.skincare_products_sales_system.dto.response.LoginResponse;
 import com.swp391.skincare_products_sales_system.dto.response.RefreshTokenResponse;
 import com.swp391.skincare_products_sales_system.dto.response.RegisterResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.model.InvalidatedToken;
 import com.swp391.skincare_products_sales_system.model.Role;
@@ -39,9 +40,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
     JwtUtil jwtUtil;
     InvalidatedTokenRepository invalidatedTokenRepository;
-    private final RoleRepository roleRepository;
+//    EmailService emailService;
+
+
+    @Override
+    @Transactional
+    public RegisterResponse register(RegisterRequest request) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
+        }
+//        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+//            throw new AppException(ErrorCode.EMAIL_EXISTED);
+//        }
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .gender(request.getGender())
+                .birthday(request.getBirthday())
+                .status(Status.ACTIVE)
+//                .email(request.getEmail)
+                .build();
+        // Lấy Role từ Database gắn vào
+        Role customRole = roleRepository.findByName(PredefinedRole.CUSTOMER_ROLE)
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+        user.setRole(customRole);
+        user.setIsDeleted(false);
+        userRepository.save(user);
+//        sendVerificationEmail(user);
+        return RegisterResponse.builder()
+                .username(user.getUsername())
+                .gender(user.getGender())
+                .birthday(user.getBirthday())
+                .build();
+    }
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -103,30 +137,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public RegisterResponse register(RegisterRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new AppException(ErrorCode.USERNAME_EXISTED);
-        }
-        User user = User.builder()
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .gender(request.getGender())
-                .birthday(request.getBirthday())
-                .build();
-        // Lấy Role từ Database gắn vào
-        Role userRole = roleRepository.findByName(PredefinedRole.CUSTOMER_ROLE)
-                .orElseThrow(() -> new AppException(ErrorCode.REGISTER_ERROR));
-        user.setRoles(Set.of(userRole));
-        userRepository.save(user);
-        return RegisterResponse.builder()
-                .username(user.getUsername())
-                .gender(user.getGender())
-                .birthday(user.getBirthday())
-                .build();
-    }
-
-    @Override
-    @Transactional
     public void logout(LogoutRequest request) {
         SignedJWT signedJWT;
         try {
@@ -183,4 +193,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(encodedNewPassword);
         userRepository.save(user);
     }
+//    private void sendVerificationEmail(User user) {
+//        try {
+//            String verificationToken = jwtUtil.generateToken(user);
+//            String verificationLink = "http://localhost:8080/api/auth/verify?token=" + verificationToken;
+//
+//            String content = "<h2>Chào mừng " + user.getUsername() + "!</h2>"
+//                    + "<p>Nhấp vào liên kết dưới đây để xác nhận tài khoản của bạn:</p>"
+//                    + "<a href='" + verificationLink + "'>Xác nhận tài khoản</a>";
+//
+//            emailService.sendEmail(user.getUsername(), "Xác thực tài khoản", content);
+//            log.info("Email xác nhận đã gửi đến {}", user.getUsername());
+//        } catch (MessagingException e) {
+//            log.error("Không thể gửi email xác nhận", e);
+//            throw new AppException(ErrorCode.EMAIL_SENDING_FAILED);
+//        }
+//    }
+
 }
+

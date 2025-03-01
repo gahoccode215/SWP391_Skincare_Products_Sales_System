@@ -34,12 +34,6 @@
         <spotless.version>2.43.0</spotless.version>
     </properties>
     <dependencies>
-<!--        Cloudinary-->
-        <dependency>
-            <groupId>com.cloudinary</groupId>
-            <artifactId>cloudinary-http45</artifactId>
-            <version>1.38.0</version>
-        </dependency>
         <!--		Slug-->
         <dependency>
             <groupId>com.github.slugify</groupId>

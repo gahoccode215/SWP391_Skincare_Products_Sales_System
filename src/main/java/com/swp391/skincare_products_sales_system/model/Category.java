@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,13 +32,14 @@ public class Category extends AbstractEntity{
     @Column(name = "description")
     String description;
 
-    @Column(name = "thumbnail")
-    String thumbnail;
-
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     Status status = Status.ACTIVE;
 
-    @OneToMany(mappedBy = "category")
-    Set<Product> products;
+    @Column(name = "thumbnail")
+    String thumbnail;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    @JsonIgnore
+    List<Product> products;
 }

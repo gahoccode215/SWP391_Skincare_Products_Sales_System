@@ -11,5 +11,6 @@ import java.util.Set;
 
 @Repository
 public interface FeatureRepository extends JpaRepository<Feature, Long> {
-
+    @Query("SELECT f FROM Feature f WHERE f.id IN :featureIds AND f.isDeleted = false")
+    Set<Feature> findAllByIdAndIsDeletedFalse(@Param("featureIds") Set<Long> featureIds);
 }

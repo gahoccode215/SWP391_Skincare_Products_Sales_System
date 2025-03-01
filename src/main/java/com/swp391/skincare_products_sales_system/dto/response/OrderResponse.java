@@ -2,10 +2,14 @@ package com.swp391.skincare_products_sales_system.dto.response;
 
 import com.swp391.skincare_products_sales_system.dto.request.OrderItemRequest;
 import com.swp391.skincare_products_sales_system.enums.OrderStatus;
+import com.swp391.skincare_products_sales_system.enums.PaymentMethod;
+import com.swp391.skincare_products_sales_system.enums.PaymentStatus;
+import com.swp391.skincare_products_sales_system.model.Address;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -14,10 +18,14 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderResponse {
-    Long id;
-//    String userName;
+    Long orderId;
+    Double totalAmount;
+    String orderInfo;
     OrderStatus status;
-    Double totalPrice;
+    String username;
     LocalDateTime orderDate;
-    Set<OrderItemRequest> orderItems;
+    PaymentMethod paymentMethod;
+    PaymentStatus paymentStatus;
+    Address address;
+    List<OrderItemResponse> orderResponseItemList;
 }

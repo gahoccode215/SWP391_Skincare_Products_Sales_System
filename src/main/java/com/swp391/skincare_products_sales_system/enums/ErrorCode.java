@@ -17,6 +17,11 @@ public enum ErrorCode {
     IMAGE_NOT_FOUND(1005, "Image not found", HttpStatus.BAD_REQUEST),
     BRAND_NOT_EXISTED(1006, "Brand not existed", HttpStatus.BAD_REQUEST),
     ORIGIN_NOT_EXISTED(1007, "Origin not existed", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_FOUND(1008, "Role not found", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(1009, "User existed", HttpStatus.BAD_REQUEST),
+    ADDRESS_NOT_FOUND(1010, "Address not found", HttpStatus.BAD_REQUEST),
+    CART_NOT_FOUND(1011, "Cart not found", HttpStatus.BAD_REQUEST),
+    ORDER_NOT_FOUND(1012, "Order not found", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),
@@ -27,6 +32,9 @@ public enum ErrorCode {
     INVALID_CONFIRM_PASSWORD(1106, "Confirm password not match with password", HttpStatus.BAD_REQUEST),
     INVALID_CHANGE_PASSWORD(1007, "Old password not correct", HttpStatus.BAD_REQUEST),
     INVALID_GENDER(1107, "Gender invalid", HttpStatus.BAD_REQUEST),
+    INVALID_QUANTITY(1108, "Quantity invalid", HttpStatus.BAD_REQUEST),
+    INVALID_PAYMENT_METHOD(1109, "Invalid payment method", HttpStatus.BAD_REQUEST),
+    INVALID_JSON(1010, "Json invalid", HttpStatus.BAD_REQUEST),
     // 12XX
     UNAUTHENTICATED(1201, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     // 13XX
