@@ -34,6 +34,7 @@ public enum ErrorCode {
     INVALID_GENDER(1107, "Gender invalid", HttpStatus.BAD_REQUEST),
     INVALID_QUANTITY(1108, "Quantity invalid", HttpStatus.BAD_REQUEST),
     INVALID_PAYMENT_METHOD(1109, "Invalid payment method", HttpStatus.BAD_REQUEST),
+    INVALID_JSON(1010, "Json invalid", HttpStatus.BAD_REQUEST),
     // 12XX
     UNAUTHENTICATED(1201, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     // 13XX

@@ -2,6 +2,7 @@ package com.swp391.skincare_products_sales_system.service.impl;
 
 import com.swp391.skincare_products_sales_system.constant.Query;
 import com.swp391.skincare_products_sales_system.dto.request.UserCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.request.UserUpdateProfileRequest;
 import com.swp391.skincare_products_sales_system.dto.request.UserUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.UserPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.UserResponse;
@@ -27,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +40,6 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
     RoleRepository roleRepository;
-    UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
     @Override
@@ -50,15 +52,26 @@ public class UserServiceImpl implements UserService {
         if (admin)
             users = userRepository.findAllByFilters(keyword, status, role, pageable);
         log.info("{}", users);
-        // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         UserPageResponse response = new UserPageResponse();
         if (users == null) throw new AppException(ErrorCode.USER_NOT_EXISTED);
-
-        response.setUserResponses(users.stream().map(userMapper::toUserResponse).collect(Collectors.toList()));
+        List<UserResponse> userResponses = new ArrayList<>();
+        for (User user : users.getContent()) {
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(user.getId());
+            userResponse.setAvatar(user.getAvatar());
+            userResponse.setGender(user.getGender());
+            userResponse.setUsername(user.getUsername());
+            userResponse.setRoleName(user.getRole().getName());
+            userResponse.setEmail(user.getEmail());
+            userResponse.setFirstName(user.getFirstName());
+            userResponse.setLastName(user.getLastName());
+            userResponses.add(userResponse);
+        }
         response.setTotalElements(users.getTotalElements());
         response.setTotalPages(users.getTotalPages());
         response.setPageNumber(users.getNumber());
         response.setPageSize(users.getSize());
+        response.setUserResponses(userResponses);
         return response;
     }
 
@@ -83,13 +96,15 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         user.setIsDeleted(false);
-        return userMapper.toUserResponse(userRepository.save(user));
+        userRepository.save(user);
+        return toUserResponse(user);
     }
 
     @Override
     public UserResponse getUser(String userId) {
-        return userMapper.toUserResponse(userRepository.findByIdAndIsDeletedFalse(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return toUserResponse(user);
     }
 
 
@@ -117,7 +132,7 @@ public class UserServiceImpl implements UserService {
             Role role = roleRepository.findByName(request.getRoleName()).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
             user.setRole(role);
         }
-        return userMapper.toUserResponse(user);
+        return toUserResponse(user);
     }
 
 
@@ -154,13 +169,34 @@ public class UserServiceImpl implements UserService {
         // Chuyển đổi từ đối tượng User sang UserResponse (DTO)
 
 //        return userMapper.toUserResponse(user);
+        return toUserResponse(user);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUserProfile(UserUpdateProfileRequest request) {
+        User user = getAuthenticatedUser();
+        user.setLastName(request.getLastName());
+        user.setFirstName(request.getFirstName());
+        user.setGender(request.getGender());
+        user.setBirthday(request.getBirthday());
+        user.setAvatar(request.getAvatar());
+        return toUserResponse(user);
+    }
+    private User getAuthenticatedUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsernameOrThrow(username);
+    }
+    private UserResponse toUserResponse(User user){
         return UserResponse.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .gender(user.getGender())
+                .email(user.getEmail())
                 .username(user.getUsername())
-                .role(user.getRole())
+                .roleName(user.getRole().getName())
+                .avatar(user.getAvatar())
                 .build();
     }
 
@@ -190,5 +226,4 @@ public class UserServiceImpl implements UserService {
                 return order.equals(Query.ASC) ? Sort.by(Query.FIRST_NAME).ascending() : Sort.by(Query.FIRST_NAME).descending();
         }
     }
-
 }

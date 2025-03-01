@@ -48,6 +48,10 @@ public class User extends AbstractEntity {
     @Temporal(TemporalType.DATE)
     LocalDate birthday;
 
+
+    @Column(name = "avatar")
+    String avatar;
+
     @Column(name = "point")
     Integer point;
 
