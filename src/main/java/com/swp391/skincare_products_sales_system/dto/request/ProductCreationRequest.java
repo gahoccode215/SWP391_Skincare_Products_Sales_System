@@ -22,6 +22,7 @@ import lombok.experimental.FieldDefaults;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductCreationRequest {
+    @NotBlank(message = "Tên không được để trống")
     String name;
     Double price;
     String description;

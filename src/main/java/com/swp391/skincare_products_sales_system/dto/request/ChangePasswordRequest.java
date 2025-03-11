@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.dto.request;
 
 import com.swp391.skincare_products_sales_system.validator.ConfirmPasswordConstraint;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 @ConfirmPasswordConstraint
 public class ChangePasswordRequest {
 
+    @NotBlank(message = "Mật khẩu không được để trống")
     String oldPassword;
 
     @Size(min = 6, message = "INVALID_PASSWORD")
