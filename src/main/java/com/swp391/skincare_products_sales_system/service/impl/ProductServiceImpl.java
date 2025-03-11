@@ -2,10 +2,7 @@ package com.swp391.skincare_products_sales_system.service.impl;
 
 import com.github.slugify.Slugify;
 import com.swp391.skincare_products_sales_system.constant.Query;
-import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
-import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
-import com.swp391.skincare_products_sales_system.dto.request.SpecificationCreationRequest;
-import com.swp391.skincare_products_sales_system.dto.request.SpecificationUpdateRequest;
+import com.swp391.skincare_products_sales_system.dto.request.*;
 import com.swp391.skincare_products_sales_system.dto.response.*;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
@@ -26,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -40,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
     CategoryRepository categoryRepository;
     BatchRepository batchRepository;
     FeedBackRepository feedBackRepository;
+    SpecificationRepository specificationRepository;
 
 
     @Override
@@ -103,19 +102,41 @@ public class ProductServiceImpl implements ProductService {
         if (request.getDescription() != null) {
             product.setDescription(request.getDescription());
         }
-        if(request.getThumbnail() != null){
+        if (request.getIngredient() != null) {
+            product.setIngredient(request.getIngredient());
+        }
+        if (request.getUsageInstruction() != null) {
+            product.setUsageInstruction(request.getUsageInstruction());
+        }
+        if (request.getThumbnail() != null) {
             product.setThumbnail(request.getThumbnail());
         }
-        if(request.getStatus() != null){
+        if (request.getStatus() != null) {
             product.setStatus(request.getStatus());
+        }
+        if (request.getSpecification() != null) {
+            SpecificationUpdateRequest specRequest = request.getSpecification();
+            Specification existingSpec = product.getSpecification();
+            if (existingSpec == null) {
+                Specification newSpec = toSpecificationUpdate(specRequest);
+                newSpec.setProduct(product);
+                specificationRepository.save(newSpec);
+                product.setSpecification(newSpec);
+            } else {
+                existingSpec.setOrigin(specRequest.getOrigin());
+                existingSpec.setBrandOrigin(specRequest.getBrandOrigin());
+                existingSpec.setManufacturingLocation(specRequest.getManufacturingLocation());
+                existingSpec.setSkinType(specRequest.getSkinType());
+                specificationRepository.save(existingSpec);
+            }
         }
         productRepository.save(product);
         return toProductResponse(product);
     }
 
     @Override
-    public ProductPageResponse getProducts(boolean admin, String keyword, int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
-        if (page > 0) page -= 1;
+    public ProductPageResponse getProducts(boolean admin, String keyword, int page, int size, String categorySlug, String brandSlug, String sortBy, String order) {
+        if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
         Sort sort = getSort(sortBy, order);
         Pageable pageable = PageRequest.of(page, size, sort);
         Category category = categorySlug != null ? categoryRepository.findBySlugAndStatusAndIsDeletedFalse(categorySlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
@@ -129,6 +150,7 @@ public class ProductServiceImpl implements ProductService {
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         ProductPageResponse response = new ProductPageResponse();
         List<ProductResponse> productResponses = new ArrayList<>();
+        // Ánh xạ từng sản phẩm từ Page<Product> sang ProductResponse
         for (Product product : products.getContent()) {
             ProductResponse productResponse = toProductResponse(product);
             productResponses.add(productResponse);
@@ -159,6 +181,57 @@ public class ProductServiceImpl implements ProductService {
     public void changeProductStatus(String productId, Status status) {
         Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         productRepository.updateProductStatus(product.getId(), status);
+    }
+
+    @Override
+    public void deleteBatch(String batchId) {
+        Batch batch = batchRepository.findById(batchId).orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_FOUND));
+        batchRepository.delete(batch);
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse importBatch(BatchCreationRequest request, String productId) {
+        Batch batch = Batch.builder()
+                .batchCode("BATCH-" + System.currentTimeMillis())
+                .quantity(request.getQuantity())
+                .manufactureDate(request.getManufactureDate())
+                .expirationDate(request.getExpirationDate())
+                .build();
+        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        product.addBatch(batch);
+        productRepository.save(product);
+        return toProductResponse(product);
+    }
+
+    @Override
+    public List<ProductResponse> getLatestProducts(int limit) {
+        PageRequest pageRequest = PageRequest.of(0, limit);
+        List<Product> products = productRepository.findLatestProductsByStatus(Status.ACTIVE, pageRequest).getContent();
+        return products.stream()
+                .map(this::toProductResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BatchPageResponse getBatches(int page, int size, String productId) {
+        if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Batch> batches;
+        batches = batchRepository.findAllByProductIdAnd(productId, pageable);
+        BatchPageResponse response = new BatchPageResponse();
+        List<BatchResponse> batchResponses = new ArrayList<>();
+        for (Batch batch : batches.getContent()) {
+            BatchResponse batchResponse = toBatchResponse(batch);
+            batchResponses.add(batchResponse);
+        }
+        response.setContent(batchResponses);
+        response.setTotalElements(batches.getTotalElements());
+        response.setTotalPages(batches.getTotalPages());
+        response.setPageNumber(batches.getNumber());
+        response.setPageSize(batches.getSize());
+        return response;
+
     }
 
     private Sort getSort(String sortBy, String order) {

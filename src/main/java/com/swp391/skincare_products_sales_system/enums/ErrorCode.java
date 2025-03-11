@@ -21,6 +21,7 @@ public enum ErrorCode {
     ADDRESS_NOT_FOUND(1009, "Địa chỉ không tồn tại", HttpStatus.BAD_REQUEST),
     CART_NOT_FOUND(1010, "Giỏ hàng không tồn tại", HttpStatus.BAD_REQUEST),
     ORDER_NOT_FOUND(1011, "Đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
+    BATCH_NOT_FOUND(1012, "Lô hàng không tồn tại", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),

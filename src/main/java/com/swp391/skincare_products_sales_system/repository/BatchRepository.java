@@ -11,12 +11,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface BatchRepository extends JpaRepository<Batch, Long > {
-    @Query("SELECT p FROM Batch p WHERE p.product.id = :productId ORDER BY p.expirationDate DESC")
-    Page<Batch> findAllByProductIdAnd(@Param("productId") String productId, Pageable pageable);
-    @Query("SELECT p FROM Batch p WHERE p.product.id = :productId ORDER BY p.expirationDate ASC ")
-    List<Batch> findAllByProductId(@Param("productId") String productId);
+public interface BatchRepository extends JpaRepository<Batch, String > {
 
     @Query("SELECT b FROM Batch b WHERE b.product.id = :productId AND b.quantity > 0 ORDER BY b.expirationDate ASC LIMIT 1")
     Batch findFirstBatchByProductIdAndQuantityGreaterThanZero(@Param("productId") String productId);
+
+    @Query("SELECT p FROM Batch p WHERE p.product.id = :productId ORDER BY p.expirationDate DESC")
+    Page<Batch> findAllByProductIdAnd(@Param("productId") String productId, Pageable pageable);
 }
