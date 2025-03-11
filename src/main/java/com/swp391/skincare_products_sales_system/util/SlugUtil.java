@@ -14,7 +14,6 @@ public class SlugUtil {
     private static final Random RANDOM = new SecureRandom();
 
 
-    // Helper method to generate a random string
     public String generateRandomString(int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

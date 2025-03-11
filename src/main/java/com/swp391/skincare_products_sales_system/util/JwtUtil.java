@@ -61,7 +61,6 @@ public class JwtUtil {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
-            log.error("Cannot create token", e);
             throw new RuntimeException(e);
         }
     }
@@ -70,15 +69,7 @@ public class JwtUtil {
         StringJoiner stringJoiner = new StringJoiner(" ");
 
         if (user.getRole() != null) {
-            // Thêm tiền tố "ROLE_" vào tên của role
-            stringJoiner.add("ROLE_" + user.getRole().getName()); // Thêm ROLE_ vào trước tên quyền
-
-            // Nếu role có permissions, thêm chúng vào phạm vi
-            if (!CollectionUtils.isEmpty(user.getRole().getPermissions())) {
-                user.getRole().getPermissions().forEach(permission -> {
-                    stringJoiner.add(permission.getName());
-                });
-            }
+            stringJoiner.add("ROLE_" + user.getRole().getName());
         }
 
         return stringJoiner.toString();
