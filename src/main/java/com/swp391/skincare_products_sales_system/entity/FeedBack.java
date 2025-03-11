@@ -1,9 +1,9 @@
 package com.swp391.skincare_products_sales_system.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Getter
@@ -12,23 +12,26 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "tbl_cart_item")
+@Table(name = "tbl_feedback")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartItem {
+public class FeedBack {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "cart_id")
-    Cart cart;
+    @Column(name = "description")
+    String description;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "product_id")
     Product product;
 
-    Integer quantity;
-    Double price;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    User user;
+
+    Integer rating;
 
 }

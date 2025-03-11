@@ -27,17 +27,8 @@ public class Role extends AbstractEntity {
     @Column(name = "description")
     String description;
 
-
-
-    @JsonManagedReference  // Ngừng vòng lặp khi serialize các role
+    @JsonManagedReference
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     Set<User> users;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "tbl_role_has_permission",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    Set<Permission> permissions;
 }

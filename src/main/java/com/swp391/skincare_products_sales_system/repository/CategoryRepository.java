@@ -12,11 +12,8 @@ import com.swp391.skincare_products_sales_system.enums.Status;
 
 import java.util.Optional;
 
-@Repository
 public interface CategoryRepository extends JpaRepository<Category, String> {
     Optional<Category> findByIdAndIsDeletedFalse(String id);
-
-    Optional<Category> findBySlugAndIsDeletedFalse(String slug);
 
     @Query("SELECT c FROM Category c WHERE c.isDeleted = false " +
             "AND c.status = com.swp391.skincare_products_sales_system.enums.Status.ACTIVE " +

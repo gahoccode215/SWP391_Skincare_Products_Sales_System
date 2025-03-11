@@ -43,14 +43,11 @@ public class BatchServiceImpl implements BatchService {
                 .batchCode("BATCH-" + System.currentTimeMillis())
                 .product(product)
                 .quantity(request.getQuantity())
-                .importPrice(request.getImportPrice())
                 .manufactureDate(request.getManufactureDate())
                 .expirationDate(request.getExpirationDate())
                 .build();
         batchRepository.save(batch);
 
-        // Cập nhật tồn kho
-        product.setStock(product.getStock() + request.getQuantity());
         productRepository.save(product);
 
         return toBatchResponse(batch);
@@ -69,7 +66,6 @@ public class BatchServiceImpl implements BatchService {
             batchResponse.setId(batch.getId());
             batchResponse.setBatchCode(batch.getBatchCode());
             batchResponse.setQuantity(batch.getQuantity());
-            batchResponse.setImportPrice(batch.getImportPrice());
             batchResponse.setManufactureDate(batch.getManufactureDate());
             batchResponse.setExpirationDate(batch.getExpirationDate());
 
@@ -85,7 +81,6 @@ public class BatchServiceImpl implements BatchService {
     private BatchResponse toBatchResponse(Batch batch){
         return BatchResponse.builder()
                 .productId(batch.getProduct().getId())
-                .importPrice(batch.getImportPrice())
                 .expirationDate(batch.getExpirationDate())
                 .manufactureDate(batch.getManufactureDate())
                 .quantity(batch.getQuantity())

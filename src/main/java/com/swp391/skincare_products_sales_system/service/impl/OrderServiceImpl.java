@@ -173,7 +173,6 @@ public class OrderServiceImpl implements OrderService {
                 .username(cart.getUser().getUsername())
                 .orderDate(LocalDateTime.now())
                 .paymentMethod(paymentMethod)
-                .shippingFee(0.0)
                 .address(address)
                 .paymentStatus(PaymentStatus.NOT_PAID)
                 .status(OrderStatus.PENDING)

@@ -3,7 +3,6 @@ package com.swp391.skincare_products_sales_system.repository;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.entity.Brand;
 import com.swp391.skincare_products_sales_system.entity.Category;
-import com.swp391.skincare_products_sales_system.entity.Origin;
 import com.swp391.skincare_products_sales_system.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,14 +27,12 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
             "AND (p.name LIKE %:keyword% OR :keyword IS NULL) " +
             "AND (:category IS NULL OR p.category = :category) " +
             "AND (:brand IS NULL OR p.brand = :brand) " +
-            "AND (:origin IS NULL OR p.origin = :origin)" +
             "AND (:status is null OR p.status = :status)")
     Page<Product> findAllByFilters(
             @Param("keyword") String keyword,
             @Param("status") Status status,
             @Param("category") Category category,
             @Param("brand") Brand brand,
-            @Param("origin") Origin origin,
             Pageable pageable);
 
     @Modifying

@@ -47,7 +47,6 @@ public class ProductServiceImpl implements ProductService {
                 .name(request.getName())
                 .price(request.getPrice())
                 .description(request.getDescription())
-                .size(request.getSize())
                 .build();
         if (request.getCategory_id() != null) {
             Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));

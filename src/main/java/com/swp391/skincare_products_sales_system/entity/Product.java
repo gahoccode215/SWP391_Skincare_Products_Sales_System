@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.Set;
+
 
 @Getter
 @Setter
@@ -16,7 +16,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_product")
-public class Product extends AbstractEntity{
+public class Product extends AbstractEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -33,27 +34,33 @@ public class Product extends AbstractEntity{
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
 
+    @Column(name = "ingredient")
+    String ingredient;
+
+    @Column(name = "usage_instruction")
+    String usageInstruction;
+
     @Column(name = "thumbnail")
     String thumbnail;
 
-    @Column(name = "size")
-    String size;
+    @Column(name = "rating")
+    Double rating;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    Status status = Status.ACTIVE;
+    Status status;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    Specification specification;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     List<Batch> batches;
 
-    @Column(name = "stock")
-    Integer stock = 0;
-
-//    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
-//    @JsonIgnore
-//    List<FeedBack> feedBacks;
-
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonIgnore
+    List<FeedBack> feedBacks;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
@@ -62,24 +69,12 @@ public class Product extends AbstractEntity{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
-    @JoinColumn(name = "origin_id")
-    Origin origin;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
-    @JoinColumn(name = "skin_type_id")
-    SkinType skinType;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
     @JoinColumn(name = "category_id")
     Category category;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "tbl_product_has_feature",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "feature_id")
-    )
-    Set<Feature> features;
+
+    public void addBatch(Batch obj){
+        batches.add(obj);
+        obj.setProduct(this);
+    }
 }
