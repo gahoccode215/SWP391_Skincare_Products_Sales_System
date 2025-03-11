@@ -1,4 +1,4 @@
-package com.swp391.skincare_products_sales_system.model;
+package com.swp391.skincare_products_sales_system.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,18 +16,16 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class AbstractEntity {
 
-    @Column(name = "created_at", length = 255)
+    @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     Date createdAt;
 
-    @Column(name = "updated_at", length = 255)
+    @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     Date updatedAt;
 
     @Column(name = "is_deleted")
     Boolean isDeleted;
-
-
 }

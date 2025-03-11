@@ -4,12 +4,11 @@ import com.swp391.skincare_products_sales_system.dto.request.IntrospectRequest;
 import com.swp391.skincare_products_sales_system.dto.response.IntrospectResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.User;
+import com.swp391.skincare_products_sales_system.entity.User;
 import com.swp391.skincare_products_sales_system.repository.InvalidatedTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;

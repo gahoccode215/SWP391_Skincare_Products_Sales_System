@@ -1,6 +1,5 @@
 package com.swp391.skincare_products_sales_system.service.impl;
 
-import com.swp391.skincare_products_sales_system.dto.request.OrderRequest;
 import com.swp391.skincare_products_sales_system.dto.response.OrderItemResponse;
 import com.swp391.skincare_products_sales_system.dto.response.OrderPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.OrderResponse;
@@ -9,7 +8,7 @@ import com.swp391.skincare_products_sales_system.enums.OrderStatus;
 import com.swp391.skincare_products_sales_system.enums.PaymentMethod;
 import com.swp391.skincare_products_sales_system.enums.PaymentStatus;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.*;
+import com.swp391.skincare_products_sales_system.entity.*;
 import com.swp391.skincare_products_sales_system.repository.*;
 import com.swp391.skincare_products_sales_system.service.OrderService;
 import lombok.AccessLevel;
@@ -24,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

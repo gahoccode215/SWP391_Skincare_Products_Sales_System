@@ -4,8 +4,8 @@ import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.Role;
-import com.swp391.skincare_products_sales_system.model.User;
+import com.swp391.skincare_products_sales_system.entity.Role;
+import com.swp391.skincare_products_sales_system.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

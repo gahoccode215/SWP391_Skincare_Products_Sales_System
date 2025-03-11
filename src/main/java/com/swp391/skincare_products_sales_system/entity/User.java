@@ -1,4 +1,4 @@
-package com.swp391.skincare_products_sales_system.model;
+package com.swp391.skincare_products_sales_system.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 
 @Getter

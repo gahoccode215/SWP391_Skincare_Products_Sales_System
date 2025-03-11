@@ -10,9 +10,9 @@ import com.swp391.skincare_products_sales_system.dto.response.RegisterResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.InvalidatedToken;
-import com.swp391.skincare_products_sales_system.model.Role;
-import com.swp391.skincare_products_sales_system.model.User;
+import com.swp391.skincare_products_sales_system.entity.InvalidatedToken;
+import com.swp391.skincare_products_sales_system.entity.Role;
+import com.swp391.skincare_products_sales_system.entity.User;
 import com.swp391.skincare_products_sales_system.repository.InvalidatedTokenRepository;
 import com.swp391.skincare_products_sales_system.repository.RoleRepository;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor

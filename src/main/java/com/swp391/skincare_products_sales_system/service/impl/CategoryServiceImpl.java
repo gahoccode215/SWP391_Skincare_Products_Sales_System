@@ -9,7 +9,7 @@ import com.swp391.skincare_products_sales_system.dto.response.CategoryResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.Category;
+import com.swp391.skincare_products_sales_system.entity.Category;
 import com.swp391.skincare_products_sales_system.repository.CategoryRepository;
 import com.swp391.skincare_products_sales_system.service.CategoryService;
 import com.swp391.skincare_products_sales_system.util.SlugUtil;
@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

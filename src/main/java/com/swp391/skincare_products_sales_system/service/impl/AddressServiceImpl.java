@@ -5,8 +5,8 @@ import com.swp391.skincare_products_sales_system.dto.request.AddressUpdateReques
 import com.swp391.skincare_products_sales_system.dto.response.AddressResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.Address;
-import com.swp391.skincare_products_sales_system.model.User;
+import com.swp391.skincare_products_sales_system.entity.Address;
+import com.swp391.skincare_products_sales_system.entity.User;
 import com.swp391.skincare_products_sales_system.repository.AddressRepository;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
 import com.swp391.skincare_products_sales_system.service.AddressService;

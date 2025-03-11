@@ -9,7 +9,7 @@ import com.swp391.skincare_products_sales_system.dto.response.BrandResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.Brand;
+import com.swp391.skincare_products_sales_system.entity.Brand;
 import com.swp391.skincare_products_sales_system.repository.BrandRepository;
 import com.swp391.skincare_products_sales_system.service.BrandService;
 import com.swp391.skincare_products_sales_system.util.SlugUtil;

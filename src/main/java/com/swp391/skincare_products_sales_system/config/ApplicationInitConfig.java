@@ -2,8 +2,8 @@ package com.swp391.skincare_products_sales_system.config;
 
 import com.swp391.skincare_products_sales_system.constant.PredefinedRole;
 import com.swp391.skincare_products_sales_system.enums.Status;
-import com.swp391.skincare_products_sales_system.model.Role;
-import com.swp391.skincare_products_sales_system.model.User;
+import com.swp391.skincare_products_sales_system.entity.Role;
+import com.swp391.skincare_products_sales_system.entity.User;
 import com.swp391.skincare_products_sales_system.repository.RoleRepository;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
 import lombok.AccessLevel;
@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Configuration

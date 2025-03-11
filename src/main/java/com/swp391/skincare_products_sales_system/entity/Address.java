@@ -1,4 +1,4 @@
-package com.swp391.skincare_products_sales_system.model;
+package com.swp391.skincare_products_sales_system.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -20,15 +20,30 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String name;
-    String phone;
-    String city;
-    String district;
-    String ward;
-    String street;
-    String addressLine;
-    Boolean isDefault;
 
+    @Column(name = "name")
+    String name;
+
+    @Column(name = "phone")
+    String phone;
+
+    @Column(name = "city")
+    String city;
+
+    @Column(name = "district")
+    String district;
+
+    @Column(name = "ward")
+    String ward;
+
+    @Column(name = "street")
+    String street;
+
+    @Column(name = "address_line")
+    String addressLine;
+
+    @Column(name = "is_default")
+    Boolean isDefault;
 
     @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
     @JsonIgnore

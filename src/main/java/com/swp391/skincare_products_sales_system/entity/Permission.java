@@ -1,12 +1,10 @@
-package com.swp391.skincare_products_sales_system.model;
+package com.swp391.skincare_products_sales_system.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
