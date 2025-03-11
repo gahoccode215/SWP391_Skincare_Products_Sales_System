@@ -4,8 +4,9 @@ import com.github.slugify.Slugify;
 import com.swp391.skincare_products_sales_system.constant.Query;
 import com.swp391.skincare_products_sales_system.dto.request.ProductCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.ProductUpdateRequest;
-import com.swp391.skincare_products_sales_system.dto.response.ProductPageResponse;
-import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
+import com.swp391.skincare_products_sales_system.dto.request.SpecificationCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.request.SpecificationUpdateRequest;
+import com.swp391.skincare_products_sales_system.dto.response.*;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
@@ -36,8 +37,9 @@ public class ProductServiceImpl implements ProductService {
     SlugUtil slugUtil;
     ProductRepository productRepository;
     BrandRepository brandRepository;
-    OriginRepository originRepository;
     CategoryRepository categoryRepository;
+    BatchRepository batchRepository;
+    FeedBackRepository feedBackRepository;
 
 
     @Override
@@ -106,40 +108,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductPageResponse getProducts(boolean admin, String keyword, int page, int size, String categorySlug, String brandSlug, String originSlug, String sortBy, String order) {
-        if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
-
+        if (page > 0) page -= 1;
         Sort sort = getSort(sortBy, order);
         Pageable pageable = PageRequest.of(page, size, sort);
-
         Category category = categorySlug != null ? categoryRepository.findBySlugAndStatusAndIsDeletedFalse(categorySlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
         Brand brand = brandSlug != null ? brandRepository.findBySlugAndStatusAndIsDeletedFalse(brandSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
-        Origin origin = originSlug != null ? originRepository.findBySlugAndStatusAndIsDeletedFalse(originSlug).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)) : null;
         Page<Product> products;
-
         if (admin) {
-            products = productRepository.findAllByFilters(keyword, null, category, brand, origin, pageable);
+            products = productRepository.findAllByFilters(keyword, null, category, brand, pageable);
         } else {
-            products = productRepository.findAllByFilters(keyword, Status.ACTIVE, category, brand, origin, pageable);
+            products = productRepository.findAllByFilters(keyword, Status.ACTIVE, category, brand, pageable);
         }
-
         // Chuyển đổi từ `Page<Product>` sang `ProductPageResponse`
         ProductPageResponse response = new ProductPageResponse();
-
         List<ProductResponse> productResponses = new ArrayList<>();
-
-        // Ánh xạ từng sản phẩm từ Page<Product> sang ProductResponse
         for (Product product : products.getContent()) {
-            ProductResponse productResponse = new ProductResponse();
-            productResponse.setId(product.getId());
-            productResponse.setName(product.getName());
-            productResponse.setPrice(product.getPrice());
-            productResponse.setDescription(product.getDescription());
-            productResponse.setSlug(product.getSlug());
-            productResponse.setThumbnail(product.getThumbnail());
-            productResponse.setStatus(product.getStatus());
-            if(product.getCategory() != null){
-                productResponse.setCategory(product.getCategory());
-            }
+            ProductResponse productResponse = toProductResponse(product);
             productResponses.add(productResponse);
         }
         response.setProductResponses(productResponses);
@@ -172,20 +156,18 @@ public class ProductServiceImpl implements ProductService {
 
     private Sort getSort(String sortBy, String order) {
         if (sortBy == null) {
-            sortBy = Query.NAME; // mặc định là sắp xếp theo tên nếu không có sortBy
+            sortBy = Query.NAME;
         }
 
         if (order == null || (!order.equals(Query.ASC) && !order.equals(Query.DESC))) {
-            order = Query.ASC; // mặc định là theo chiều tăng dần nếu không có order hoặc order không hợp lệ
+            order = Query.ASC;
         }
 
-        // Kiểm tra trường sortBy và tạo Sort tương ứng
         if (sortBy.equals(Query.PRICE)) {
             return order.equals(Query.ASC) ? Sort.by(Query.PRICE).ascending() : Sort.by(Query.PRICE).descending();
         }
         return order.equals(Query.ASC) ? Sort.by(Query.NAME).ascending() : Sort.by(Query.NAME).descending();
     }
-
 
     private String generateUniqueSlug(String name) {
         String baseSlug = slugify.slugify(name);
@@ -196,23 +178,113 @@ public class ProductServiceImpl implements ProductService {
         }
         return uniqueSlug;
     }
-    private ProductResponse toProductResponse(Product product){
+    private ProductResponse toProductResponse(Product product) {
+        Batch batch = batchRepository.findFirstBatchByProductIdAndQuantityGreaterThanZero(product.getId());
+
+        List<FeedBack> feedBacks = feedBackRepository.findAllByProductId(product.getId());
+
+        List<FeedBackResponse> feedBackResponses = feedBacks.stream()
+                .map(this::toFeedBackResponse)
+                .toList();
 
         ProductResponse productResponse = ProductResponse.builder()
                 .id(product.getId())
+                .feedBacks(feedBackResponses)
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .slug(product.getSlug())
                 .thumbnail(product.getThumbnail())
-//                .category_id(product.getCategory().getId())
                 .status(product.getStatus())
+                .rating(product.getRating())
+                .usageInstruction(product.getUsageInstruction())
+                .ingredient(product.getIngredient())
                 .build();
-        if(product.getCategory() != null){
-            Category category = product.getCategory();
-            productResponse.setCategory(category);
+        if (product.getCategory() != null) {
+            productResponse.setCategory(product.getCategory());
+        }
+        if (product.getBrand() != null) {
+            productResponse.setBrand(product.getBrand());
+        }
+        if (product.getBatches() != null) {
+            productResponse.setStock(toQuantityProduct(product.getBatches()));
+            if (!(product.getBatches().isEmpty())) {
+                productResponse.setExpirationTime(batch.getExpirationDate());
+            }
+        }
+        if (product.getSpecification() != null) {
+            productResponse.setSpecification(toSpecificationResponse(product.getSpecification()));
         }
         return productResponse;
+    }
+
+    private BatchResponse toBatchResponse(Batch batch) {
+        return BatchResponse.builder()
+                .id(batch.getId())
+                .batchCode(batch.getBatchCode())
+                .quantity(batch.getQuantity())
+                .manufactureDate(batch.getManufactureDate())
+                .expirationDate(batch.getExpirationDate())
+                .build();
+    }
+
+    private Specification toSpecificationUpdate(SpecificationUpdateRequest request) {
+        return Specification.builder()
+                .origin(request.getOrigin())
+                .brandOrigin(request.getBrandOrigin())
+                .manufacturingLocation(request.getManufacturingLocation())
+                .skinType(request.getSkinType())
+                .build();
+    }
+
+    private SpecificationResponse toSpecificationResponse(Specification specification){
+        return SpecificationResponse.builder()
+                .origin(specification.getOrigin())
+                .brandOrigin(specification.getBrandOrigin())
+                .manufacturingLocation(specification.getManufacturingLocation())
+                .skinType(specification.getSkinType())
+                .build();
+    }
+
+    private Specification toSpecification(SpecificationCreationRequest request) {
+        return Specification.builder()
+                .origin(request.getOrigin())
+                .brandOrigin(request.getBrandOrigin())
+                .manufacturingLocation(request.getManufacturingLocation())
+                .skinType(request.getSkinType())
+                .build();
+    }
+
+    private int toQuantityProduct(List<Batch> batches) {
+        int stock = 0;
+        for (Batch batch : batches) {
+            stock += batch.getQuantity();
+        }
+        return stock;
+    }
+
+    private FeedBackResponse toFeedBackResponse(FeedBack feedBack) {
+        return FeedBackResponse.builder()
+                .id(feedBack.getId())
+                .rating(feedBack.getRating())
+                .description(feedBack.getDescription())
+                .userResponse(toUserResponse(feedBack.getUser()))
+                .build();
+    }
+    private UserResponse toUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .gender(user.getGender())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .birthDay(user.getBirthday())
+                .roleName(user.getRole().getName())
+                .point(user.getPoint())
+                .avatar(user.getAvatar())
+                .status(user.getStatus())
+                .build();
     }
 }
 
