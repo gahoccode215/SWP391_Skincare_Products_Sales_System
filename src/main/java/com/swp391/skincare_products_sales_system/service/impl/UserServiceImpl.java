@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
             users = userRepository.findAllByFilters(keyword, status, role, pageable);
         log.info("{}", users);
         UserPageResponse response = new UserPageResponse();
-        if (users == null) throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        if (users == null) throw new AppException(ErrorCode.USER_NOT_FOUND);
         List<UserResponse> userResponses = new ArrayList<>();
         for (User user : users.getContent()) {
             UserResponse userResponse = new UserResponse();
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUser(String userId) {
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return toUserResponse(user);
     }
 
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse updateUser(UserUpdateRequest request, String userId) {
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         if (request.getFirstName() != null) {
             user.setFirstName(request.getFirstName());
         }
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setIsDeleted(true);
         userRepository.save(user);
     }
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changeUserStatus(String userId, Status status) {
-        User user = userRepository.findByIdAndIsDeletedFalse(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByIdAndIsDeletedFalse(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userRepository.updateUserStatus(user.getId(), status);
     }
 

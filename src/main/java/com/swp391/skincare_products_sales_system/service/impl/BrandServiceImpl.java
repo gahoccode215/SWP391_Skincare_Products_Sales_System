@@ -54,21 +54,21 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public void deleteBrand(Long id) {
-        Brand brand = brandRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+        Brand brand = brandRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
         brand.setIsDeleted(true);
         brandRepository.save(brand);
     }
 
     @Override
     public BrandResponse getBrandById(Long id) {
-        Brand brand = brandRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+        Brand brand = brandRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
         return toBrandResponse(brand);
     }
 
     @Override
     @Transactional
     public void changeBrandStatus(Long brandId, Status status) {
-        Brand brand = brandRepository.findByIdAndIsDeletedFalse(brandId).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+        Brand brand = brandRepository.findByIdAndIsDeletedFalse(brandId).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
         brandRepository.updateBrandStatus(brandId, status);
 
     }
@@ -76,7 +76,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public BrandResponse updateBrand(BrandUpdateRequest request, Long id) {
-        Brand brand = brandRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+        Brand brand = brandRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
         if (request.getName() != null) brand.setName(request.getName());
         if (request.getDescription() != null) brand.setDescription(request.getDescription());
         if (request.getThumbnail() != null) brand.setThumbnail(request.getThumbnail());

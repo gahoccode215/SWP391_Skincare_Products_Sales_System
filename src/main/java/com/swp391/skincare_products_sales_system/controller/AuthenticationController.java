@@ -95,7 +95,7 @@ public class AuthenticationController {
 //        }
 //
 //        User user = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 //
 //        if (user.getStatus() == Status.ACTIVE) {
 //            return "Tài khoản đã được xác thực trước đó!";

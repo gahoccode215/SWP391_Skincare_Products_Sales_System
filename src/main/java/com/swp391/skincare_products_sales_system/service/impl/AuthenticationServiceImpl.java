@@ -173,7 +173,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String username = authentication.getName(); // Lấy username của người dùng hiện tại
         log.info("username: {}", username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         // Kiểm tra mật khẩu cũ có đúng không
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {

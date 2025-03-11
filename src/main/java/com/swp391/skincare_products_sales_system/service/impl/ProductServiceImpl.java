@@ -44,24 +44,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse createProduct(ProductCreationRequest request)  {
+    public ProductResponse createProduct(ProductCreationRequest request) {
+        Specification specification = toSpecification(request.getSpecification());
         Product product = Product.builder()
                 .name(request.getName())
                 .price(request.getPrice())
                 .description(request.getDescription())
+                .ingredient(request.getIngredient())
+                .specification(specification)
+                .usageInstruction(request.getUsageInstruction())
                 .build();
         if (request.getCategory_id() != null) {
-            Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+            Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
             product.setCategory(category);
         }
         if (request.getBrand_id() != null) {
-            Brand brand = brandRepository.findByIdAndIsDeletedFalse(request.getBrand_id()).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+            Brand brand = brandRepository.findByIdAndIsDeletedFalse(request.getBrand_id()).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
             product.setBrand(brand);
         }
+
+        specification.setProduct(product);
         product.setThumbnail(request.getThumbnail());
         product.setStatus(Status.ACTIVE);
         product.setSlug(generateUniqueSlug(product.getName()));
         product.setIsDeleted(false);
+        product.setRating(5.0);
         log.info("Product: {}", product);
         productRepository.save(product);
         return toProductResponse(product);
@@ -70,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(String productId) {
-        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         product.setIsDeleted(true);
         productRepository.save(product);
     }
@@ -78,13 +85,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponse updateProduct(ProductUpdateRequest request, String productId){
-        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         if (request.getCategory_id() != null) {
-            Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+            Category category = categoryRepository.findByIdAndIsDeletedFalse(request.getCategory_id()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
             product.setCategory(category);
         }
         if (request.getBrand_id() != null) {
-            Brand brand = brandRepository.findByIdAndIsDeletedFalse(request.getBrand_id()).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+            Brand brand = brandRepository.findByIdAndIsDeletedFalse(request.getBrand_id()).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
             product.setBrand(brand);
         }
         if (request.getName() != null) {
@@ -137,20 +144,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getProductBySlug(String slug) {
-        Product product = productRepository.findBySlugAndIsDeletedFalseAndStatus(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product = productRepository.findBySlugAndIsDeletedFalseAndStatus(slug).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         return toProductResponse(product);
     }
 
     @Override
     public ProductResponse getProductById(String id) {
-        Product product = productRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product = productRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         return toProductResponse(product);
     }
 
     @Override
     @Transactional
     public void changeProductStatus(String productId, Status status) {
-        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         productRepository.updateProductStatus(product.getId(), status);
     }
 
