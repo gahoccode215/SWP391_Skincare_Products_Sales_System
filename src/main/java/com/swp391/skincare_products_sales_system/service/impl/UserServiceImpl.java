@@ -9,7 +9,6 @@ import com.swp391.skincare_products_sales_system.dto.response.UserResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.mapper.UserMapper;
 import com.swp391.skincare_products_sales_system.model.Role;
 import com.swp391.skincare_products_sales_system.model.User;
 import com.swp391.skincare_products_sales_system.repository.RoleRepository;
