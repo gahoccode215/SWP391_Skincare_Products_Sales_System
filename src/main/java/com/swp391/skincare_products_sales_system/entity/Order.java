@@ -26,10 +26,15 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "total_amount")
     Double totalAmount;
-    String orderInfo;
+
+    @Column(name = "username")
     String username;
+
+    @Column(name = "order_date")
     LocalDateTime orderDate;
+
     @Enumerated(EnumType.STRING)
     OrderStatus status;
 
@@ -44,14 +49,9 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
-    Double shippingFee;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     List<OrderItem> orderItems;
-
-    String discountCode;
-    Double discountAmount;
-    String deliveryTime;
 
 }

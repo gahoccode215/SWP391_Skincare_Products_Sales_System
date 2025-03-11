@@ -21,15 +21,15 @@ public class CartItem {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "cart_id")
-    Cart cart;  // Liên kết sản phẩm với giỏ hàng
+    Cart cart;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    Product product;  // Liên kết với sản phẩm
+    Product product;
 
-    Integer quantity;  // Số lượng sản phẩm
-    Double price;  // Giá sản phẩm tại thời điểm thêm vào giỏ
+    Integer quantity;
+    Double price;
 
 
 }

@@ -22,6 +22,7 @@ public class InvalidatedToken {
     @Id
     @Column(name = "token")
     String token;
+
     @Column(name = "expiry_time")
     Date expiryTime;
 }
