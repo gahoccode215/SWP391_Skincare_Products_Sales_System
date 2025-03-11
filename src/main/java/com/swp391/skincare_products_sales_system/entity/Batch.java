@@ -3,8 +3,11 @@ package com.swp391.skincare_products_sales_system.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "tbl_batch")
@@ -20,24 +23,35 @@ public class Batch extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column(name = "batch_code", unique = true, nullable = false)
-    String batchCode; // Mã lô hàng
+    @Column(name = "batch_code", unique = true)
+    String batchCode;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id", nullable = false)
-    Product product; // Mỗi batch thuộc về một sản phẩm
+    @JoinColumn(name = "product_id")
+    Product product;
 
-    @Column(name = "quantity", nullable = false)
-    Integer quantity; // Số lượng nhập
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_item_id")
+    OrderItem orderItem;
 
-    @Column(name = "import_price", nullable = false)
-    Double importPrice; // Giá nhập hàng
+    @Column(name = "quantity")
+    Integer quantity;
 
-    @Column(name = "manufacture_date", nullable = false)
+    @Column(name = "manufacture_date")
     LocalDate manufactureDate;
 
-    @Column(name = "expiration_date", nullable = false)
+    @Column(name = "expiration_date")
     LocalDate expirationDate;
+
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    Date updatedAt;
 
 
     @PrePersist
