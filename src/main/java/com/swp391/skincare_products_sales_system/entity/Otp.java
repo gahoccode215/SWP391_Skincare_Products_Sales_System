@@ -20,16 +20,16 @@ public class Otp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user; // Liên kết OTP với người dùng
 
     @Column(name = "otp")
-    private String otp;
+    private String otp; // OTP được tạo
 
     @Column(name = "expiration_time")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date expirationTime;
+    private Date expirationTime; // Thời gian hết hạn của OTP
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date();
+    private Date createdAt = new Date(); // Thời gian tạo OTP
 }

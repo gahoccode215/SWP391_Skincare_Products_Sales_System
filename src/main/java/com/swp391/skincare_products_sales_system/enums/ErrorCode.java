@@ -27,6 +27,8 @@ public enum ErrorCode {
     INVALID_EXCHANGE_VOUCHER(1015, "Chỉ được sở hữu 1 Voucher mỗi loại", HttpStatus.BAD_REQUEST),
     NOT_ENOUGH_POINT(1016, "Không đủ điểm", HttpStatus.BAD_REQUEST),
     EMAIL_SEND_FAILED(1017, "Lỗi khi gửi email", HttpStatus.BAD_REQUEST),
+    INVALID_OTP(1018, "OTP không hợp lệ", HttpStatus.BAD_REQUEST),
+    OTP_EXPIRED(1019, "Mã OTP đã hết hạn", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),
