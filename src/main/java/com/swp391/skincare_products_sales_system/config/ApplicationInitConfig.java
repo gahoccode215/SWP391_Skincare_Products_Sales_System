@@ -2,8 +2,8 @@ package com.swp391.skincare_products_sales_system.config;
 
 import com.swp391.skincare_products_sales_system.constant.PredefinedRole;
 import com.swp391.skincare_products_sales_system.enums.Status;
-import com.swp391.skincare_products_sales_system.model.Role;
-import com.swp391.skincare_products_sales_system.model.User;
+import com.swp391.skincare_products_sales_system.entity.Role;
+import com.swp391.skincare_products_sales_system.entity.User;
 import com.swp391.skincare_products_sales_system.repository.RoleRepository;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
 import lombok.AccessLevel;
@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Configuration
@@ -54,8 +54,16 @@ public class ApplicationInitConfig {
 
                 User admin = initAccount(ADMIN_USER_NAME, ADMIN_PASSWORD, adminRole);
                 listAccount.add(admin);
+                User phuocAdmin = initAccount("phuocadmin", "phuocadmin", adminRole);
+                listAccount.add(phuocAdmin);
+                User minhAdmin = initAccount("minhadmin", "minhadmin", adminRole);
+                listAccount.add(minhAdmin);
                 User customer = initAccount("customer", "customer", customerRole);
                 listAccount.add(customer);
+                User phuocCustomer = initAccount("phuoccustomer", "phuoccustomer", customerRole);
+                listAccount.add(phuocCustomer);
+                User minhCustomer = initAccount("minhcustomer", "minhcustomer", customerRole);
+                listAccount.add(minhCustomer);
                 User manager = initAccount("manager", "manager", managerRole);
                 listAccount.add(manager);
                 User staff = initAccount("staff", "staff", staffRole);
@@ -85,6 +93,12 @@ public class ApplicationInitConfig {
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .role(role)
+                .point(0)
+                .firstName("")
+                .lastName("")
+                .birthday(LocalDate.now())
+                .email("")
+                .avatar("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg")
                 .status(Status.ACTIVE)
                 .build();
         user.setIsDeleted(false);

@@ -1,5 +1,7 @@
 package com.swp391.skincare_products_sales_system.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.swp391.skincare_products_sales_system.enums.Gender;
 import com.swp391.skincare_products_sales_system.validator.BirthdayConstraint;
 import com.swp391.skincare_products_sales_system.validator.GenderConstraint;
@@ -21,8 +23,9 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString
-public class RegisterRequest implements Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class RegisterRequest  {
 
     @Size(min = 6, message = "INVALID_USERNAME")
     String username;
@@ -30,7 +33,12 @@ public class RegisterRequest implements Serializable {
     @Size(min = 6, message = "INVALID_PASSWORD")
     String password;
 
-    @BirthdayConstraint(min = 6, message = "INVALID_BIRTHDAY")
+//    @NotBlank(message = "EMAIL_REQUIRED")
+//    @Email(message = "INVALID_EMAIL")
+
+    String email;
+
+    @BirthdayConstraint(min = 16, message = "INVALID_BIRTHDAY")
     LocalDate birthday;
 
     @GenderConstraint(message = "INVALID_GENDER")

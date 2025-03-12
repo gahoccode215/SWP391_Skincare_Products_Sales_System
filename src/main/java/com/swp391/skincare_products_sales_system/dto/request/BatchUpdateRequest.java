@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,8 +16,5 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BatchUpdateRequest {
-    String product_id;
-    Integer quantity;
-    LocalDate manufactureDate;
-    LocalDate expirationDate;
+    LocalDate createdAt;
 }

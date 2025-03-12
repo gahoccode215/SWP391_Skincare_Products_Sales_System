@@ -6,9 +6,12 @@ import com.swp391.skincare_products_sales_system.dto.response.RefreshTokenRespon
 import com.swp391.skincare_products_sales_system.dto.response.RegisterResponse;
 
 public interface AuthenticationService {
+
     LoginResponse login(LoginRequest request);
     RefreshTokenResponse refreshToken(RefreshTokenRequest request);
     RegisterResponse register(RegisterRequest request);
     void logout(LogoutRequest request);
     void changePassword(ChangePasswordRequest request);
+    void forgotPassword(ForgotPasswordRequest request);
+    void resetPassword(ResetPasswordRequest request);
 }

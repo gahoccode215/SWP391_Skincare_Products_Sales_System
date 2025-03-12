@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,12 +22,14 @@ import org.springframework.web.multipart.MultipartFile;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductCreationRequest {
-    @NotBlank(message = "product name can not blank")
+    @NotBlank(message = "Tên không được để trống")
     String name;
     Double price;
     String description;
+    String ingredient;
+    String usageInstruction;
     String thumbnail;
+    SpecificationCreationRequest specification;
     Long brand_id;
     String category_id;
-    String size;
 }

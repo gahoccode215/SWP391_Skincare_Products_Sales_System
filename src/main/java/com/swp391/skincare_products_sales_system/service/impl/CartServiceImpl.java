@@ -4,10 +4,10 @@ import com.swp391.skincare_products_sales_system.dto.response.CartItemResponse;
 import com.swp391.skincare_products_sales_system.dto.response.CartResponse;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.model.Cart;
-import com.swp391.skincare_products_sales_system.model.CartItem;
-import com.swp391.skincare_products_sales_system.model.Product;
-import com.swp391.skincare_products_sales_system.model.User;
+import com.swp391.skincare_products_sales_system.entity.Cart;
+import com.swp391.skincare_products_sales_system.entity.CartItem;
+import com.swp391.skincare_products_sales_system.entity.Product;
+import com.swp391.skincare_products_sales_system.entity.User;
 import com.swp391.skincare_products_sales_system.repository.CartItemRepository;
 import com.swp391.skincare_products_sales_system.repository.CartRepository;
 import com.swp391.skincare_products_sales_system.repository.ProductRepository;
@@ -63,7 +63,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getOrCreateCartEntity(user);
         List<Product> products = productRepository.findAllById(productIds);
         if (products.size() != productIds.size()) {
-            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
+            throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
         }
         List<CartItem> itemsToRemove = cart.getItems().stream()
                 .filter(cartItem -> productIds.contains(cartItem.getProduct().getId()))
@@ -92,7 +92,7 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         if (quantity > 0) {
             cartItem.setQuantity(quantity);
         } else {
@@ -109,7 +109,7 @@ public class CartServiceImpl implements CartService {
 
     private Product getProductById(String productId) {
         return productRepository.findByIdAndIsDeletedFalseAndStatus(productId)
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     private Cart getOrCreateCartEntity(User user) {
