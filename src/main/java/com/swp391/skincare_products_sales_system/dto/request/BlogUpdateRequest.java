@@ -16,7 +16,6 @@ import lombok.experimental.FieldDefaults;
 public class BlogUpdateRequest {
     String title;
     String content;
-    String body;
     String image;
     Status status;
 }

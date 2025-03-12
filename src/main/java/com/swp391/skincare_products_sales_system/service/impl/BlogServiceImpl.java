@@ -53,9 +53,6 @@ public class BlogServiceImpl implements BlogService {
         if (request.getTitle() != null) {
             blog.setTitle(request.getTitle());
         }
-        if (request.getBody() != null) {
-            blog.setBody(request.getBody());
-        }
         if (request.getContent() != null) {
             blog.setContent(request.getContent());
         }
@@ -116,7 +113,6 @@ public class BlogServiceImpl implements BlogService {
         return BlogResponse.builder()
                 .id(blog.getId())
                 .title(blog.getTitle())
-                .body(blog.getBody())
                 .content(blog.getContent())
                 .image(blog.getImage())
                 .createdDate(blog.getCreatedDate())
@@ -129,7 +125,6 @@ public class BlogServiceImpl implements BlogService {
     private Blog toBlog(BlogCreationRequest request) {
         return Blog.builder()
                 .title(request.getTitle())
-                .body(request.getBody())
                 .content(request.getContent())
                 .image(request.getImage())
                 .createdDate(LocalDateTime.now())

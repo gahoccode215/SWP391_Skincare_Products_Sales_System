@@ -23,11 +23,8 @@ public class Blog {
     @Column(name = "title", columnDefinition = "TEXT")
     String title;
 
-    @Column(name = "blog_name")
+    @Column(name = "content")
     String content;
-
-    @Column(name = "body")
-    String body;
 
     @Column(name = "image")
     String image;
