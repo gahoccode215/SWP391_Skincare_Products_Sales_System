@@ -28,14 +28,21 @@ public class Order {
 
     @Column(name = "total_amount")
     Double totalAmount;
-
+    @Column(name = "order_info")
+    String orderInfo;
     @Column(name = "username")
     String username;
-
     @Column(name = "order_date")
     LocalDateTime orderDate;
 
+    @Column(name = "updated_at")
+    LocalDateTime updatedAt;
+
+    @Column(name = "updated_by")
+    String updatedBy;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_status", length = 50)
     OrderStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -46,12 +53,21 @@ public class Order {
     @Enumerated(EnumType.STRING)
     PaymentStatus paymentStatus;
 
-
     @Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
+
+
+    Double shippingFee;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     List<OrderItem> orderItems;
+
+    String discountCode;
+    Double discountAmount;
+    String deliveryTime;
+
+    @Column(name = "image_order_success")
+    String imageOrderSuccess;
 
 }

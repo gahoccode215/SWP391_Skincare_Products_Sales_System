@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @Table(name = "tbl_order_item")
 @Getter
@@ -17,27 +19,27 @@ import lombok.experimental.FieldDefaults;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Long id; // Mã sản phẩm trong đơn hàng
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "order_id", nullable = false)
-    Order order;
+    Order order; // Liên kết với đơn hàng
+
+    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Batch> batches;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "product_id", nullable = false)
-    Product product;
+    Product product; // Liên kết với sản phẩm
 
-    @Column(name = "quantity")
-    Integer quantity;
+    Integer quantity; // Số lượng sản phẩm
+    Double price; // Giá sản phẩm
+    Double totalPrice; // Tổng giá trị của sản phẩm trong đơn hàng
 
-    @Column(name = "price")
-    Double price;
-
-    @Column(name = "total_price")
-    Double totalPrice;
-
+    // Tính tổng giá trị của sản phẩm (price * quantity)
     public Double calculateTotalPrice() {
         return this.price * this.quantity;
     }

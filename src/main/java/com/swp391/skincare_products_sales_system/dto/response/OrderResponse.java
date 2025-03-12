@@ -26,4 +26,6 @@ public class OrderResponse {
     PaymentStatus paymentStatus;
     Address address;
     List<OrderItemResponse> orderResponseItemList;
+    UpdatedResponse updatedResponse;
+    String imageOrderSuccess;
 }

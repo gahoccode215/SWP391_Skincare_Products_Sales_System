@@ -29,6 +29,8 @@ public enum ErrorCode {
     EMAIL_SEND_FAILED(1017, "Lỗi khi gửi email", HttpStatus.BAD_REQUEST),
     INVALID_OTP(1018, "OTP không hợp lệ", HttpStatus.BAD_REQUEST),
     OTP_EXPIRED(1019, "Mã OTP đã hết hạn", HttpStatus.BAD_REQUEST),
+    VOUCHER_NOT_OWNED_BY_USER(1020, "", HttpStatus.BAD_REQUEST),
+    VOUCHER_MIN_ORDER_INVALID(1021, "", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),

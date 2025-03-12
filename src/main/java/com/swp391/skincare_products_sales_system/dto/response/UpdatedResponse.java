@@ -1,17 +1,17 @@
 package com.swp391.skincare_products_sales_system.dto.response;
 
+import com.swp391.skincare_products_sales_system.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderItemResponse {
-    String productName;
-    Integer quantity;
-    Double price;
-    Double totalPrice;
-    String thumbnailProduct;
+public class UpdatedResponse {
+    User updatedBy;
+    LocalDateTime updatedAt;
 }
