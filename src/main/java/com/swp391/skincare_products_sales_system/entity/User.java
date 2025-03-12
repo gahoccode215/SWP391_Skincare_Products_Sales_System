@@ -77,4 +77,13 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Blog> blogs;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JoinTable(
+            name = "tbl_user_voucher",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "voucher_id")
+    )
+    List<Voucher> vouchers;
+
 }
