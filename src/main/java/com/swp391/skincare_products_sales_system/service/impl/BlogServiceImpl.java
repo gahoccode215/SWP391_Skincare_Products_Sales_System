@@ -2,6 +2,7 @@ package com.swp391.skincare_products_sales_system.service.impl;
 
 import com.swp391.skincare_products_sales_system.dto.request.BlogCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.BlogUpdateRequest;
+import com.swp391.skincare_products_sales_system.dto.response.BlogPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.BlogResponse;
 import com.swp391.skincare_products_sales_system.entity.Blog;
 import com.swp391.skincare_products_sales_system.entity.User;
@@ -15,11 +16,17 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -79,6 +86,30 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
         blog.setStatus(status);
         blogRepository.save(blog);
+    }
+
+    @Override
+    public BlogPageResponse getBlogs(boolean admin, int page, int size) {
+        if (page > 0) page -= 1; // Hỗ trợ trang bắt đầu từ 0 hoặc 1
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Blog> blogs;
+        if (admin) {
+            blogs = blogRepository.findAllByFilters(null, pageable);
+        } else {
+            blogs = blogRepository.findAllByFilters(Status.ACTIVE, pageable);
+        }
+        BlogPageResponse response = new BlogPageResponse();
+        List<BlogResponse> blogResponseList = new ArrayList<>();
+        for (Blog blog : blogs) {
+            BlogResponse blogResponse = toBlogResponse(blog);
+            blogResponseList.add(blogResponse);
+        }
+        response.setContent(blogResponseList);
+        response.setTotalElements(blogs.getTotalElements());
+        response.setTotalPages(blogs.getTotalPages());
+        response.setPageNumber(blogs.getNumber());
+        response.setPageSize(blogs.getSize());
+        return response;
     }
 
     private BlogResponse toBlogResponse(Blog blog) {

@@ -4,9 +4,7 @@ import com.swp391.skincare_products_sales_system.dto.request.BlogCreationRequest
 import com.swp391.skincare_products_sales_system.dto.request.BlogUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.request.BrandCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.BrandUpdateRequest;
-import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
-import com.swp391.skincare_products_sales_system.dto.response.BlogResponse;
-import com.swp391.skincare_products_sales_system.dto.response.BrandResponse;
+import com.swp391.skincare_products_sales_system.dto.response.*;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.service.BlogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,14 +29,14 @@ public class AdminBlogController {
     @Operation(summary = "Tạo mới blog (ADMIN, MANAGER, STAFF)", description = "API Tạo mới blog")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<Void> createBlog(@RequestBody @Valid BlogCreationRequest request)
-    {
+    public ApiResponse<Void> createBlog(@RequestBody @Valid BlogCreationRequest request) {
         blogService.createBlog(request);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Tạo mới Blog thành công")
                 .build();
     }
+
     @PutMapping("/{blogId}")
     @Operation(summary = "Cập nhật một blog (ADMIN, MANAGER, STAFF)", description = "API Cập nhật một blog bằng Id")
     @ResponseStatus(HttpStatus.OK)
@@ -50,6 +48,7 @@ public class AdminBlogController {
                 .message("Cập nhật blog thành công")
                 .build();
     }
+
     @DeleteMapping("/{blogId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Xóa một blog (ADMIN, MANAGER, STAFF)", description = "API Xóa một blog bằng Id")
@@ -61,6 +60,7 @@ public class AdminBlogController {
                 .message("Xóa blog thành công")
                 .build();
     }
+
     @GetMapping("/{blogId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Lấy chi tiết một blog (ADMIN, MANAGER, STAFF)", description = "API Lấy chi tiết một blog bằng Id")
@@ -72,6 +72,7 @@ public class AdminBlogController {
                 .result(blogService.getBlogById(blogId))
                 .build();
     }
+
     @PatchMapping("/change-status/{blogId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Đổi trạng thái blog (ADMIN, MANAGER, STAFF)", description = "API Đổi trạng thái blog")
@@ -81,6 +82,21 @@ public class AdminBlogController {
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
                 .message("Thay đổi trạng thái thành công")
+                .build();
+    }
+
+    @GetMapping()
+    @Operation(summary = "Lấy danh sách blog (ADMIN, MANAGER, STAFF)  ", description = "API lấy danh sách blog với phân trang")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<BlogPageResponse> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ApiResponse.<BlogPageResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Lấy danh sách blog thành công")
+                .result(blogService.getBlogs(true, page, size))
                 .build();
     }
 }
