@@ -1,7 +1,9 @@
 package com.swp391.skincare_products_sales_system.controller.admin;
 
 import com.swp391.skincare_products_sales_system.dto.request.BlogCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.request.BlogUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.request.BrandCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.request.BrandUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.BrandResponse;
 import com.swp391.skincare_products_sales_system.service.BlogService;
@@ -33,6 +35,17 @@ public class AdminBlogController {
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Tạo mới Blog thành công")
+                .build();
+    }
+    @PutMapping("/{blogId}")
+    @Operation(summary = "Cập nhật một blog (ADMIN, MANAGER, STAFF)", description = "API Cập nhật một blog bằng Id")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<BrandResponse> updateBrand(@RequestBody @Valid BlogUpdateRequest request, @PathVariable Long blogId) {
+        blogService.updateBlog(request, blogId);
+        return ApiResponse.<BrandResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Cập nhật blog thành công")
                 .build();
     }
 }

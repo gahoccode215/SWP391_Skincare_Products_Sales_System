@@ -17,11 +17,12 @@ public enum ErrorCode {
     IMAGE_NOT_FOUND(1005, "Không tìm thấy ảnh", HttpStatus.BAD_REQUEST),
     BRAND_NOT_FOUND(1006, "Hãng không tồn tại", HttpStatus.BAD_REQUEST),
     ROLE_NOT_FOUND(1007, "Vai trò không tồn tại", HttpStatus.BAD_REQUEST),
-    USER_EXISTED(1008, "User existed", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(1008, "Tài khoản dùng đã tồn tại", HttpStatus.BAD_REQUEST),
     ADDRESS_NOT_FOUND(1009, "Địa chỉ không tồn tại", HttpStatus.BAD_REQUEST),
     CART_NOT_FOUND(1010, "Giỏ hàng không tồn tại", HttpStatus.BAD_REQUEST),
     ORDER_NOT_FOUND(1011, "Đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     BATCH_NOT_FOUND(1012, "Lô hàng không tồn tại", HttpStatus.BAD_REQUEST),
+    BLOG_NOT_FOUND(1013, "Blog không tồn tại", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),

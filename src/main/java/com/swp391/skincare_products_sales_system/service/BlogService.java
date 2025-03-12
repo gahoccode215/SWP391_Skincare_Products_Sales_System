@@ -6,7 +6,7 @@ import com.swp391.skincare_products_sales_system.dto.response.BlogResponse;
 
 public interface BlogService {
     void createBlog(BlogCreationRequest request);
-    void updateBlog(BlogUpdateRequest request);
+    void updateBlog(BlogUpdateRequest request, Long id);
     void deleteBlog(Long id);
     BlogResponse getBlogById(Long id);
 

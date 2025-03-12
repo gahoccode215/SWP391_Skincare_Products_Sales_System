@@ -5,7 +5,9 @@ import com.swp391.skincare_products_sales_system.dto.request.BlogUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.BlogResponse;
 import com.swp391.skincare_products_sales_system.entity.Blog;
 import com.swp391.skincare_products_sales_system.entity.User;
+import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.enums.Status;
+import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.repository.BlogRepository;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
 import com.swp391.skincare_products_sales_system.service.BlogService;
@@ -15,6 +17,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +31,7 @@ public class BlogServiceImpl implements BlogService {
     UserRepository userRepository;
 
     @Override
+    @Transactional
     public void createBlog(BlogCreationRequest request) {
         Blog blog = toBlog(request);
         User user = getAuthenticatedUser();
@@ -36,13 +40,31 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public void updateBlog(BlogUpdateRequest request) {
-
+    @Transactional
+    public void updateBlog(BlogUpdateRequest request, Long id) {
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
+        if(request.getTitle() != null){
+            blog.setTitle(request.getTitle());
+        }
+        if(request.getBody() != null){
+            blog.setBody(request.getBody());
+        }
+        if(request.getContent() != null){
+            blog.setContent(request.getContent());
+        }
+        if(request.getImage() != null){
+            blog.setImage(request.getImage());
+        }
+        if(request.getStatus() != null){
+            blog.setStatus(request.getStatus());
+        }
+        blogRepository.save(blog);
     }
 
     @Override
+    @Transactional
     public void deleteBlog(Long id) {
-
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
     }
 
     @Override
