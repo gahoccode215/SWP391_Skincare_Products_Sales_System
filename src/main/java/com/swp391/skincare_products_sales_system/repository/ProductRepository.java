@@ -46,4 +46,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
     @Query("SELECT x FROM Product x WHERE x.slug = :slug AND x.isDeleted = false AND x.status = com.swp391.skincare_products_sales_system.enums.Status.ACTIVE")
     Optional<Product> findBySlugAndIsDeletedFalseAndStatus(@Param("slug") String slug);
+
+    @Query("SELECT COUNT(o) FROM Product o")
+    Long countProduct();
 }

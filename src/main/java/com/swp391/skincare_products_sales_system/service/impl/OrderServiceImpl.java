@@ -235,6 +235,7 @@ public class OrderServiceImpl implements OrderService {
             });
         }
         user.setPoint((int) Math.round(order.getTotalAmount() / 1000));
+        userRepository.save(user);
         order.setStatus(orderStatus);
         order.setPaymentStatus(PaymentStatus.PAID);
         order.setUpdatedAt(LocalDateTime.now());

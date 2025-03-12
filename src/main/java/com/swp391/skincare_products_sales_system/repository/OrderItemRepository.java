@@ -9,9 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Modifying
     @Query("DELETE FROM OrderItem oi WHERE oi.order.paymentMethod = :paymentMethod AND oi.order.paymentStatus = :paymentStatus")
     void deleteByOrderPaymentMethodAndStatus(@Param("paymentMethod") PaymentMethod paymentMethod, @Param("paymentStatus") PaymentStatus paymentStatus);
+
+    @Query("SELECT oi.product.name, SUM(oi.quantity) FROM OrderItem oi " +
+            "JOIN oi.order o WHERE o.status = 'DONE' " +
+            "GROUP BY oi.product.name")
+    List<Object[]> getTopSellingProducts();
 }
