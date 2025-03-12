@@ -359,7 +359,7 @@ public class ProductServiceImpl implements ProductService {
                 .gender(user.getGender())
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .birthDay(user.getBirthday())
+                .birthday(user.getBirthday())
                 .roleName(user.getRole().getName())
                 .point(user.getPoint())
                 .avatar(user.getAvatar())

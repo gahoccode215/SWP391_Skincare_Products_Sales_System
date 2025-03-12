@@ -6,8 +6,8 @@ services:
       - .env.prod  # Load config từ file môi trường Production
     container_name: swp391-skincare-products-sales-system-api
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: .  # Đảm bảo Dockerfile ở thư mục gốc
+      dockerfile: Dockerfile  # Cấu hình Dockerfile
     ports:
       - "8080:8080"
     environment:
