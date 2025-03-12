@@ -23,6 +23,9 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(1011, "Đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     BATCH_NOT_FOUND(1012, "Lô hàng không tồn tại", HttpStatus.BAD_REQUEST),
     BLOG_NOT_FOUND(1013, "Blog không tồn tại", HttpStatus.BAD_REQUEST),
+    VOUCHER_NOT_FOUND(1014,"Voucher không tồn tại", HttpStatus.BAD_REQUEST),
+    INVALID_EXCHANGE_VOUCHER(1015, "Chỉ được sở hữu 1 Voucher mỗi loại", HttpStatus.BAD_REQUEST),
+    NOT_ENOUGH_POINT(1016, "Không đủ điểm", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),

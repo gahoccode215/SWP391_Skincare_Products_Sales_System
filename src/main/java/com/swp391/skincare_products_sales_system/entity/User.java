@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -86,4 +87,23 @@ public class User extends AbstractEntity {
     )
     List<Voucher> vouchers;
 
+
+
+
+    public void addVoucher(Voucher obj) {
+        if (this.vouchers == null) {
+            this.vouchers = new ArrayList<>();
+        }
+        vouchers.add(obj);
+        obj.addUser(this);
+    }
+    public void removeVoucher(Voucher obj){
+        for(Voucher voucher : vouchers){
+            if(voucher.getCode().equals(obj.getCode())) {
+                vouchers.remove(voucher);
+                obj.getUsers().remove(this);
+                break;
+            }
+        }
+    }
 }

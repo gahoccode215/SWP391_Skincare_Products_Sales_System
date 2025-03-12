@@ -5,7 +5,8 @@ import com.swp391.skincare_products_sales_system.dto.response.OrderPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.OrderResponse;
 import com.swp391.skincare_products_sales_system.enums.PaymentMethod;
 import com.swp391.skincare_products_sales_system.service.OrderService;
-import com.swp391.skincare_products_sales_system.service.impl.VNPayService;
+
+import com.swp391.skincare_products_sales_system.service.VNPayService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
