@@ -65,6 +65,7 @@ public class BlogServiceImpl implements BlogService {
     @Transactional
     public void deleteBlog(Long id) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
+        blogRepository.delete(blog);
     }
 
     @Override

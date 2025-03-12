@@ -41,11 +41,22 @@ public class AdminBlogController {
     @Operation(summary = "Cập nhật một blog (ADMIN, MANAGER, STAFF)", description = "API Cập nhật một blog bằng Id")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<BrandResponse> updateBrand(@RequestBody @Valid BlogUpdateRequest request, @PathVariable Long blogId) {
+    public ApiResponse<BrandResponse> updateBlog(@RequestBody @Valid BlogUpdateRequest request, @PathVariable Long blogId) {
         blogService.updateBlog(request, blogId);
         return ApiResponse.<BrandResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Cập nhật blog thành công")
+                .build();
+    }
+    @DeleteMapping("/{blogId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Xóa một blog (ADMIN, MANAGER, STAFF)", description = "API Xóa một blog bằng Id")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ApiResponse<Void> deleteBlog(@PathVariable Long blogId) {
+        blogService.deleteBlog(blogId);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Xóa blog thành công")
                 .build();
     }
 }
