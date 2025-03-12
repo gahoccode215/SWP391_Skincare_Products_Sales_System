@@ -15,4 +15,4 @@ FROM amazoncorretto:21.0.4
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=default"]
