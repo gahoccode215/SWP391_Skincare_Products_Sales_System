@@ -7,6 +7,7 @@ import com.swp391.skincare_products_sales_system.dto.request.BrandUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.BlogResponse;
 import com.swp391.skincare_products_sales_system.dto.response.BrandResponse;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.service.BlogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -69,6 +70,17 @@ public class AdminBlogController {
                 .code(HttpStatus.OK.value())
                 .message("Lấy chi tiết blogId thành công")
                 .result(blogService.getBlogById(blogId))
+                .build();
+    }
+    @PatchMapping("/change-status/{blogId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Đổi trạng thái blog (ADMIN, MANAGER, STAFF)", description = "API Đổi trạng thái blog")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<Void> changeProductStatus(@PathVariable Long blogId, @RequestParam Status status) {
+        blogService.changeStatus(blogId, status);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Thay đổi trạng thái thành công")
                 .build();
     }
 }

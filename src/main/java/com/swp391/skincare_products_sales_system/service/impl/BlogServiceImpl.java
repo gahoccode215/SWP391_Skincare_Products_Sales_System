@@ -74,8 +74,15 @@ public class BlogServiceImpl implements BlogService {
         return toBlogResponse(blog);
     }
 
+    @Override
+    public void changeStatus(Long id, Status status) {
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
+        blog.setStatus(status);
+        blogRepository.save(blog);
+    }
+
     private BlogResponse toBlogResponse(Blog blog) {
-        BlogResponse.builder()
+        return BlogResponse.builder()
                 .id(blog.getId())
                 .title(blog.getTitle())
                 .body(blog.getBody())
@@ -85,6 +92,7 @@ public class BlogServiceImpl implements BlogService {
                 .status(blog.getStatus())
                 .createdBy(blog.getUser().getFirstName() + blog.getUser().getLastName())
                 .build();
+
     }
 
     private Blog toBlog(BlogCreationRequest request) {
