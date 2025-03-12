@@ -43,19 +43,19 @@ public class BlogServiceImpl implements BlogService {
     @Transactional
     public void updateBlog(BlogUpdateRequest request, Long id) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
-        if(request.getTitle() != null){
+        if (request.getTitle() != null) {
             blog.setTitle(request.getTitle());
         }
-        if(request.getBody() != null){
+        if (request.getBody() != null) {
             blog.setBody(request.getBody());
         }
-        if(request.getContent() != null){
+        if (request.getContent() != null) {
             blog.setContent(request.getContent());
         }
-        if(request.getImage() != null){
+        if (request.getImage() != null) {
             blog.setImage(request.getImage());
         }
-        if(request.getStatus() != null){
+        if (request.getStatus() != null) {
             blog.setStatus(request.getStatus());
         }
         blogRepository.save(blog);
@@ -70,10 +70,24 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogResponse getBlogById(Long id) {
-        return null;
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
+        return toBlogResponse(blog);
     }
 
-    private Blog toBlog(BlogCreationRequest request){
+    private BlogResponse toBlogResponse(Blog blog) {
+        BlogResponse.builder()
+                .id(blog.getId())
+                .title(blog.getTitle())
+                .body(blog.getBody())
+                .content(blog.getContent())
+                .image(blog.getImage())
+                .createdDate(blog.getCreatedDate())
+                .status(blog.getStatus())
+                .createdBy(blog.getUser().getFirstName() + blog.getUser().getLastName())
+                .build();
+    }
+
+    private Blog toBlog(BlogCreationRequest request) {
         return Blog.builder()
                 .title(request.getTitle())
                 .body(request.getBody())
@@ -83,6 +97,7 @@ public class BlogServiceImpl implements BlogService {
                 .status(Status.ACTIVE)
                 .build();
     }
+
     private User getAuthenticatedUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsernameOrThrow(username);

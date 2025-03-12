@@ -5,6 +5,7 @@ import com.swp391.skincare_products_sales_system.dto.request.BlogUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.request.BrandCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.BrandUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
+import com.swp391.skincare_products_sales_system.dto.response.BlogResponse;
 import com.swp391.skincare_products_sales_system.dto.response.BrandResponse;
 import com.swp391.skincare_products_sales_system.service.BlogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,6 +58,17 @@ public class AdminBlogController {
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
                 .message("Xóa blog thành công")
+                .build();
+    }
+    @GetMapping("/{blogId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Lấy chi tiết một blog (ADMIN, MANAGER, STAFF)", description = "API Lấy chi tiết một blog bằng Id")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<BlogResponse> getBrand(@PathVariable Long blogId) {
+        return ApiResponse.<BlogResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Lấy chi tiết blogId thành công")
+                .result(blogService.getBlogById(blogId))
                 .build();
     }
 }
