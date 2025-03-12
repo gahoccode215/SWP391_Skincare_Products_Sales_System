@@ -31,7 +31,8 @@ public class Product extends AbstractEntity {
     @Column(name = "slug")
     String slug;
 
-    @Column(name = "body", columnDefinition = "TEXT")
+    @Column(name = "description")
+    @Lob
     String description;
 
     @Column(name = "ingredient")
@@ -73,7 +74,7 @@ public class Product extends AbstractEntity {
     Category category;
 
 
-    public void addBatch(Batch obj){
+    public void addBatch(Batch obj) {
         batches.add(obj);
         obj.setProduct(this);
     }

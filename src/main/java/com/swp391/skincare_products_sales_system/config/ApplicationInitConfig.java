@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.config;
 
 import com.swp391.skincare_products_sales_system.constant.PredefinedRole;
+import com.swp391.skincare_products_sales_system.enums.Gender;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.entity.Role;
 import com.swp391.skincare_products_sales_system.entity.User;
@@ -100,6 +101,7 @@ public class ApplicationInitConfig {
                 .email("")
                 .avatar("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg")
                 .status(Status.ACTIVE)
+                .gender(Gender.OTHER)
                 .build();
         user.setIsDeleted(false);
         return user;

@@ -24,6 +24,7 @@ public class Blog {
     String title;
 
     @Column(name = "content")
+    @Lob
     String content;
 
     @Column(name = "image")

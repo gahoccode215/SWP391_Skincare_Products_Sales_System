@@ -37,6 +37,7 @@ public class Voucher {
     Double minOrderValue;
 
     @Column(name = "description")
+    @Lob
     String description;
 
     @Column(name = "point")
@@ -52,7 +53,7 @@ public class Voucher {
     @JsonIgnore
     List<User> users;
 
-    public void addUser(User obj){
+    public void addUser(User obj) {
         users.add(obj);
     }
 

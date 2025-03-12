@@ -23,22 +23,21 @@ import java.time.LocalDate;
 public class UserUpdateRequest {
     String avatar;
 
-    @NotBlank(message = "firstName must be not blank")
     String firstName;
 
-    @NotBlank(message = "lastName must be not blank")
     String lastName;
 
-    @BirthdayConstraint(min = 6, message = "INVALID_BIRTHDAY")
     LocalDate birthday;
 
-    @GenderConstraint(message = "INVALID_GENDER")
     Gender gender;
 
-    @Size(min = 6, message = "INVALID_USERNAME")
+    String email;
+
     String username;
 
     String phone;
-    @RoleConstraint(message = "INVALID_ROLE")
+
     String roleName;
+
+    String password;
 }

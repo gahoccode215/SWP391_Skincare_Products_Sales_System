@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @Table(name = "tbl_category")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Category extends AbstractEntity{
+public class Category extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -28,7 +28,8 @@ public class Category extends AbstractEntity{
     @Column(name = "slug", unique = true)
     String slug;
 
-    @Column(name = "body")
+    @Column(name = "description")
+    @Lob
     String description;
 
     @Column(name = "status")
