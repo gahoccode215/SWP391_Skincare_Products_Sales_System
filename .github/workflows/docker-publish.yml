@@ -18,7 +18,8 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build JAR file
+      # Bước này để clean và build lại ứng dụng
+      - name: Clean and build JAR file
         run: mvn clean package -DskipTests
 
       - name: Login to DockerHub
