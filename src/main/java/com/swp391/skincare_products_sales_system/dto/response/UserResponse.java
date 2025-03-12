@@ -19,9 +19,9 @@ public class UserResponse {
     String lastName;
     String username;
     String email;
+    Status status;
     String roleName;
     String avatar;
-    LocalDate birthDay;
     Integer point;
-    Status status;
+    LocalDate birthday;
 }

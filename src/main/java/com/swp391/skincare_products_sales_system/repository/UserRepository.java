@@ -14,11 +14,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByUsername(String username);
+
+    boolean existsByEmailAndStatus(String email, Status status);
+
+    Optional<User> findByEmail(String email);
+
+    User findByEmailAndStatus(String email, Status status);
 
     default User findByUsernameOrThrow(String username) {
         return findByUsername(username)
@@ -41,6 +48,22 @@ public interface UserRepository extends JpaRepository<User, String> {
             @Param("keyword") String keyword,
             @Param("status") Status status,
             @Param("role") Role role,
+            Pageable pageable);
+
+    @Query("SELECT x FROM User x WHERE x.isDeleted = false " +
+            "AND (:keyword IS NULL OR " +
+            "x.firstName LIKE %:keyword% OR " +
+            "x.lastName LIKE %:keyword% OR " +
+            "x.username LIKE %:keyword% OR " +
+            "x.email LIKE %:keyword%) " +
+            "AND (:status IS NULL OR x.status = :status) " +
+            "AND (:role IS NULL OR x.role = :role) " +
+            "AND (x.role.name NOT IN :excludedRoleNames)")
+    Page<User> findAllByFiltersExcludingRoles(
+            @Param("keyword") String keyword,
+            @Param("status") Status status,
+            @Param("role") Role role,
+            @Param("excludedRoleNames") List<String> excludedRoleNames,
             Pageable pageable);
 
     @Modifying
