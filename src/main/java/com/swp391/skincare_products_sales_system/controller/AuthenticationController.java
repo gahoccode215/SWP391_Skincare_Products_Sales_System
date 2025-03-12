@@ -7,6 +7,7 @@ import com.swp391.skincare_products_sales_system.dto.response.RefreshTokenRespon
 import com.swp391.skincare_products_sales_system.dto.response.RegisterResponse;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
 import com.swp391.skincare_products_sales_system.service.AuthenticationService;
+import com.swp391.skincare_products_sales_system.service.OtpService;
 import com.swp391.skincare_products_sales_system.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,80 +32,96 @@ import java.util.Map;
 public class AuthenticationController {
 
     AuthenticationService authenticationService;
-    JwtUtil jwtUtil;
-    UserRepository userRepository;
+    OtpService otpService;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Register new account customer", description = "API retrieve user attribute to create account customer")
+    @Operation(summary = "Đăng ký tài khoản khách hàng", description = "API Đăng ký tài khoản khách hàng")
     public ApiResponse<RegisterResponse> register(@RequestBody @Valid RegisterRequest request){
         return ApiResponse.<RegisterResponse>builder()
                 .code(HttpStatus.CREATED.value())
-                .message("Register successfully")
+                .message("Đăng ký thành công")
                 .result(authenticationService.register(request))
                 .build();
     }
     @PostMapping("/login")
-    @Operation(summary = "Login", description = "API retrieve username and password to login")
+    @Operation(summary = "Đăng nhập", description = "API đăng nhập")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request){
         return ApiResponse.<LoginResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Login successfully")
+                .message("Đăng nhập thành công")
                 .result(authenticationService.login(request))
                 .build();
     }
     @PostMapping("/refresh-token")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get new Access Token", description = "API retrieve old token to get new Access Token")
+    @Operation(summary = "Lấy Access Token mới", description = "API Lấy Access Token mới")
     ApiResponse<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
         var result = authenticationService.refreshToken(request);
         return ApiResponse.<RefreshTokenResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Get new Access Token by old token successfully")
+                .message("Lấy Access Token mới thành công")
                 .result(result).build();
     }
     @PostMapping("/logout")
-    @Operation(summary = "Logout", description = "Invalidate JWT token to logout user")
+    @Operation(summary = "Đăng xuất", description = "Invalidate JWT token to logout user")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<String> logout(@RequestBody LogoutRequest request) {
         authenticationService.logout(request);
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
-                .message("Logout successfully")
+                .message("Đăng xuất thành công")
                 .build();
     }
     @PostMapping("/change-password")
-    @Operation(summary = "Change password", description = "Change password with new password")
+    @Operation(summary = "Đổi mật khẩu", description = "API Đổi mật khẩu")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
         authenticationService.changePassword(request);
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
-                .message("Change password successfully")
+                .message("Đổi mật khẩu thành công")
                 .build();
     }
-//    @GetMapping("/verify")
-//    public String verifyUser(@RequestParam String token) {
-//        String username;
-//        try {
-//            username = jwtUtil.extractUsername(token);
-//        } catch (Exception e) {
-//            throw new AppException(ErrorCode.INVALID_TOKEN);
-//        }
-//
-//        User user = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-//
-//        if (user.getStatus() == Status.ACTIVE) {
-//            return "Tài khoản đã được xác thực trước đó!";
-//        }
-//
-//        user.setStatus(Status.ACTIVE);
-//        userRepository.save(user);
-//
-//        return "Tài khoản xác thực thành công!";
-//    }
+    @PostMapping("/verify-otp")
+    @Operation(summary = "Xác minh tài khoản", description = "API Xác minh tài khoản")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<String> verifyOtp(@RequestParam String userId, @RequestParam String otpCode) {
+        otpService.verifyOtp(userId, otpCode);
+        return ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Xác minh tài khoản thành công")
+                .build();
+    }
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Quên mật khẩu", description = "API Quên mật khẩu")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        authenticationService.forgotPassword(request);
+        return ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Đã gửi mail reset password")
+                .build();
+    }
 
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset mật khẩu", description = "API Reset mật khẩu với token")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        authenticationService.resetPassword(request);
+        return ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Reset mật khẩu thành công")
+                .build();
+    }
+    @PostMapping("/resend-otp")
+    public ApiResponse<Void> resendOtp(@RequestParam String userId){
+        otpService.resendOtp(userId);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Otp gửi thành công")
+                .build();
+    }
 }

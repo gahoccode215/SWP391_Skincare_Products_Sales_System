@@ -78,6 +78,10 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Blog> blogs;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonIgnore
+    List<Otp> otps;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinTable(
@@ -105,5 +109,12 @@ public class User extends AbstractEntity {
                 break;
             }
         }
+    }
+    public void addOtp(Otp obj) {
+        if (this.otps == null) {
+            this.otps = new ArrayList<>();
+        }
+        otps.add(obj);
+        obj.setUser(this);
     }
 }

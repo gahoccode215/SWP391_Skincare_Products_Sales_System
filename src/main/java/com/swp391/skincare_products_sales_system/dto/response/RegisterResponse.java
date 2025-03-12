@@ -13,7 +13,9 @@ import java.util.Date;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegisterResponse {
+    String id;
     String username;
     Gender gender;
     LocalDate birthday;
+    String email;
 }
