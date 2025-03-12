@@ -92,6 +92,7 @@ public class UserServiceImpl implements UserService {
                 .birthday(request.getBirthday())
                 .username(request.getUsername())
                 .status(Status.ACTIVE)
+                .avatar(request.getAvatar())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
                 .role(role)
@@ -133,6 +134,9 @@ public class UserServiceImpl implements UserService {
         if (request.getRoleName() != null) {
             Role role = roleRepository.findByName(request.getRoleName()).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
             user.setRole(role);
+        }
+        if(request.getAvatar() != null){
+            user.setAvatar(request.getAvatar());
         }
         return toUserResponse(user);
     }

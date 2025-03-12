@@ -37,5 +37,6 @@ public class UserCreationRequest {
     String phone;
     @RoleConstraint(message = "INVALID_ROLE")
     String roleName;
+
 }
 
