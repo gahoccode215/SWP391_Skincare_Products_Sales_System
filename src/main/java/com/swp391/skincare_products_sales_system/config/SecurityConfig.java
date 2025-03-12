@@ -30,11 +30,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/users/**",
             "/auth/**",
             "/products/**",
+            "/brands/**",
             "/categories/**",
-            "/**"
+            "/orders/payment-callback/**"
     };
 
 

@@ -73,4 +73,8 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     List<Address> addresses;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Blog> blogs;
+
 }
