@@ -34,12 +34,12 @@ public class Blog {
 
     @Enumerated(EnumType.STRING)
     Status status;
-    
+
 
     @Column(name = "created_date")
     LocalDateTime createdDate;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "user_id")
     User user;

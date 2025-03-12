@@ -45,19 +45,19 @@ public class AdminBlogController {
         blogService.updateBlog(request, blogId);
         return ApiResponse.<BrandResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Cập nhật blog thành công")
+                .message("Cập nhật Blog thành công")
                 .build();
     }
 
     @DeleteMapping("/{blogId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Xóa một blog (ADMIN, MANAGER, STAFF)", description = "API Xóa một blog bằng Id")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ApiResponse<Void> deleteBlog(@PathVariable Long blogId) {
         blogService.deleteBlog(blogId);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
-                .message("Xóa blog thành công")
+                .message("Xóa Blog thành công")
                 .build();
     }
 
@@ -65,10 +65,10 @@ public class AdminBlogController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Lấy chi tiết một blog (ADMIN, MANAGER, STAFF)", description = "API Lấy chi tiết một blog bằng Id")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<BlogResponse> getBrand(@PathVariable Long blogId) {
+    public ApiResponse<BlogResponse> getBlog(@PathVariable Long blogId) {
         return ApiResponse.<BlogResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy chi tiết blogId thành công")
+                .message("Lấy chi tiết Blog thành công")
                 .result(blogService.getBlogById(blogId))
                 .build();
     }
@@ -95,7 +95,7 @@ public class AdminBlogController {
     ) {
         return ApiResponse.<BlogPageResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy danh sách blog thành công")
+                .message("Lấy danh sách Blog thành công")
                 .result(blogService.getBlogs(true, page, size))
                 .build();
     }

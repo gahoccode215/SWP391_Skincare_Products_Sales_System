@@ -66,9 +66,6 @@ public class CategoryServiceImpl implements CategoryService {
         if(request.getThumbnail() != null){
             category.setThumbnail(request.getThumbnail());
         }
-        if(request.getStatus() != null){
-            category.setStatus(request.getStatus());
-        }
         categoryRepository.save(category);
         return toCategoryResponse(category);
     }

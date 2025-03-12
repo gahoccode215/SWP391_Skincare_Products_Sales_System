@@ -121,7 +121,7 @@ public class BlogServiceImpl implements BlogService {
                 .image(blog.getImage())
                 .createdDate(blog.getCreatedDate())
                 .status(blog.getStatus())
-                .createdBy(blog.getUser().getFirstName() + blog.getUser().getLastName())
+                .createdBy(blog.getUser().getFirstName() + " " +blog.getUser().getLastName())
                 .build();
 
     }

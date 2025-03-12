@@ -29,7 +29,7 @@ public class BlogController {
     ) {
         return ApiResponse.<BlogPageResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy danh sách blog thành công")
+                .message("Lấy danh sách Blog thành công")
                 .result(blogService.getBlogs(false, page, size))
                 .build();
     }
