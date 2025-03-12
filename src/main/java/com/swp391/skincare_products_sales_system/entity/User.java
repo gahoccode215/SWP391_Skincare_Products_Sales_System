@@ -54,10 +54,10 @@ public class User extends AbstractEntity {
     @Column(name = "point")
     Integer point;
 
-    @Column(name = "username", unique = true, nullable = false, length = 255)
+    @Column(name = "username", unique = true, nullable = false)
     String username;
 
-    @Column(name = "password", length = 255)
+    @Column(name = "password")
     String password;
 
     @Column(name = "status")
@@ -74,7 +74,7 @@ public class User extends AbstractEntity {
     List<Address> addresses;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Blog> blogs;
 
 }

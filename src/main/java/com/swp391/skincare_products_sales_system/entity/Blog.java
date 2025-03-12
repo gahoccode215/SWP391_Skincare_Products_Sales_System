@@ -20,25 +20,25 @@ public class Blog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "content", columnDefinition = "TEXT")
-    String content;
+    @Column(name = "title", columnDefinition = "TEXT")
+    String title;
 
     @Column(name = "blog_name")
-    String blogName;
+    String content;
 
-    @Column
-    String description;
+    @Column(name = "body")
+    String body;
 
-    @Column
+    @Column(name = "image")
     String image;
 
     @Enumerated(EnumType.STRING)
     Status status;
 
-    @Column
+    @Column(name = "created_date")
     LocalDateTime createdDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "user_id")
     User user;

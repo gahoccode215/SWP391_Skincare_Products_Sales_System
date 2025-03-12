@@ -42,7 +42,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     RoleRepository roleRepository;
     JwtUtil jwtUtil;
     InvalidatedTokenRepository invalidatedTokenRepository;
-//    EmailService emailService;
 
 
     @Override

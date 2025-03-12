@@ -19,7 +19,7 @@ public class FeedBack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "description")
+    @Column(name = "body")
     String description;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -24,7 +24,7 @@ public class Role extends AbstractEntity {
     @Column(name = "name")
     String name;
 
-    @Column(name = "description")
+    @Column(name = "body")
     String description;
 
     @JsonManagedReference
