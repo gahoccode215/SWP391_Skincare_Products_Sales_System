@@ -26,6 +26,7 @@ public enum ErrorCode {
     VOUCHER_NOT_FOUND(1014,"Voucher không tồn tại", HttpStatus.BAD_REQUEST),
     INVALID_EXCHANGE_VOUCHER(1015, "Chỉ được sở hữu 1 Voucher mỗi loại", HttpStatus.BAD_REQUEST),
     NOT_ENOUGH_POINT(1016, "Không đủ điểm", HttpStatus.BAD_REQUEST),
+    EMAIL_SEND_FAILED(1017, "Lỗi khi gửi email", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),
