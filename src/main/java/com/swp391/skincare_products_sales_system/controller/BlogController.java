@@ -34,10 +34,10 @@ public class BlogController {
                 .result(blogService.getBlogs(false, page, size))
                 .build();
     }
+
     @GetMapping("/{blogId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Lấy chi tiết một blog (ADMIN, MANAGER, STAFF)", description = "API Lấy chi tiết một blog bằng Id")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ApiResponse<BlogResponse> getBlog(@PathVariable Long blogId) {
         return ApiResponse.<BlogResponse>builder()
                 .code(HttpStatus.OK.value())

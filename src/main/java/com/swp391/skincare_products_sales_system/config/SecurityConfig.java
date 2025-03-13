@@ -36,7 +36,8 @@ public class SecurityConfig {
             "/categories/**",
             "/orders/payment-callback/**",
             "/admin/dashboard/**",
-            "quizs/**"
+            "/blogs/**",
+            "/quizs/**"
     };
 
 
