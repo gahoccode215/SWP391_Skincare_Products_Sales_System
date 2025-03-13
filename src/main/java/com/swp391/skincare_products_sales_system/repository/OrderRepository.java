@@ -23,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Page<Order> findAll(Pageable pageable);
 
-    @Query("SELECT x FROM Order x WHERE x.status = com.swp391.skincare_products_sales_system.enums.OrderStatus.PROCESSING OR x.status = com.swp391.skincare_products_sales_system.enums.OrderStatus.DELIVERING OR x.status = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE ")
+    @Query("SELECT x FROM Order x WHERE x.orderStatus = com.swp391.skincare_products_sales_system.enums.OrderStatus.PROCESSING OR x.orderStatus = com.swp391.skincare_products_sales_system.enums.OrderStatus.DELIVERING OR x.orderStatus = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE ")
     Page<Order> findAllByFiltersDelivery(Pageable pageable);
 
 
@@ -32,9 +32,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     void deleteUnpaidVnpayOrders();
 
 
-    @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.status = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE")
+    @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.orderStatus = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE")
     Double sumTotalAmount();
-    @Query("SELECT COUNT(o) FROM Order o WHERE o.status = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE")
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.orderStatus = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE")
     Long countByStatusDone();
 
     @Query("SELECT " +
@@ -43,11 +43,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "SUM(oi.quantity) AS totalProducts " +
             "FROM Order o " +
             "JOIN o.orderItems oi " +
-            "WHERE o.status = :status " +
+            "WHERE o.orderStatus = :status " +
             "GROUP BY MONTH(o.orderDate) " +
             "ORDER BY MONTH(o.orderDate)")
     List<Object[]> getMonthlyRevenueAndProducts(@Param("status") OrderStatus status);
 
-    @Query("SELECT COUNT(x) FROM Order x WHERE x.status = :status")
+    @Query("SELECT COUNT(x) FROM Order x WHERE x.orderStatus = :status")
     Long countOrdersByStatus(@Param("status") OrderStatus status);
 }

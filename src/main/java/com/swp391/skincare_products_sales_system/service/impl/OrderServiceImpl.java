@@ -95,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         order.setPaymentStatus(isPaid ? PaymentStatus.PAID : PaymentStatus.NOT_PAID);
-        order.setStatus(OrderStatus.PENDING);
+        order.setOrderStatus(OrderStatus.PENDING);
         orderRepository.save(order);
 
         if (isPaid) {
@@ -202,7 +202,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             });
             User user = getAuthenticatedUser();
-            order.setStatus(orderStatus);
+            order.setOrderStatus(orderStatus);
             order.setUpdatedAt(LocalDateTime.now());
             order.setUpdatedBy(user.getUsername());
         }
@@ -214,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
     public void deliveringOrder(Long id, OrderStatus orderStatus) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
         User user = getAuthenticatedUser();
-        order.setStatus(orderStatus);
+        order.setOrderStatus(orderStatus);
         order.setUpdatedAt(LocalDateTime.now());
         order.setUpdatedBy(user.getUsername());
         orderRepository.save(order);
@@ -246,7 +246,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         userRepository.save(user);
-        order.setStatus(orderStatus);
+        order.setOrderStatus(orderStatus);
         order.setPaymentStatus(PaymentStatus.PAID);
         order.setUpdatedAt(LocalDateTime.now());
         order.setUpdatedBy(user.getUsername());
@@ -273,7 +273,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void cancelOrder(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-        order.setStatus(OrderStatus.CANCELLED);
+        order.setOrderStatus(OrderStatus.CANCELLED);
         order.setUpdatedAt(LocalDateTime.now());
         orderRepository.save(order);
     }
@@ -286,7 +286,7 @@ public class OrderServiceImpl implements OrderService {
                 .paymentMethod(paymentMethod)
                 .address(address)
                 .paymentStatus(PaymentStatus.NOT_PAID)
-                .status(OrderStatus.PENDING)
+                .orderStatus(OrderStatus.PENDING)
                 .build();
     }
 
@@ -331,7 +331,7 @@ public class OrderServiceImpl implements OrderService {
                 .orderResponseItemList(itemResponses)
                 .address(order.getAddress())
                 .paymentStatus(order.getPaymentStatus())
-                .status(order.getStatus())
+                .status(order.getOrderStatus())
                 .updatedResponse(updatedResponse)
                 .imageOrderSuccess(order.getImageOrderSuccess())
                 .build();

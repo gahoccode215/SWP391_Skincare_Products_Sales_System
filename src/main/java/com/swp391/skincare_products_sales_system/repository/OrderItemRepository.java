@@ -18,7 +18,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     void deleteByOrderPaymentMethodAndStatus(@Param("paymentMethod") PaymentMethod paymentMethod, @Param("paymentStatus") PaymentStatus paymentStatus);
 
     @Query("SELECT oi.product.name, SUM(oi.quantity) FROM OrderItem oi " +
-            "JOIN oi.order o WHERE o.status = 'DONE' " +
+            "JOIN oi.order o WHERE o.orderStatus = 'DONE' " +
             "GROUP BY oi.product.name")
     List<Object[]> getTopSellingProducts();
 }
