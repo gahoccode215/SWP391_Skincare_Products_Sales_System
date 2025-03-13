@@ -224,7 +224,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void deliveryOrder(Long id, OrderStatus orderStatus, DeliveryRequest request) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-        User user = getAuthenticatedUser();
+        User user = userRepository.findByUsernameOrThrow(order.getUsername());
         if (orderStatus.equals(OrderStatus.DELIVERING_FAIL)) {
             order.getOrderItems().forEach(orderItem -> {
                 List<Batch> batchList = batchRepository.findAllByProductId(orderItem.getProduct().getId());
@@ -237,7 +237,14 @@ public class OrderServiceImpl implements OrderService {
                 }
             });
         }
-        user.setPoint((int) Math.round(order.getTotalAmount() / 1000));
+        if (order.getTotalAmount() > 0) {
+            int points = (int) Math.round(order.getTotalAmount() / 1000);
+            user.addPoint(points);
+            log.info("User {} has been credited {} points based on total amount {}", user.getUsername(), points, order.getTotalAmount());
+        } else {
+            log.warn("Total amount is non-positive, points not updated for user {}", user.getUsername());
+        }
+
         userRepository.save(user);
         order.setStatus(orderStatus);
         order.setPaymentStatus(PaymentStatus.PAID);
@@ -260,6 +267,15 @@ public class OrderServiceImpl implements OrderService {
         orderItemRepository.deleteByOrderPaymentMethodAndStatus(PaymentMethod.VNPAY, PaymentStatus.NOT_PAID);
 
         orderRepository.deleteUnpaidVnpayOrders();
+    }
+
+    @Override
+    @Transactional
+    public void cancelOrder(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        order.setStatus(OrderStatus.CANCELLED);
+        order.setUpdatedAt(LocalDateTime.now());
+        orderRepository.save(order);
     }
 
     private Order buildOrder(Cart cart, Address address, PaymentMethod paymentMethod) {

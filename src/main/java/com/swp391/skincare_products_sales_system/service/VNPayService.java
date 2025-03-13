@@ -73,55 +73,6 @@ public class VNPayService {
         return vnpUrl + "?" + query;
     }
 
-
-
-    public String createPaymentUrlBookingOrder(Long bookingOrderId, Double amount, String isAddress) throws UnsupportedEncodingException {
-        String orderId = UUID.randomUUID().toString().substring(0,6);
-        String returnUrl1 = "http://localhost:5173/payment-success?bookingOrderId=" + bookingOrderId;
-        Map<String, String> params = new HashMap<>();
-        params.put("vnp_Version", "2.1.0");
-        params.put("vnp_Command", "pay");
-        params.put("vnp_TmnCode", "M0R9Z6E1");
-        params.put("vnp_Amount", String.valueOf(amount.longValue() * 100));
-        params.put("vnp_CurrCode", "VND");
-        params.put("vnp_TxnRef", bookingOrderId.toString());
-        params.put("vnp_OrderInfo", "Thanh toan don hang#" + bookingOrderId );
-        params.put("vnp_OrderType", "other");
-        params.put("vnp_Locale", "vn");
-        params.put("vnp_ReturnUrl", returnUrl1);
-        params.put("vnp_IpAddr", isAddress);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        String createDate = sdf.format(new Date());
-        params.put("vnp_CreateDate", createDate);
-
-        Calendar expireCalendar = Calendar.getInstance();
-        expireCalendar.setTime(new Date());
-        expireCalendar.add(Calendar.MINUTE, 20);
-        String expireDate = sdf.format(expireCalendar.getTime());
-        params.put("vnp_ExpireDate", expireDate);
-
-        List<String> fieldNames = new ArrayList<>(params.keySet());
-        Collections.sort(fieldNames);
-
-        StringBuilder hashData = new StringBuilder();
-        StringBuilder query = new StringBuilder();
-        for (String fieldName : fieldNames) {
-            String fieldValue = params.get(fieldName);
-            if (fieldValue != null && !fieldValue.isEmpty()) {
-                hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString())).append('&');
-                query.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString())).append('&');
-            }
-        }
-        hashData.deleteCharAt(hashData.length() - 1); // Xóa ký tự '&' cuối cùng
-        query.deleteCharAt(query.length() - 1); // Xóa ký tự '&' cuối cùng
-        String secureHash = hmacSHA512("6Z3AGDLVVDYXEAE3JKBNI6LN2ARZXXST", hashData.toString());
-        query.append("&vnp_SecureHash=").append(URLEncoder.encode(secureHash, StandardCharsets.UTF_8.toString()));
-        return vnpUrl + "?" + query;
-    }
-
-
-
     private String hmacSHA512(String key, String data) {
         try {
             Mac hmac512 = Mac.getInstance("HmacSHA512");

@@ -116,4 +116,8 @@ public class User extends AbstractEntity {
         otps.add(obj);
         obj.setUser(this);
     }
+
+    public void addPoint(Integer point) {
+        this.point += point;
+    }
 }

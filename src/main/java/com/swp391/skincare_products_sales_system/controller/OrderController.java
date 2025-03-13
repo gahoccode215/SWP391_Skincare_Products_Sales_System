@@ -3,6 +3,7 @@ package com.swp391.skincare_products_sales_system.controller;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.OrderPageResponse;
 import com.swp391.skincare_products_sales_system.dto.response.OrderResponse;
+import com.swp391.skincare_products_sales_system.enums.OrderStatus;
 import com.swp391.skincare_products_sales_system.enums.PaymentMethod;
 import com.swp391.skincare_products_sales_system.service.OrderService;
 
@@ -18,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 
@@ -43,6 +46,17 @@ public class OrderController {
                 .build();
     }
 
+    @PatchMapping("/cancel-order/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<Void> confirmOrderByStaff(@PathVariable Long orderId, @RequestParam OrderStatus orderStatus) {
+        orderService.cancelOrder(orderId);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Hủy đơn hàng thành công")
+                .build();
+    }
+
     @PostMapping("/checkout")
     @PreAuthorize("hasAnyRole('CUSTOMER')")
     public ApiResponse<Void> checkout(@RequestParam("addressId") Long addressId, @RequestParam("cartId") Long cartId, @RequestParam(required = false) String voucherCode,
@@ -64,8 +78,9 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/payment-callback")
+    @PostMapping("/payment-success")
     public ApiResponse<String> handlePaymentCallback(@RequestParam Map<String, String> params) throws UnsupportedEncodingException {
+        log.info("Vào đây");
         boolean isValid = vnPayService.validateCallback(params);
         if (!isValid) {
             return ApiResponse.<String>builder()
@@ -101,5 +116,7 @@ public class OrderController {
         }
         return clientIp;
     }
+
+
 
 }
