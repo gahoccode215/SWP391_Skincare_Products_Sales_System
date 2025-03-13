@@ -3,6 +3,7 @@ package com.swp391.skincare_products_sales_system.service.impl;
 import com.swp391.skincare_products_sales_system.dto.request.AnswerRequest;
 import com.swp391.skincare_products_sales_system.dto.request.QuestionRequest;
 import com.swp391.skincare_products_sales_system.dto.request.QuizCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.request.QuizUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
 import com.swp391.skincare_products_sales_system.entity.Answer;
 import com.swp391.skincare_products_sales_system.entity.Question;
@@ -21,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +35,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public QuizResponse createQuiz(QuizCreationRequest quizRequest) {
+    public Quiz createQuiz(QuizCreationRequest quizRequest) {
         Quiz quiz = Quiz.builder()
                 .title(quizRequest.getTitle())
                 .description(quizRequest.getDescription())
@@ -52,8 +55,7 @@ public class QuizServiceImpl implements QuizService {
                 answerRepository.save(answer);
             }
         }
-        quizRepository.save(quiz);
-        return toQuizResponse(quiz);
+        return quizRepository.save(quiz);
     }
 
     @Override
@@ -72,9 +74,41 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public QuizResponse getQuizById(Long id) {
+    public Quiz getQuizById(Long id) {
+        return quizRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public void updateQuiz(QuizUpdateRequest request, Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
-        return toQuizResponse(quiz);
+        if(request.getTitle() != null) quiz.setTitle(quiz.getTitle());
+        if(request.getDescription() != null) quiz.setDescription(quiz.getDescription());
+        if(request.getStatus() != null) quiz.setStatus(quiz.getStatus());
+        for(QuestionRequest questionRequest : request.getQuestions()){
+            Question question = questionRepository.findById(questionRequest.getQuestionId()).orElseThrow(() -> new AppException(ErrorCode.QUESTION_NOT_FOUND));
+            question.setTitle(questionRequest.getTitle());
+            questionRepository.save(question);
+            for(AnswerRequest answerRequest : questionRequest.getAnswers()){
+                Answer answer = answerRepository.findById(answerRequest.getAnswerId())
+                        .orElseThrow(() -> new AppException(ErrorCode.ANSWER_NOT_FOUND));
+                answer.setAnswerText(answerRequest.getAnswerText());
+                answerRepository.save(answer);
+            }
+        }
+        quizRepository.save(quiz);
+        toQuizResponse(quiz);
+    }
+
+    @Override
+    public List<Quiz> getAll(boolean admin) {
+        List<Quiz> list;
+        if(admin){
+            list = quizRepository.findAll();
+        }else{
+            list = quizRepository.findAll().stream().filter(quiz -> quiz.getStatus() == Status.ACTIVE).toList();
+        }
+        return list;
     }
 
     private QuizResponse toQuizResponse(Quiz quiz){

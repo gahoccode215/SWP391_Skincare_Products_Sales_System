@@ -1,14 +1,19 @@
 package com.swp391.skincare_products_sales_system.service;
 
 import com.swp391.skincare_products_sales_system.dto.request.QuizCreationRequest;
-import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
+import com.swp391.skincare_products_sales_system.dto.request.QuizUpdateRequest;
+import com.swp391.skincare_products_sales_system.entity.Quiz;
 import com.swp391.skincare_products_sales_system.enums.Status;
 
+import java.util.List;
+
 public interface QuizService {
-    QuizResponse createQuiz(QuizCreationRequest quizRequest);
+    Quiz createQuiz(QuizCreationRequest quizRequest);
     void deleteQuiz(Long id);
     void changeStatusQuiz(Long id, Status status);
-    QuizResponse getQuizById(Long id);
+    Quiz getQuizById(Long id);
+    void updateQuiz(QuizUpdateRequest request, Long id);
+    List<Quiz> getAll(boolean admin);
 }
 
 

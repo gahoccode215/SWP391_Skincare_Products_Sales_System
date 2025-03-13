@@ -4,6 +4,7 @@ import com.swp391.skincare_products_sales_system.dto.request.QuizCreationRequest
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
+import com.swp391.skincare_products_sales_system.entity.Quiz;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.service.QuizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/quizs")
@@ -30,8 +33,8 @@ public class AdminQuizController {
             summary = "Tạo mới quiz"
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<QuizResponse> createQuiz(@RequestBody @Valid QuizCreationRequest request) {
-        return ApiResponse.<QuizResponse>builder()
+    public ApiResponse<Quiz> createQuiz(@RequestBody @Valid QuizCreationRequest request) {
+        return ApiResponse.<Quiz>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Tạo mới quiz thành công")
                 .result(quizService.createQuiz(request))
@@ -65,12 +68,22 @@ public class AdminQuizController {
     @GetMapping("/{quizId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<QuizResponse> getQuizById(
+    public ApiResponse<Quiz> getQuizById(
             @PathVariable(required = false) Long quizId) {
-        return ApiResponse.<QuizResponse>builder()
+        return ApiResponse.<Quiz>builder()
                 .code(HttpStatus.OK.value())
                 .message("Lấy chi tiết câu hỏi thành công")
                 .result(quizService.getQuizById(quizId))
+                .build();
+    }
+    @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<List<Quiz>> getAll() {
+        return ApiResponse.<List<Quiz>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Lấy danh sách câu hỏi thành công")
+                .result(quizService.getAll(true))
                 .build();
     }
 }
