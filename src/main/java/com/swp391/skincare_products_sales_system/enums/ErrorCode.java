@@ -29,29 +29,28 @@ public enum ErrorCode {
     EMAIL_SEND_FAILED(1017, "Lỗi khi gửi email", HttpStatus.BAD_REQUEST),
     INVALID_OTP(1018, "OTP không hợp lệ", HttpStatus.BAD_REQUEST),
     OTP_EXPIRED(1019, "Mã OTP đã hết hạn", HttpStatus.BAD_REQUEST),
-    VOUCHER_NOT_OWNED_BY_USER(1020, "", HttpStatus.BAD_REQUEST),
-    VOUCHER_MIN_ORDER_INVALID(1021, "", HttpStatus.BAD_REQUEST),
-    EMAIL_EXISTED(1022, "", HttpStatus.BAD_REQUEST),
-    ACCOUNT_HAS_NOT_BEEN_ACTIVE(1023, "", HttpStatus.BAD_REQUEST),
-    EMAIL_NOT_FOUND(1024, "", HttpStatus.BAD_REQUEST),
+    VOUCHER_NOT_OWNED_BY_USER(1020, "Bạn không sở hữu Voucher", HttpStatus.BAD_REQUEST),
+    VOUCHER_MIN_ORDER_INVALID(1021, "Không đủ điều kiện dùng Voucher", HttpStatus.BAD_REQUEST),
+    EMAIL_EXISTED(1022, "Email đã tồn tại", HttpStatus.BAD_REQUEST),
+    ACCOUNT_HAS_NOT_BEEN_ACTIVE(1023, "Tài khoản chưa được kích hoạt", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_FOUND(1024, "Email không tồn tại", HttpStatus.BAD_REQUEST),
     //11XX
-    INVALID_KEY(1100, "Invalid uncategorized error", HttpStatus.BAD_REQUEST),
-    INVALID_LOGIN(1101, "Username or password not correct", HttpStatus.BAD_REQUEST),
-    INVALID_TOKEN(1102, "Token invalid", HttpStatus.UNAUTHORIZED),
-    INVALID_USERNAME(1103, "Username must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    INVALID_PASSWORD(1104, "Password must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    INVALID_BIRTHDAY(1105, "Birthday must be at least {min} years", HttpStatus.BAD_REQUEST),
-    INVALID_CONFIRM_PASSWORD(1106, "Confirm password not match with password", HttpStatus.BAD_REQUEST),
-    INVALID_CHANGE_PASSWORD(1007, "Old password not correct", HttpStatus.BAD_REQUEST),
-    INVALID_GENDER(1107, "Gender invalid", HttpStatus.BAD_REQUEST),
-    INVALID_QUANTITY(1108, "Quantity invalid", HttpStatus.BAD_REQUEST),
-    INVALID_PAYMENT_METHOD(1109, "Invalid payment method", HttpStatus.BAD_REQUEST),
-    INVALID_JSON(1010, "Json invalid", HttpStatus.BAD_REQUEST),
+    INVALID_KEY(1100, "Lỗi không phân loại", HttpStatus.BAD_REQUEST),
+    INVALID_LOGIN(1101, "Tên người dùng hoặc mật khẩu không đúng", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(1102, "Token không hợp lệ", HttpStatus.UNAUTHORIZED),
+    INVALID_USERNAME(1103, "Tên người dùng phải có ít nhất {min} ký tự", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1104, "Mật khẩu phải có ít nhất {min} ký tự", HttpStatus.BAD_REQUEST),
+    INVALID_BIRTHDAY(1105, "Ngày sinh phải đủ {min} năm", HttpStatus.BAD_REQUEST),
+    INVALID_CONFIRM_PASSWORD(1106, "Mật khẩu xác nhận không khớp với mật khẩu", HttpStatus.BAD_REQUEST),
+    INVALID_CHANGE_PASSWORD(1007, "Mật khẩu cũ không đúng", HttpStatus.BAD_REQUEST),
+    INVALID_GENDER(1107, "Giới tính không hợp lệ", HttpStatus.BAD_REQUEST),
+    INVALID_QUANTITY(1108, "Số lượng không hợp lệ", HttpStatus.BAD_REQUEST),
+    INVALID_PAYMENT_METHOD(1109, "Phương thức thanh toán không hợp lệ", HttpStatus.BAD_REQUEST),
+    INVALID_JSON(1010, "Json không hợp lệ", HttpStatus.BAD_REQUEST),
     // 12XX
-    UNAUTHENTICATED(1201, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHENTICATED(1201, "Chưa xác thực", HttpStatus.UNAUTHORIZED),
     // 13XX
-    REGISTER_ERROR(1301, "Register failed", HttpStatus.BAD_REQUEST),
-    ;
+    REGISTER_ERROR(1301, "Đăng ký thất bại", HttpStatus.BAD_REQUEST);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

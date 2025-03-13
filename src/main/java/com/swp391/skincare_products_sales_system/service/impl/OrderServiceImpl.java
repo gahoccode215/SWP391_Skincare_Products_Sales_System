@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
-//        Voucher findVoucher = voucherRepository.fin
         if (paymentMethod == null) {
             throw new AppException(ErrorCode.INVALID_PAYMENT_METHOD);
         }
@@ -114,6 +114,9 @@ public class OrderServiceImpl implements OrderService {
         List<OrderResponse> orderResponses = orders.getContent().stream()
                 .map(this::mapToOrderResponse)
                 .collect(Collectors.toList());
+
+        Collections.reverse(orderResponses);
+
         OrderPageResponse response = new OrderPageResponse();
         response.setOrderResponseList(orderResponses);
         response.setTotalElements(orders.getTotalElements());
