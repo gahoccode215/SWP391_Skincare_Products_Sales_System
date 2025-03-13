@@ -2,7 +2,9 @@ package com.swp391.skincare_products_sales_system.controller.admin;
 
 import com.swp391.skincare_products_sales_system.dto.request.QuizCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
+import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
+import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.service.QuizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,4 +50,27 @@ public class AdminQuizController {
                 .build();
     }
 
+    @PatchMapping("/change-status/{quizId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Đổi trạng thái sản phẩm câu hỏi")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<Void> changeQuizStatus(@PathVariable Long quizId, @RequestParam Status status) {
+        quizService.changeStatusQuiz(quizId, status);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Thay đổi trạng thái thành công")
+                .build();
+    }
+
+    @GetMapping("/{quizId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<QuizResponse> getQuizById(
+            @PathVariable(required = false) Long quizId) {
+        return ApiResponse.<QuizResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Lấy chi tiết câu hỏi thành công")
+                .result(quizService.getQuizById(quizId))
+                .build();
+    }
 }

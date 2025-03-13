@@ -53,12 +53,7 @@ public class QuizServiceImpl implements QuizService {
             }
         }
         quizRepository.save(quiz);
-        return QuizResponse.builder()
-                .id(quiz.getId())
-                .title(quiz.getTitle())
-                .status(Status.ACTIVE)
-                .description(quiz.getDescription())
-                .build();
+        return toQuizResponse(quiz);
     }
 
     @Override
@@ -68,4 +63,26 @@ public class QuizServiceImpl implements QuizService {
         quizRepository.delete(quiz);
     }
 
+    @Override
+    @Transactional
+    public void changeStatusQuiz(Long id, Status status) {
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
+        quiz.setStatus(status);
+        quizRepository.save(quiz);
+    }
+
+    @Override
+    public QuizResponse getQuizById(Long id) {
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
+        return toQuizResponse(quiz);
+    }
+
+    private QuizResponse toQuizResponse(Quiz quiz){
+        return QuizResponse.builder()
+                .id(quiz.getId())
+                .title(quiz.getTitle())
+                .status(Status.ACTIVE)
+                .description(quiz.getDescription())
+                .build();
+    }
 }
