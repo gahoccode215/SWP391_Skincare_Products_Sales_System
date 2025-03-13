@@ -1,14 +1,13 @@
 package com.swp391.skincare_products_sales_system.service.impl;
 
-import com.swp391.skincare_products_sales_system.dto.request.AnswerRequest;
-import com.swp391.skincare_products_sales_system.dto.request.QuestionRequest;
-import com.swp391.skincare_products_sales_system.dto.request.QuizCreationRequest;
-import com.swp391.skincare_products_sales_system.dto.request.QuizUpdateRequest;
+import com.swp391.skincare_products_sales_system.dto.request.*;
 import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
 import com.swp391.skincare_products_sales_system.entity.Answer;
 import com.swp391.skincare_products_sales_system.entity.Question;
 import com.swp391.skincare_products_sales_system.entity.Quiz;
+import com.swp391.skincare_products_sales_system.entity.Result;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
+import com.swp391.skincare_products_sales_system.enums.SkinType;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.repository.AnswerRepository;
@@ -22,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -39,6 +40,7 @@ public class QuizServiceImpl implements QuizService {
         Quiz quiz = Quiz.builder()
                 .title(quizRequest.getTitle())
                 .description(quizRequest.getDescription())
+                .status(Status.ACTIVE)
                 .build();
         for (QuestionRequest questionRequest : quizRequest.getQuestions()) {
             Question question = Question.builder()
@@ -111,6 +113,17 @@ public class QuizServiceImpl implements QuizService {
         return list;
     }
 
+    @Override
+    public Result submitQuiz(SubmitQuiz submitQuiz, Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
+        SkinType result = calculateQuizResult(quiz, submitQuiz.getAnswers());
+        Result resultEntity = new Result();
+        resultEntity.setSkinType(result);
+        resultEntity.setRecommendation(result.getRecommendation());
+        return resultEntity;
+    }
+
     private QuizResponse toQuizResponse(Quiz quiz){
         return QuizResponse.builder()
                 .id(quiz.getId())
@@ -118,5 +131,43 @@ public class QuizServiceImpl implements QuizService {
                 .status(Status.ACTIVE)
                 .description(quiz.getDescription())
                 .build();
+    }
+    private SkinType calculateQuizResult(Quiz quiz, Map<Long, Long> answers) {
+        Map<SkinType, Long> skinTypeCount = new HashMap<>();
+        skinTypeCount.put(SkinType.DRY_SKIN, 0L);
+        skinTypeCount.put(SkinType.SENSITIVE_SKIN, 0L);
+        skinTypeCount.put(SkinType.OILY_SKIN, 0L);
+        skinTypeCount.put(SkinType.NORMAL_SKIN, 0L);
+
+        for (Question question : quiz.getQuestions()) {
+            Long answerId = answers.get(question.getId());
+
+            if (answerId != null) {
+                Answer answer = answerRepository.findById(answerId)
+                        .orElseThrow(() -> new AppException(ErrorCode.ANSWER_NOT_FOUND));
+
+                SkinType skinType = answer.getSkinType();
+                if (skinType != null) {
+                    skinTypeCount.merge(skinType, 1L, Long::sum);
+                }
+            }
+        }
+
+        SkinType result = skinTypeCount.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(SkinType.SENSITIVE_SKIN);
+
+        if (skinTypeCount.get(SkinType.DRY_SKIN).equals(skinTypeCount.get(SkinType.OILY_SKIN))) {
+            return SkinType.COMBINATION_SKIN;
+        }
+        if (skinTypeCount.get(SkinType.DRY_SKIN).equals(skinTypeCount.get(SkinType.NORMAL_SKIN))) {
+            return SkinType.COMBINATION_SKIN;
+        }
+        if (skinTypeCount.get(SkinType.OILY_SKIN).equals(skinTypeCount.get(SkinType.NORMAL_SKIN))) {
+            return SkinType.COMBINATION_SKIN;
+        }
+        return result;
     }
 }

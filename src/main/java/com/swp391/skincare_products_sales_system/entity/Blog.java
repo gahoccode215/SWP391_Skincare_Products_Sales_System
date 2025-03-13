@@ -33,7 +33,6 @@ public class Blog {
     @Enumerated(EnumType.STRING)
     Status status;
 
-
     @Column(name = "created_date")
     LocalDateTime createdDate;
 

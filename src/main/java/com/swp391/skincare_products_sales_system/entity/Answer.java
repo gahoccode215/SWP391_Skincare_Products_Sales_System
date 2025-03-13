@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_answer")
-public class Answer extends AbstractEntity{
+public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;

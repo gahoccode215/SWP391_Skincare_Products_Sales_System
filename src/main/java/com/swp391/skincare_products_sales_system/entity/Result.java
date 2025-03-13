@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.entity;
 
+import com.swp391.skincare_products_sales_system.enums.SkinType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -13,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_result")
-public class Result extends AbstractEntity {
+public class Result  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +25,8 @@ public class Result extends AbstractEntity {
     @JoinColumn(name = "quiz_id", nullable = false)
     Quiz quiz;
 
-    @Column(name = "skin_type")
-    String skinType;
+    @Enumerated(EnumType.STRING)
+    SkinType skinType;
 
     @Column(name = "recommendation")
     String recommendation;

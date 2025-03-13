@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,8 +72,12 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public BlogResponse getBlogById(Long id) {
+    public BlogResponse getBlogById(Long id, boolean admin) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
+        if(!admin){
+            if(blog.getStatus() == Status.ACTIVE)
+                throw new AppException(ErrorCode.BLOG_NOT_FOUND);
+        }
         return toBlogResponse(blog);
     }
 

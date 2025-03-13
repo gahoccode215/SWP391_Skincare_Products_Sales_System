@@ -2,8 +2,6 @@ package com.swp391.skincare_products_sales_system.controller.admin;
 
 import com.swp391.skincare_products_sales_system.dto.request.BlogCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.request.BlogUpdateRequest;
-import com.swp391.skincare_products_sales_system.dto.request.BrandCreationRequest;
-import com.swp391.skincare_products_sales_system.dto.request.BrandUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.*;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import com.swp391.skincare_products_sales_system.service.BlogService;
@@ -69,7 +67,7 @@ public class AdminBlogController {
         return ApiResponse.<BlogResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Lấy chi tiết Blog thành công")
-                .result(blogService.getBlogById(blogId))
+                .result(blogService.getBlogById(blogId, true))
                 .build();
     }
 
