@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.dto.response;
 
+import com.swp391.skincare_products_sales_system.enums.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,4 +13,5 @@ public class QuizResponse {
     Long id;
     String description;
     String title;
+    Status status;
 }

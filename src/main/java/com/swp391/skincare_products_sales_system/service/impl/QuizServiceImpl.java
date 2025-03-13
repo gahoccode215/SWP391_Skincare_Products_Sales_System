@@ -7,6 +7,9 @@ import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
 import com.swp391.skincare_products_sales_system.entity.Answer;
 import com.swp391.skincare_products_sales_system.entity.Question;
 import com.swp391.skincare_products_sales_system.entity.Quiz;
+import com.swp391.skincare_products_sales_system.enums.ErrorCode;
+import com.swp391.skincare_products_sales_system.enums.Status;
+import com.swp391.skincare_products_sales_system.exception.AppException;
 import com.swp391.skincare_products_sales_system.repository.AnswerRepository;
 import com.swp391.skincare_products_sales_system.repository.QuestionRepository;
 import com.swp391.skincare_products_sales_system.repository.QuizRepository;
@@ -53,7 +56,16 @@ public class QuizServiceImpl implements QuizService {
         return QuizResponse.builder()
                 .id(quiz.getId())
                 .title(quiz.getTitle())
+                .status(Status.ACTIVE)
                 .description(quiz.getDescription())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public void deleteQuiz(Long id) {
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
+        quizRepository.delete(quiz);
+    }
+
 }

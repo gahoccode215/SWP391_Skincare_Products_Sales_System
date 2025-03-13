@@ -43,7 +43,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", length = 50)
-    OrderStatus status;
+    OrderStatus orderStatus;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")

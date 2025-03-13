@@ -1,8 +1,9 @@
 package com.swp391.skincare_products_sales_system.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.*;
 
 import java.util.List;
@@ -26,6 +27,10 @@ public class Quiz {
 
     @Column(nullable = false, unique = true)
     String title;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    Status status = Status.ACTIVE;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
