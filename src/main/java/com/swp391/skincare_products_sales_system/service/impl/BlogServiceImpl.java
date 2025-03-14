@@ -75,7 +75,7 @@ public class BlogServiceImpl implements BlogService {
     public BlogResponse getBlogById(Long id, boolean admin) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
         if(!admin){
-            if(blog.getStatus() == Status.ACTIVE)
+            if(blog.getStatus() == Status.INACTIVE)
                 throw new AppException(ErrorCode.BLOG_NOT_FOUND);
         }
         return toBlogResponse(blog);
