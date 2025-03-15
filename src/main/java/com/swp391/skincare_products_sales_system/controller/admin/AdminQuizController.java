@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.controller.admin;
 
 import com.swp391.skincare_products_sales_system.dto.request.QuizCreationRequest;
+import com.swp391.skincare_products_sales_system.dto.request.QuizUpdateRequest;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
 import com.swp391.skincare_products_sales_system.dto.response.ProductResponse;
 import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
@@ -76,14 +77,24 @@ public class AdminQuizController {
                 .result(quizService.getQuizById(quizId))
                 .build();
     }
-    @GetMapping("")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<List<Quiz>> getAll() {
-        return ApiResponse.<List<Quiz>>builder()
+    public ApiResponse<List<QuizResponse>> getAll() {
+        return ApiResponse.<List<QuizResponse>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Lấy danh sách câu hỏi thành công")
                 .result(quizService.getAll(true))
+                .build();
+    }
+    @PutMapping("{quizId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    public ApiResponse<List<QuizResponse>> updateQuiz(@RequestBody QuizUpdateRequest request, Long quizId) {
+        quizService.updateQuiz(request, quizId);
+        return ApiResponse.<List<QuizResponse>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Cập nhật thành công")
                 .build();
     }
 }

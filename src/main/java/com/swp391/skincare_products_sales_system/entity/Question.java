@@ -22,7 +22,7 @@ public class Question{
     String title;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "quiz_id", nullable = false)
+    @JoinColumn(name = "quiz_id")
     @JsonIgnore
     Quiz quiz;
 

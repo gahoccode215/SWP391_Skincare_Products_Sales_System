@@ -103,14 +103,18 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getAll(boolean admin) {
+    public List<QuizResponse> getAll(boolean admin) {
         List<Quiz> list;
-        if(admin){
+        if (admin) {
             list = quizRepository.findAll();
-        }else{
+        } else {
             list = quizRepository.findAll().stream().filter(quiz -> quiz.getStatus() == Status.ACTIVE).toList();
         }
-        return list;
+
+        // Convert each Quiz to QuizResponse and include questions and results
+        return list.stream()
+                .map(this::toQuizResponse)
+                .toList();
     }
 
     @Override
@@ -124,12 +128,14 @@ public class QuizServiceImpl implements QuizService {
         return resultEntity;
     }
 
-    private QuizResponse toQuizResponse(Quiz quiz){
+    private QuizResponse toQuizResponse(Quiz quiz) {
         return QuizResponse.builder()
                 .id(quiz.getId())
                 .title(quiz.getTitle())
-                .status(Status.ACTIVE)
                 .description(quiz.getDescription())
+                .status(quiz.getStatus())  // Chuyển đổi status thành chuỗi
+                .questions(quiz.getQuestions())  // Thêm danh sách câu hỏi
+                .results(quiz.getResults())  // Thêm danh sách kết quả
                 .build();
     }
     private SkinType calculateQuizResult(Quiz quiz, Map<Long, Long> answers) {

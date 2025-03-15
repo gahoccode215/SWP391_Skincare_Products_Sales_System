@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.swp391.skincare_products_sales_system.enums.Status;
 import jakarta.persistence.*;
 
@@ -33,10 +34,10 @@ public class Quiz {
     Status status = Status.ACTIVE;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonIgnore
+    @JsonIgnoreProperties("quiz")  // Tránh vòng lặp vô hạn
     List<Question> questions;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonIgnore
+    @JsonIgnoreProperties("quiz")
     List<Result> results;
 }

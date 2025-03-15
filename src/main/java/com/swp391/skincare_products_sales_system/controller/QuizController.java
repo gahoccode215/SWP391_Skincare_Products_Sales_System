@@ -2,6 +2,7 @@ package com.swp391.skincare_products_sales_system.controller;
 
 import com.swp391.skincare_products_sales_system.dto.request.SubmitQuiz;
 import com.swp391.skincare_products_sales_system.dto.response.ApiResponse;
+import com.swp391.skincare_products_sales_system.dto.response.QuizResponse;
 import com.swp391.skincare_products_sales_system.entity.Quiz;
 import com.swp391.skincare_products_sales_system.entity.Result;
 import com.swp391.skincare_products_sales_system.service.QuizService;
@@ -27,8 +28,8 @@ public class QuizController {
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<List<Quiz>> getAll() {
-        return ApiResponse.<List<Quiz>>builder()
+    public ApiResponse<List<QuizResponse>> getAll() {
+        return ApiResponse.<List<QuizResponse>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Lấy danh sách câu hỏi thành công")
                 .result(quizService.getAll(false))
