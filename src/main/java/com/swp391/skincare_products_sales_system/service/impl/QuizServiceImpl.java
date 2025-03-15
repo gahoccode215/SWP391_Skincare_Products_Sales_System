@@ -84,9 +84,11 @@ public class QuizServiceImpl implements QuizService {
     @Transactional
     public void updateQuiz(QuizUpdateRequest request, Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
-        if(request.getTitle() != null) quiz.setTitle(quiz.getTitle());
-        if(request.getDescription() != null) quiz.setDescription(quiz.getDescription());
-        if(request.getStatus() != null) quiz.setStatus(quiz.getStatus());
+        log.info("VAO DUOC DAY");
+        if(request.getTitle() != null) quiz.setTitle(request.getTitle());
+        if(request.getDescription() != null) quiz.setDescription(request.getDescription());
+        if(request.getStatus() != null) quiz.setStatus(request.getStatus());
+
         for(QuestionRequest questionRequest : request.getQuestions()){
             Question question = questionRepository.findById(questionRequest.getQuestionId()).orElseThrow(() -> new AppException(ErrorCode.QUESTION_NOT_FOUND));
             question.setTitle(questionRequest.getTitle());
@@ -95,9 +97,11 @@ public class QuizServiceImpl implements QuizService {
                 Answer answer = answerRepository.findById(answerRequest.getAnswerId())
                         .orElseThrow(() -> new AppException(ErrorCode.ANSWER_NOT_FOUND));
                 answer.setAnswerText(answerRequest.getAnswerText());
+                answer.setSkinType(answerRequest.getSkinType());
                 answerRepository.save(answer);
             }
         }
+        log.info("{}", quiz.getTitle());
         quizRepository.save(quiz);
         toQuizResponse(quiz);
     }

@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AnswerRequest {
-
     Long answerId;
     String answerText;
     SkinType skinType;

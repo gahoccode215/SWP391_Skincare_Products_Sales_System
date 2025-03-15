@@ -49,7 +49,7 @@ public class OrderController {
     @PatchMapping("/cancel-order/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<Void> confirmOrderByStaff(@PathVariable Long orderId, @RequestParam OrderStatus orderStatus) {
+    public ApiResponse<Void> cancelOrder(@PathVariable Long orderId) {
         orderService.cancelOrder(orderId);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())

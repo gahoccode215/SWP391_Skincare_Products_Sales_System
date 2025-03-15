@@ -87,10 +87,10 @@ public class AdminQuizController {
                 .result(quizService.getAll(true))
                 .build();
     }
-    @PutMapping("{quizId}")
+    @PutMapping("/{quizId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
-    public ApiResponse<List<QuizResponse>> updateQuiz(@RequestBody QuizUpdateRequest request, Long quizId) {
+    public ApiResponse<List<QuizResponse>> updateQuiz(@RequestBody QuizUpdateRequest request, @PathVariable Long quizId) {
         quizService.updateQuiz(request, quizId);
         return ApiResponse.<List<QuizResponse>>builder()
                 .code(HttpStatus.OK.value())
