@@ -37,6 +37,7 @@ public enum ErrorCode {
     QUIZ_NOT_FOUND(1025, "Câu hỏi không tồn tại", HttpStatus.BAD_REQUEST),
     QUESTION_NOT_FOUND(1026, "Không tìm thấy câu hỏi", HttpStatus.BAD_REQUEST),
     ANSWER_NOT_FOUND(1027, "Không tìm thấy câu trả lời", HttpStatus.BAD_REQUEST),
+    ACCOUNT_HAS_BEEN_DISABLE(1028, "tài khoản bị vô hiệu hóa", HttpStatus.BAD_REQUEST),
     //11XX
     INVALID_KEY(1100, "Lỗi không phân loại", HttpStatus.BAD_REQUEST),
     INVALID_LOGIN(1101, "Tên người dùng hoặc mật khẩu không đúng", HttpStatus.BAD_REQUEST),

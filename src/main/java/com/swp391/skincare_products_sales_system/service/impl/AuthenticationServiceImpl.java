@@ -99,8 +99,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_LOGIN));
-        if (user.getStatus().equals(Status.INACTIVE))
-            throw new AppException(ErrorCode.ACCOUNT_HAS_NOT_BEEN_ACTIVE);
+        if (user.getRole().getName().equals(PredefinedRole.CUSTOMER_ROLE))
+            if (user.getStatus().equals(Status.INACTIVE)) {
+                throw new AppException(ErrorCode.ACCOUNT_HAS_NOT_BEEN_ACTIVE);
+            }
+        if (user.getStatus().equals(Status.INACTIVE)){
+            throw new AppException(ErrorCode.ACCOUNT_HAS_BEEN_DISABLE);
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.INVALID_LOGIN);
         }

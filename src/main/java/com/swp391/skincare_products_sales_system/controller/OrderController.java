@@ -80,7 +80,8 @@ public class OrderController {
 
     @PostMapping("/payment-success")
     public ApiResponse<String> handlePaymentCallback(@RequestParam Map<String, String> params) throws UnsupportedEncodingException {
-        log.info("Vào đây");
+        log.info("PAYMENT DAY");
+        log.info("{}", params);
         boolean isValid = vnPayService.validateCallback(params);
         if (!isValid) {
             return ApiResponse.<String>builder()

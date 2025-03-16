@@ -1,5 +1,6 @@
 package com.swp391.skincare_products_sales_system.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
+@Slf4j
 public class VNPayService {
 
 
@@ -93,28 +95,53 @@ public class VNPayService {
         return sb.toString();
     }
 
-    public boolean validateCallback(Map<String, String> params) throws UnsupportedEncodingException {
+//    public boolean validateCallback(Map<String, String> params) throws UnsupportedEncodingException {
+//        String receivedHash = params.get("vnp_SecureHash");
+//        params.remove("vnp_SecureHash");
+//        params.remove("vnp_SecureHashType");
+//        List<String> fieldNames = new ArrayList<>(params.keySet());
+//        Collections.sort(fieldNames);
+//        StringBuilder hashData = new StringBuilder();
+//        for (String fieldName : fieldNames) {
+//            String fieldValue = params.get(fieldName);
+//            if (fieldValue != null && !fieldValue.isEmpty()) {
+//                String encodedValue = URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString());
+//                hashData.append(fieldName).append('=').append(encodedValue).append('&');
+//            }
+//        }
+//        if (hashData.length() > 0) {
+//            hashData.deleteCharAt(hashData.length() - 1);
+//        }
+//        String calculatedHash = hmacSHA512(hashSecret, hashData.toString());
+//        if (!calculatedHash.equalsIgnoreCase(receivedHash)) {
+//            return false;
+//        }
+//        return true;
+//    }
+
+    public boolean validateCallback(Map<String, String> params) {
+
         String receivedHash = params.get("vnp_SecureHash");
         params.remove("vnp_SecureHash");
         params.remove("vnp_SecureHashType");
+        log.info("VNPay Callback Params: {}", params);
+
         List<String> fieldNames = new ArrayList<>(params.keySet());
         Collections.sort(fieldNames);
+
         StringBuilder hashData = new StringBuilder();
         for (String fieldName : fieldNames) {
             String fieldValue = params.get(fieldName);
             if (fieldValue != null && !fieldValue.isEmpty()) {
-                String encodedValue = URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString());
-                hashData.append(fieldName).append('=').append(encodedValue).append('&');
+                hashData.append(fieldName).append('=').append(fieldValue).append('&'); // Không encode giá trị
             }
         }
         if (hashData.length() > 0) {
             hashData.deleteCharAt(hashData.length() - 1);
         }
+
         String calculatedHash = hmacSHA512(hashSecret, hashData.toString());
-        if (!calculatedHash.equalsIgnoreCase(receivedHash)) {
-            return false;
-        }
-        return true;
+        return calculatedHash.equalsIgnoreCase(receivedHash);
     }
 
 }
