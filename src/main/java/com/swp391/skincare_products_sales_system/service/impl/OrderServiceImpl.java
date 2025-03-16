@@ -310,6 +310,7 @@ public class OrderServiceImpl implements OrderService {
                         .productName(item.getProduct().getName())
                         .quantity(item.getQuantity())
                         .price(item.getPrice())
+                        .productId(item.getProduct().getId())
                         .totalPrice(item.calculateTotalPrice())
                         .thumbnailProduct(item.getProduct().getThumbnail())
                         .build())
