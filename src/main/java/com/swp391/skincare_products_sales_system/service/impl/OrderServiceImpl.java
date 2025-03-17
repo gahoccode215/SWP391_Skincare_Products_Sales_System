@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
                 order.setTotalAmount(Math.max(newTotal, 0));
             }
             if (voucher.getDiscountType() == DiscountType.PERCENTAGE) {
-                double discountAmount = order.getTotalAmount() * (voucher.getDiscount() / 100);
+                double discountAmount = order.getTotalAmount() * ((double) voucher.getDiscount() / 100);
                 order.setTotalAmount(Math.max(order.getTotalAmount() - discountAmount, 0));
             }
             user.removeVoucher(voucher);

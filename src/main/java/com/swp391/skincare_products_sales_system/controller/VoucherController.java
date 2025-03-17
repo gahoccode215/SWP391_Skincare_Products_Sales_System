@@ -28,7 +28,7 @@ public class VoucherController {
         service.exchangeVoucher(voucherId);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.CREATED.value())
-                .message("Đổi voucher thành công")
+                .message("Đổi khuyến mãi thành công")
                 .build();
     }
     @GetMapping("/{voucherId}")
@@ -38,7 +38,7 @@ public class VoucherController {
     ) {
         return ApiResponse.<VoucherResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy chi tiết voucher thành công")
+                .message("Lấy chi tiết khuyến mãi thành công")
                 .result(service.getVoucher(voucherId))
                 .build();
     }
@@ -51,7 +51,7 @@ public class VoucherController {
     ) {
         return ApiResponse.<VoucherPageResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy danh sách voucher thành công")
+                .message("Lấy danh sách khuyến mãi thành công")
                 .result(service.getVoucherByCustomer(page, size))
                 .build();
     }
@@ -64,7 +64,7 @@ public class VoucherController {
     ) {
         return ApiResponse.<VoucherPageResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy danh sách voucher của tôi  thành công")
+                .message("Lấy danh sách khuyến mãi của tôi  thành công")
                 .result(service.getMyVouchers(page, size))
                 .build();
     }

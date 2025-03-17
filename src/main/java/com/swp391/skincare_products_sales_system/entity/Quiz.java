@@ -19,6 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "tbl_quiz")
 public class Quiz {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -34,7 +35,7 @@ public class Quiz {
     Status status = Status.ACTIVE;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("quiz")  // Tránh vòng lặp vô hạn
+    @JsonIgnoreProperties("quiz")
     List<Question> questions;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

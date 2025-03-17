@@ -186,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteBatch(String batchId) {
         Batch batch = batchRepository.findById(batchId).orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_FOUND));
-        batchRepository.delete(batch);
+        batchRepository.deleteById(batchId);
     }
 
     @Override

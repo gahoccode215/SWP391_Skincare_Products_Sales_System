@@ -40,7 +40,7 @@ public class QuizController {
     public ApiResponse<Result> submitQuiz(@Valid @PathVariable Long quizId, @RequestBody SubmitQuiz submitQuiz) {
         return ApiResponse.<Result>builder()
                 .code(HttpStatus.OK.value())
-                .message("Làm quiz thành công")
+                .message("Làm trắc nghiệm thành công")
                 .result(quizService.submitQuiz(submitQuiz, quizId))
                 .build();
     }

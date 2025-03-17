@@ -16,20 +16,20 @@ import java.util.Date;
 public class Otp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Primary key cho bảng OTP
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user; // Liên kết OTP với người dùng
+    private User user;
 
     @Column(name = "otp")
-    private String otp; // OTP được tạo
+    private String otp;
 
     @Column(name = "expiration_time")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date expirationTime; // Thời gian hết hạn của OTP
+    private Date expirationTime;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date(); // Thời gian tạo OTP
+    private Date createdAt = new Date();
 }

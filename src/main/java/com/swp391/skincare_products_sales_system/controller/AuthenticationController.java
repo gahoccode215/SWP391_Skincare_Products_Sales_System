@@ -102,7 +102,7 @@ public class AuthenticationController {
         authenticationService.forgotPassword(request);
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
-                .message("Đã gửi mail reset password")
+                .message("Đã gửi mail reset mật khẩu")
                 .build();
     }
 
@@ -121,7 +121,7 @@ public class AuthenticationController {
         otpService.resendOtp(userId);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
-                .message("Otp gửi thành công")
+                .message("OTP gửi thành công")
                 .build();
     }
 }

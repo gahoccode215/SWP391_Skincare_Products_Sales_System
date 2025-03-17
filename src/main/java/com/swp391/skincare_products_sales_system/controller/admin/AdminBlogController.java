@@ -93,7 +93,7 @@ public class AdminBlogController {
     ) {
         return ApiResponse.<BlogPageResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy danh sách Blog thành công")
+                .message("Lấy danh sách Chia sẻ thành công")
                 .result(blogService.getBlogs(true, page, size))
                 .build();
     }

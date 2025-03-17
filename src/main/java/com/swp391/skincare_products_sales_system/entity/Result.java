@@ -30,5 +30,4 @@ public class Result  {
 
     @Column(name = "recommendation")
     String recommendation;
-
 }

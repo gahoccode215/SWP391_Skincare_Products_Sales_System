@@ -29,7 +29,7 @@ public class AdminVoucherController {
     public ApiResponse<VoucherResponse> createVoucher(@RequestBody @Valid VoucherCreationRequest request) {
         return ApiResponse.<VoucherResponse>builder()
                 .code(HttpStatus.CREATED.value())
-                .message("Tạo mới voucher thành công")
+                .message("Tạo mới khuyến mãi thành công")
                 .result(service.createVoucher(request))
                 .build();
     }
@@ -41,7 +41,7 @@ public class AdminVoucherController {
         service.deleteVoucher(voucherId);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
-                .message("Xóa voucher thành công")
+                .message("Xóa khuyến mãi thành công")
                 .build();
     }
     @GetMapping("/{voucherId}")
@@ -51,7 +51,7 @@ public class AdminVoucherController {
     ) {
         return ApiResponse.<VoucherResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy chi tiết voucher thành công")
+                .message("Lấy chi tiết khuyến mãi thành công")
                 .result(service.getVoucher(voucherId))
                 .build();
     }
@@ -65,7 +65,7 @@ public class AdminVoucherController {
     ) {
         return ApiResponse.<VoucherPageResponse>builder()
                 .code(HttpStatus.OK.value())
-                .message("Lấy danh sách voucher thành công")
+                .message("Lấy danh sách khuyến mãi thành công")
                 .result(service.getVouchersByAdmin(page, size))
                 .build();
     }
