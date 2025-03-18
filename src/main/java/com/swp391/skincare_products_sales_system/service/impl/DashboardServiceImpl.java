@@ -1,6 +1,7 @@
 package com.swp391.skincare_products_sales_system.service.impl;
 
 import com.swp391.skincare_products_sales_system.dto.OrderStatusDTO;
+import com.swp391.skincare_products_sales_system.dto.TopSellingProductDTO;
 import com.swp391.skincare_products_sales_system.dto.response.DashboardResponse;
 import com.swp391.skincare_products_sales_system.enums.OrderStatus;
 import com.swp391.skincare_products_sales_system.repository.OrderItemRepository;
@@ -32,36 +33,32 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public DashboardResponse getDashboardData() {
+        log.info("Getting dashboard data");
         DashboardResponse dashboard = new DashboardResponse();
 
         // Lấy tổng doanh thu từ các đơn hàng
         Double totalRevenue = orderRepository.sumTotalAmount();
         dashboard.setTotalRevenue(totalRevenue != null ? totalRevenue : 0);
 
-        Long totalOrders = orderRepository.countByStatusDone();
-        dashboard.setTotalOrders(totalOrders != null ? totalOrders.intValue() : 0);
+        Long totalOrdersDone = orderRepository.countByStatusDone();
+        dashboard.setTotalOrdersDone(totalOrdersDone != null ? totalOrdersDone.intValue() : 0);
 
-        Long totalUsers = userRepository.countByRoleCustomer();
-        dashboard.setTotalUsers(totalUsers != null ? totalUsers.intValue() : 0);
+        Long totalCustomers = userRepository.countByRoleCustomer();
+        dashboard.setTotalCustomers(totalCustomers != null ? totalCustomers.intValue() : 0);
 
-        Long totalProducts = productRepository.countProduct();
-        dashboard.setTotalProducts(totalProducts != null ? totalProducts.intValue() : 0);
+        Long totalProductsSold = orderItemRepository.getTotalQuantitySold();
+        dashboard.setTotalProductsSold(totalProductsSold != null ? totalProductsSold.intValue() : 0);
 
-        List<Double> monthlyRevenue = getMonthlyRevenueData();
-        dashboard.setMonthlyRevenue(monthlyRevenue);
+//        List<Double> monthlyRevenue = getMonthlyRevenueData();
+//        dashboard.setMonthlyRevenue(monthlyRevenue);
 
-        List<Object[]> topSellingProducts = orderItemRepository.getTopSellingProducts();
-        List<String> productNames = new ArrayList<>();
-        List<Long> quantities = new ArrayList<>();
-        for (Object[] row : topSellingProducts) {
-            productNames.add((String) row[0]);
-            quantities.add((Long) row[1]);
-        }
-        dashboard.setTopSellingProducts(productNames);
-        dashboard.setTopSellingQuantities(quantities);
+
 
         List<OrderStatusDTO> orderStatuses = getOrderStatuses();
         dashboard.setOrderStatuses(orderStatuses);
+
+        List<TopSellingProductDTO> topSellingProducts = getTopSellingProducts(5);
+        dashboard.setTopSellingProductDTOS(topSellingProducts);
         return dashboard;
     }
 
@@ -92,6 +89,21 @@ public class DashboardServiceImpl implements DashboardService {
         return statuses.stream()
                 .map(status -> new OrderStatusDTO(status.getLabel(), orderRepository.countOrdersByStatus(status)))
                 .collect(Collectors.toList());
+    }
+    private List<TopSellingProductDTO> getTopSellingProducts(int topCount) {
+        // Get the top-selling products
+        List<Object[]> topSellingProducts = orderItemRepository.getTopSellingProducts();
+        List<TopSellingProductDTO> result = new ArrayList<>();
+
+        for (int i = 0; i < Math.min(topCount, topSellingProducts.size()); i++) {
+            Object[] row = topSellingProducts.get(i);
+            String productName = (String) row[0];
+            Long quantitySold = (Long) row[1];
+
+            result.add(new TopSellingProductDTO(productName, quantitySold));
+        }
+
+        return result;
     }
 }
 

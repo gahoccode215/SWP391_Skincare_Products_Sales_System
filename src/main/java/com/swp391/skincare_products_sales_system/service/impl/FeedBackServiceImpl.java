@@ -3,14 +3,10 @@ package com.swp391.skincare_products_sales_system.service.impl;
 import com.swp391.skincare_products_sales_system.dto.request.FeedBackCreationRequest;
 import com.swp391.skincare_products_sales_system.dto.response.FeedBackResponse;
 import com.swp391.skincare_products_sales_system.dto.response.UserResponse;
-import com.swp391.skincare_products_sales_system.entity.FeedBack;
-import com.swp391.skincare_products_sales_system.entity.Product;
-import com.swp391.skincare_products_sales_system.entity.User;
+import com.swp391.skincare_products_sales_system.entity.*;
 import com.swp391.skincare_products_sales_system.enums.ErrorCode;
 import com.swp391.skincare_products_sales_system.exception.AppException;
-import com.swp391.skincare_products_sales_system.repository.FeedBackRepository;
-import com.swp391.skincare_products_sales_system.repository.ProductRepository;
-import com.swp391.skincare_products_sales_system.repository.UserRepository;
+import com.swp391.skincare_products_sales_system.repository.*;
 import com.swp391.skincare_products_sales_system.service.FeedBackService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +26,14 @@ public class FeedBackServiceImpl implements FeedBackService {
     ProductRepository productRepository;
     FeedBackRepository feedBackRepository;
     UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     @Transactional
-    public FeedBackResponse createFeedBack(FeedBackCreationRequest request, String productId) {
+    public FeedBackResponse createFeedBack(FeedBackCreationRequest request, String productId, Long orderId, Long orderItemId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
         Product product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         User user = getAuthenticatedUser();
         FeedBack feedBack = FeedBack.builder()
@@ -44,6 +44,7 @@ public class FeedBackServiceImpl implements FeedBackService {
                 .build();
         feedBackRepository.save(feedBack);
         updateProductRating(product);
+        orderItem.setIsFeedback(true);
         return FeedBackResponse.builder()
                 .id(feedBack.getId())
                 .rating(feedBack.getRating())

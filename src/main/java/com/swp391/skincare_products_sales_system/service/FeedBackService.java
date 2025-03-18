@@ -4,5 +4,5 @@ import com.swp391.skincare_products_sales_system.dto.request.FeedBackCreationReq
 import com.swp391.skincare_products_sales_system.dto.response.FeedBackResponse;
 
 public interface FeedBackService {
-    FeedBackResponse createFeedBack(FeedBackCreationRequest request, String productId);
+    FeedBackResponse createFeedBack(FeedBackCreationRequest request, String productId, Long orderId, Long orderItemId);
 }

@@ -20,6 +20,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AdminDashboardController {
     DashboardService dashboardService;
+
     @GetMapping()
     public DashboardResponse getDashboard() {
         return dashboardService.getDashboardData();

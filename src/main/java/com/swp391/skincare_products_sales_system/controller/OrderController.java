@@ -79,20 +79,20 @@ public class OrderController {
     }
 
     @PostMapping("/payment-success")
-    public ApiResponse<String> handlePaymentCallback(@RequestParam Map<String, String> params) throws UnsupportedEncodingException {
+    public ApiResponse<String> handlePaymentCallback(@RequestParam Map<String, String> params) {
         log.info("PAYMENT DAY");
         log.info("{}", params);
-        boolean isValid = vnPayService.validateCallback(params);
-        if (!isValid) {
-            return ApiResponse.<String>builder()
-                    .code(HttpStatus.BAD_REQUEST.value())
-                    .message("Invalid Signature")
-                    .build();
-        }
+//        boolean isValid = vnPayService.validateCallback(params);
+//        if (!isValid) {
+//            return ApiResponse.<String>builder()
+//                    .code(HttpStatus.BAD_REQUEST.value())
+//                    .message("Invalid Signature")
+//                    .build();
+//        }
 
         String orderId = params.get("vnp_TxnRef");
         String responseCode = params.get("vnp_ResponseCode");
-        boolean isPaid = "00" .equals(responseCode);
+        boolean isPaid = "00".equals(responseCode);
 
         orderService.updateOrderStatus(Long.parseLong(orderId), isPaid);
 
@@ -117,7 +117,6 @@ public class OrderController {
         }
         return clientIp;
     }
-
 
 
 }

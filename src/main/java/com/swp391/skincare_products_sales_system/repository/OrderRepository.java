@@ -34,6 +34,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.orderStatus = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE")
     Double sumTotalAmount();
+
     @Query("SELECT COUNT(o) FROM Order o WHERE o.orderStatus = com.swp391.skincare_products_sales_system.enums.OrderStatus.DONE")
     Long countByStatusDone();
 
