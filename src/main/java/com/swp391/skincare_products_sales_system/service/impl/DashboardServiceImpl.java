@@ -1,12 +1,12 @@
 package com.swp391.skincare_products_sales_system.service.impl;
 
 import com.swp391.skincare_products_sales_system.dto.OrderStatusDTO;
+import com.swp391.skincare_products_sales_system.dto.RevenueByTime;
 import com.swp391.skincare_products_sales_system.dto.TopSellingProductDTO;
 import com.swp391.skincare_products_sales_system.dto.response.DashboardResponse;
 import com.swp391.skincare_products_sales_system.enums.OrderStatus;
 import com.swp391.skincare_products_sales_system.repository.OrderItemRepository;
 import com.swp391.skincare_products_sales_system.repository.OrderRepository;
-import com.swp391.skincare_products_sales_system.repository.ProductRepository;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
 import com.swp391.skincare_products_sales_system.service.DashboardService;
 import lombok.AccessLevel;
@@ -15,8 +15,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +29,10 @@ public class DashboardServiceImpl implements DashboardService {
 
     OrderRepository orderRepository;
     UserRepository userRepository;
-    ProductRepository productRepository;
     OrderItemRepository orderItemRepository;
 
     @Override
-    public DashboardResponse getDashboardData() {
+    public DashboardResponse getDashboardData(LocalDate startDate, LocalDate endDate) {
         log.info("Getting dashboard data");
         DashboardResponse dashboard = new DashboardResponse();
 
@@ -52,29 +52,21 @@ public class DashboardServiceImpl implements DashboardService {
 //        List<Double> monthlyRevenue = getMonthlyRevenueData();
 //        dashboard.setMonthlyRevenue(monthlyRevenue);
 
+        List<RevenueByTime> revenueByTimes = getRevenueByDateRange(startDate, endDate);
+        dashboard.setRevenueByTimes(revenueByTimes);
+
+        dashboard.setRevenueByTimes(getRevenueByDateRange(startDate, endDate));
 
 
         List<OrderStatusDTO> orderStatuses = getOrderStatuses();
         dashboard.setOrderStatuses(orderStatuses);
 
         List<TopSellingProductDTO> topSellingProducts = getTopSellingProducts(5);
-        dashboard.setTopSellingProductDTOS(topSellingProducts);
+        dashboard.setTopSellingProducts(topSellingProducts);
         return dashboard;
     }
 
-    private List<Double> getMonthlyRevenueData() {
-        // Lấy doanh thu và tổng số sản phẩm theo tháng
-        List<Object[]> result = orderRepository.getMonthlyRevenueAndProducts(OrderStatus.DONE);
-        List<Double> monthlyRevenue = new ArrayList<>();
 
-        for (Object[] row : result) {
-            // row[0]: Tháng, row[1]: Doanh thu, row[2]: Số sản phẩm
-            Double revenue = (Double) row[1];
-            monthlyRevenue.add(revenue);
-        }
-
-        return monthlyRevenue;
-    }
     private List<OrderStatusDTO> getOrderStatuses() {
         // Truy vấn từ cơ sở dữ liệu để lấy số lượng đơn hàng theo trạng thái
         List<OrderStatus> statuses = List.of(
@@ -90,6 +82,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .map(status -> new OrderStatusDTO(status.getLabel(), orderRepository.countOrdersByStatus(status)))
                 .collect(Collectors.toList());
     }
+
     private List<TopSellingProductDTO> getTopSellingProducts(int topCount) {
         // Get the top-selling products
         List<Object[]> topSellingProducts = orderItemRepository.getTopSellingProducts();
@@ -104,6 +97,31 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         return result;
+    }
+
+    public List<RevenueByTime> getRevenueByDateRange(LocalDate startDate, LocalDate endDate) {
+        // Nếu startDate hoặc endDate là null, lấy giá trị mặc định từ cơ sở dữ liệu
+        if (startDate == null) {
+            startDate = orderRepository.getMinOrderDate(OrderStatus.DONE).atStartOfDay().toLocalDate();
+        }
+        if (endDate == null) {
+            endDate = orderRepository.getMaxOrderDate(OrderStatus.DONE).atStartOfDay().toLocalDate();
+        }
+
+        // Chuyển đổi LocalDate thành LocalDateTime (đầu ngày cho startDate, cuối ngày cho endDate)
+        LocalDateTime startDateTime = startDate.atStartOfDay();  // 00:00:00 của ngày startDate
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999);  // 23:59:59.999999999 của ngày endDate
+
+        // Lấy dữ liệu doanh thu từ repository
+        List<Object[]> result = orderRepository.getRevenueByDateRange(OrderStatus.DONE, startDateTime, endDateTime);
+
+        // Ánh xạ kết quả vào DTO RevenueByTime
+        return result.stream()
+                .map(row -> new RevenueByTime(
+                        ((LocalDateTime) row[0]).toLocalDate(),  // Chuyển LocalDateTime về LocalDate
+                        ((Double) row[1])            // Chuyển Double thành Long
+                ))
+                .collect(Collectors.toList());
     }
 }
 

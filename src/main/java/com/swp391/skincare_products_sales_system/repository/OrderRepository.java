@@ -12,6 +12,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -51,4 +53,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT COUNT(x) FROM Order x WHERE x.orderStatus = :status")
     Long countOrdersByStatus(@Param("status") OrderStatus status);
+
+    @Query("SELECT o.orderDate, SUM(o.totalAmount) " +
+            "FROM Order o " +
+            "WHERE o.orderStatus = :status " +
+            "AND o.orderDate >= :startDate " +
+            "AND o.orderDate <= :endDate " +
+            "GROUP BY o.orderDate ORDER BY o.orderDate")
+    List<Object[]> getRevenueByDateRange(
+            @Param("status") OrderStatus status,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT MIN(o.orderDate) FROM Order o WHERE o.orderStatus = :status")
+    LocalDate getMinOrderDate(OrderStatus status);
+
+    @Query("SELECT MAX(o.orderDate) FROM Order o WHERE o.orderStatus = :status")
+    LocalDate getMaxOrderDate(OrderStatus status);
 }

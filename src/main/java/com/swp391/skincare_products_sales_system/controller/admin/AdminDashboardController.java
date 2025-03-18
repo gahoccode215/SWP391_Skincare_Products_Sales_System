@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/admin/dashboard")
@@ -22,7 +22,7 @@ public class AdminDashboardController {
     DashboardService dashboardService;
 
     @GetMapping()
-    public DashboardResponse getDashboard() {
-        return dashboardService.getDashboardData();
+    public DashboardResponse getDashboard(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
+        return dashboardService.getDashboardData(startDate, endDate);
     }
 }
