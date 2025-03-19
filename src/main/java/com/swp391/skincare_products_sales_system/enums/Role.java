@@ -5,6 +5,5 @@ public enum Role {
     STAFF,
     CUSTOMER,
     MANAGER,
-    DELIVERY,
-    EXPERT;
+    DELIVERY
 }
