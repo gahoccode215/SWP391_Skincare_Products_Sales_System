@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,8 @@ public class AdminDashboardController {
     DashboardService dashboardService;
 
     @GetMapping()
-    public DashboardResponse getDashboard(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
+    public DashboardResponse getDashboard(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
+                                          @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) {
         return dashboardService.getDashboardData(startDate, endDate);
     }
 }
