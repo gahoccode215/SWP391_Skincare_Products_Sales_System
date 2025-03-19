@@ -236,15 +236,19 @@ public class OrderServiceImpl implements OrderService {
                     }
                 }
             });
+            order.setOrderStatus(orderStatus);
+            order.setUpdatedAt(LocalDateTime.now());
+            order.setUpdatedBy(user.getUsername());
+            orderRepository.save(order);
+            return;
         }
-        if (order.getTotalAmount() > 0) {
+        if (order.getTotalAmount() > 0 && orderStatus.equals(OrderStatus.DONE)) {
             int points = (int) Math.round(order.getTotalAmount() / 1000);
             user.addPoint(points);
             log.info("User {} has been credited {} points based on total amount {}", user.getUsername(), points, order.getTotalAmount());
         } else {
             log.warn("Total amount is non-positive, points not updated for user {}", user.getUsername());
         }
-
         userRepository.save(user);
         order.setOrderStatus(orderStatus);
         order.setPaymentStatus(PaymentStatus.PAID);
