@@ -125,10 +125,62 @@ public class QuizServiceImpl implements QuizService {
     public Result submitQuiz(SubmitQuiz submitQuiz, Long quizId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));
-        SkinType result = calculateQuizResult(quiz, submitQuiz.getAnswers());
         Result resultEntity = new Result();
+
+        Map<SkinType, Long> skinTypeCount = new HashMap<>();
+        skinTypeCount.put(SkinType.DRY_SKIN, 0L);
+        skinTypeCount.put(SkinType.SENSITIVE_SKIN, 0L);
+        skinTypeCount.put(SkinType.OILY_SKIN, 0L);
+        skinTypeCount.put(SkinType.NORMAL_SKIN, 0L);
+
+        for (Question question : quiz.getQuestions()) {
+            Long answerId = submitQuiz.getAnswers().get(question.getId());
+
+            if (answerId != null) {
+                Answer answer = answerRepository.findById(answerId)
+                        .orElseThrow(() -> new AppException(ErrorCode.ANSWER_NOT_FOUND));
+
+                SkinType skinType = answer.getSkinType();
+//                log.info("{}", skinType);
+                if (skinType != null) {
+                    skinTypeCount.merge(skinType, 1L, Long::sum);
+//                    log.info("{}", skinTypeCount);
+                }
+            }
+        }
+
+        SkinType result = skinTypeCount.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(SkinType.SENSITIVE_SKIN);
+
+        if (skinTypeCount.get(SkinType.DRY_SKIN).equals(skinTypeCount.get(SkinType.OILY_SKIN))) {
+            resultEntity.setSkinType(SkinType.COMBINATION_SKIN);
+        }
+        if (skinTypeCount.get(SkinType.DRY_SKIN).equals(skinTypeCount.get(SkinType.NORMAL_SKIN))) {
+            resultEntity.setSkinType(SkinType.COMBINATION_SKIN);
+        }
+        if (skinTypeCount.get(SkinType.OILY_SKIN).equals(skinTypeCount.get(SkinType.NORMAL_SKIN))) {
+            resultEntity.setSkinType(SkinType.COMBINATION_SKIN);
+        }
+
+
+//        log.info("{}", calculateQuizResult(quiz, submitQuiz.getAnswers()));
+        // Tính toán kết quả
+//        SkinType result = calculateQuizResult(quiz, submitQuiz.getAnswers());
+
+        // Log kết quả trước khi gán
+        log.info("Result before setting to resultEntity: {}", result);
+
         resultEntity.setSkinType(result);
+
+        // Gán recommendation từ result
         resultEntity.setRecommendation(result.getRecommendation());
+
+        // Log kết quả sau khi gán
+        log.info("ResultEntity after setting: {}", resultEntity);
+
         return resultEntity;
     }
 
@@ -143,6 +195,7 @@ public class QuizServiceImpl implements QuizService {
                 .build();
     }
     private SkinType calculateQuizResult(Quiz quiz, Map<Long, Long> answers) {
+//        log.info("{}", answers);
         Map<SkinType, Long> skinTypeCount = new HashMap<>();
         skinTypeCount.put(SkinType.DRY_SKIN, 0L);
         skinTypeCount.put(SkinType.SENSITIVE_SKIN, 0L);
@@ -157,8 +210,10 @@ public class QuizServiceImpl implements QuizService {
                         .orElseThrow(() -> new AppException(ErrorCode.ANSWER_NOT_FOUND));
 
                 SkinType skinType = answer.getSkinType();
+//                log.info("{}", skinType);
                 if (skinType != null) {
                     skinTypeCount.merge(skinType, 1L, Long::sum);
+//                    log.info("{}", skinTypeCount);
                 }
             }
         }
@@ -168,6 +223,7 @@ public class QuizServiceImpl implements QuizService {
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElse(SkinType.SENSITIVE_SKIN);
+//        log.info("{}", result);
 
         if (skinTypeCount.get(SkinType.DRY_SKIN).equals(skinTypeCount.get(SkinType.OILY_SKIN))) {
             return SkinType.COMBINATION_SKIN;
@@ -178,6 +234,7 @@ public class QuizServiceImpl implements QuizService {
         if (skinTypeCount.get(SkinType.OILY_SKIN).equals(skinTypeCount.get(SkinType.NORMAL_SKIN))) {
             return SkinType.COMBINATION_SKIN;
         }
+//        log.info("{}", result);
         return result;
     }
 
