@@ -48,31 +48,27 @@ public class ApplicationInitConfig {
                 roleRepository.save(staffRole);
                 Role deliveryRole = initRole(PredefinedRole.DELIVERY);
                 roleRepository.save(deliveryRole);
-                Role expertRole = initRole(PredefinedRole.EXPERT_ROLE);
-                roleRepository.save(expertRole);
                 Role adminRole = initRole(PredefinedRole.ADMIN_ROLE);
                 roleRepository.save(adminRole);
 
-                User admin = initAccount(ADMIN_USER_NAME, ADMIN_PASSWORD, adminRole);
+                User admin = initAccount(ADMIN_USER_NAME, ADMIN_PASSWORD, adminRole, "admin@gmail.com");
                 listAccount.add(admin);
-                User phuocAdmin = initAccount("phuocadmin", "phuocadmin", adminRole);
+                User phuocAdmin = initAccount("phuocadmin", "phuocadmin", adminRole, "phuocadmin@gmail.com");
                 listAccount.add(phuocAdmin);
-                User minhAdmin = initAccount("minhadmin", "minhadmin", adminRole);
+                User minhAdmin = initAccount("minhadmin", "minhadmin", adminRole, "minhadmin@gmail.com");
                 listAccount.add(minhAdmin);
-                User customer = initAccount("customer", "customer", customerRole);
+                User customer = initAccount("customer", "customer", customerRole, "customer@gmail.com");
                 listAccount.add(customer);
-                User phuocCustomer = initAccount("phuoccustomer", "phuoccustomer", customerRole);
+                User phuocCustomer = initAccount("phuoccustomer", "phuoccustomer", customerRole, "phuoccustomer@gmail.com");
                 listAccount.add(phuocCustomer);
-                User minhCustomer = initAccount("minhcustomer", "minhcustomer", customerRole);
+                User minhCustomer = initAccount("minhcustomer", "minhcustomer", customerRole, "minhcustomer@gmail.com");
                 listAccount.add(minhCustomer);
-                User manager = initAccount("manager", "manager", managerRole);
+                User manager = initAccount("manager", "manager", managerRole, "manager@gmail.com");
                 listAccount.add(manager);
-                User staff = initAccount("staff", "staff", staffRole);
+                User staff = initAccount("staff", "staff", staffRole, "staff@gmail.com");
                 listAccount.add(staff);
-                User delivery = initAccount("delivery", "delivery", deliveryRole);
+                User delivery = initAccount("delivery", "delivery", deliveryRole, "delivery@gmail.com");
                 listAccount.add(delivery);
-                User expert = initAccount("expert", "expert", expertRole);
-                listAccount.add(expert);
                 userRepository.saveAll(listAccount);
                 log.warn("admin user has been created with default password: admin, please change it");
             }
@@ -89,7 +85,7 @@ public class ApplicationInitConfig {
         return newRole;
     }
 
-    private User initAccount(String username, String password, Role role) {
+    private User initAccount(String username, String password, Role role, String email) {
         User user = User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
@@ -98,7 +94,7 @@ public class ApplicationInitConfig {
                 .firstName("")
                 .lastName("")
                 .birthday(LocalDate.now())
-                .email("")
+                .email(email)
                 .avatar("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg")
                 .status(Status.ACTIVE)
                 .gender(Gender.OTHER)

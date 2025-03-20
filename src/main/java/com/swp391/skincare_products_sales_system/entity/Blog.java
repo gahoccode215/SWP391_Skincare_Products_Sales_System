@@ -23,7 +23,7 @@ public class Blog {
     @Column(name = "title", columnDefinition = "TEXT")
     String title;
 
-    @Column(name = "content")
+    @Column(name = "content",length = 20000)
     @Lob
     String content;
 

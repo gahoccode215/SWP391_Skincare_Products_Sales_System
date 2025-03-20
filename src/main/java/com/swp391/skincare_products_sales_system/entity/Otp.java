@@ -32,4 +32,6 @@ public class Otp {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
+
+
 }

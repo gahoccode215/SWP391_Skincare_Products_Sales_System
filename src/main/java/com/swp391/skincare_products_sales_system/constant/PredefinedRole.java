@@ -6,7 +6,6 @@ public class PredefinedRole {
     public static final String MANAGER_ROLE = "MANAGER";
     public static final String STAFF = "STAFF";
     public static final String DELIVERY = "DELIVERY";
-    public static final String EXPERT_ROLE = "EXPERT";
 
     private PredefinedRole() {}
 }

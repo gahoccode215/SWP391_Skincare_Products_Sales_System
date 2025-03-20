@@ -38,7 +38,7 @@ public class User extends AbstractEntity {
     @Column(name = "gender")
     Gender gender;
 
-    @Column(name = "email", length = 255)
+    @Column(name = "email", unique = true, nullable = true)
     String email;
 
     @Column(name = "phone", length = 15)
@@ -89,9 +89,6 @@ public class User extends AbstractEntity {
             inverseJoinColumns = @JoinColumn(name = "voucher_id")
     )
     List<Voucher> vouchers;
-
-
-
 
     public void addVoucher(Voucher obj) {
         if (this.vouchers == null) {

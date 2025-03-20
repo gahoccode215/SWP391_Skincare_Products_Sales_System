@@ -39,7 +39,7 @@ public class Category extends AbstractEntity {
     @Column(name = "thumbnail")
     String thumbnail;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonIgnore
     List<Product> products;
 }

@@ -15,6 +15,7 @@ import com.swp391.skincare_products_sales_system.entity.InvalidatedToken;
 import com.swp391.skincare_products_sales_system.entity.Role;
 import com.swp391.skincare_products_sales_system.entity.User;
 import com.swp391.skincare_products_sales_system.repository.InvalidatedTokenRepository;
+import com.swp391.skincare_products_sales_system.repository.OtpRepository;
 import com.swp391.skincare_products_sales_system.repository.RoleRepository;
 import com.swp391.skincare_products_sales_system.repository.UserRepository;
 import com.swp391.skincare_products_sales_system.service.AuthenticationService;
@@ -35,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     InvalidatedTokenRepository invalidatedTokenRepository;
     PostmarkService postmarkService;
     OtpService otpService;
+    OtpRepository otpRepository;
 
 
     @Override
@@ -223,12 +226,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void resetPassword(ResetPasswordRequest request) {
-        String token = request.getToken();
-        String username = jwtUtil.extractUsername(token);
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        // Kiểm tra OTP hợp lệ
+        Optional<Otp> otpOptional = otpRepository.findByUserAndOtp(user, request.getOtp());
+        if (otpOptional.isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_OTP); // Nếu không tìm thấy OTP trùng khớp
+        }
+
+        Otp otp = otpOptional.get();
+
+        // Kiểm tra thời gian hết hạn của OTP
+        if (otp.getExpirationTime().before(new Date())) {
+            throw new AppException(ErrorCode.OTP_EXPIRED); // OTP đã hết hạn
+        }
+
+        // Cập nhật mật khẩu mới
+        user.setPassword(passwordEncoder.encode(request.getNewPassword())); // Mã hóa mật khẩu
         userRepository.save(user);
+
+        // Xóa OTP đã xác thực khỏi cơ sở dữ liệu để không sử dụng lại
+        otpRepository.delete(otp);
     }
 
 }

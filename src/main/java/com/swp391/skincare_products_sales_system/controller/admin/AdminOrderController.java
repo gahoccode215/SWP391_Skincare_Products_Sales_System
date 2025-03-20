@@ -61,7 +61,7 @@ public class AdminOrderController {
         orderService.confirmOrder(orderId, orderStatus);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
-                .message("Đổi trạng thái sang" + orderStatus + " Thành công")
+                .message("Đổi trạng thái sang " + orderStatus + " Thành công")
                 .build();
     }
 

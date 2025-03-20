@@ -31,14 +31,16 @@ public class Product extends AbstractEntity {
     @Column(name = "slug")
     String slug;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 2000000)
     @Lob
     String description;
 
-    @Column(name = "ingredient")
+    @Lob
+    @Column(name = "ingredient", length = 2000000)
     String ingredient;
 
-    @Column(name = "usage_instruction")
+    @Lob
+    @Column(name = "usage_instruction", length = 2000000)
     String usageInstruction;
 
     @Column(name = "thumbnail")
@@ -72,7 +74,6 @@ public class Product extends AbstractEntity {
     @JsonIgnore
     @JoinColumn(name = "category_id")
     Category category;
-
 
     public void addBatch(Batch obj) {
         batches.add(obj);

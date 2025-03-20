@@ -206,6 +206,12 @@ public class OrderServiceImpl implements OrderService {
             order.setUpdatedAt(LocalDateTime.now());
             order.setUpdatedBy(user.getUsername());
         }
+        if(orderStatus == OrderStatus.CANCELLED){
+            User user = getAuthenticatedUser();
+            order.setOrderStatus(orderStatus);
+            order.setUpdatedAt(LocalDateTime.now());
+            order.setUpdatedBy(user.getUsername());
+        }
         orderRepository.save(order);
     }
 

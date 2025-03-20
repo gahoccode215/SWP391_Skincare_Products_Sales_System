@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResetPasswordRequest {
-    String token;
-    String newPassword;
+    private String email;
+    private String otp;
+    private String newPassword;
 }

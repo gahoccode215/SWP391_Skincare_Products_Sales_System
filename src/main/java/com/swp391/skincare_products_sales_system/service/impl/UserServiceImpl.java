@@ -95,9 +95,9 @@ public class UserServiceImpl implements UserService {
                 .avatar(request.getAvatar())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
+                .point(0)
                 .role(role)
                 .build();
-
         user.setIsDeleted(false);
         userRepository.save(user);
         return toUserResponse(user);

@@ -32,7 +32,7 @@ public class Brand extends AbstractEntity{
     @Column(name = "slug", unique = true)
     String slug;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 200000)
     @Lob
     String description;
 
