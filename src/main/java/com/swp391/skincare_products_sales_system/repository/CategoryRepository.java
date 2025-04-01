@@ -27,5 +27,6 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     Page<Category> findAllByFilters(
             @Param("keyword") String keyword,
             Pageable pageable);
+    Category findBySlug(String slug);
 
 }

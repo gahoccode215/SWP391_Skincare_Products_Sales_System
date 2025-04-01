@@ -28,4 +28,5 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
     Page<Brand> findAllByFilters(
             @Param("keyword") String keyword,
             Pageable pageable);
+    Brand findBySlug(String slug);
 }

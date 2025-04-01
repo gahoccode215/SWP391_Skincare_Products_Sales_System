@@ -95,29 +95,7 @@ public class VNPayService {
         return sb.toString();
     }
 
-//    public boolean validateCallback(Map<String, String> params) throws UnsupportedEncodingException {
-//        String receivedHash = params.get("vnp_SecureHash");
-//        params.remove("vnp_SecureHash");
-//        params.remove("vnp_SecureHashType");
-//        List<String> fieldNames = new ArrayList<>(params.keySet());
-//        Collections.sort(fieldNames);
-//        StringBuilder hashData = new StringBuilder();
-//        for (String fieldName : fieldNames) {
-//            String fieldValue = params.get(fieldName);
-//            if (fieldValue != null && !fieldValue.isEmpty()) {
-//                String encodedValue = URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString());
-//                hashData.append(fieldName).append('=').append(encodedValue).append('&');
-//            }
-//        }
-//        if (hashData.length() > 0) {
-//            hashData.deleteCharAt(hashData.length() - 1);
-//        }
-//        String calculatedHash = hmacSHA512(hashSecret, hashData.toString());
-//        if (!calculatedHash.equalsIgnoreCase(receivedHash)) {
-//            return false;
-//        }
-//        return true;
-//    }
+
 
     public boolean validateCallback(Map<String, String> params) {
 

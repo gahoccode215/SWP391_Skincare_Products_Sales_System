@@ -49,7 +49,6 @@ public class FeedBackServiceImpl implements FeedBackService {
                 .id(feedBack.getId())
                 .rating(feedBack.getRating())
                 .description(feedBack.getDescription())
-//                .product(feedBack.getProduct())
                 .userResponse(toUserResponse(feedBack.getUser()))
                 .build();
     }

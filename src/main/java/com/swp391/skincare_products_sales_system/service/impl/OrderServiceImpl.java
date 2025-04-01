@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
         });
         orderItemRepository.saveAll(orderItems);
         order.setOrderItems(orderItems);
-        if (voucherCode != null  ) {
+        if (voucherCode != null) {
             Voucher voucher = voucherRepository.findByCode(voucherCode).orElseThrow(() -> new AppException(ErrorCode.VOUCHER_NOT_FOUND));
             if (!user.getVouchers().contains(voucher)) {
                 throw new AppException(ErrorCode.VOUCHER_NOT_OWNED_BY_USER);
@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
         }
         log.info("TOTAL AMOUNT: {}", order.getTotalAmount());
         orderRepository.save(order);
-        if(order.getPaymentMethod() == PaymentMethod.COD){
+        if (order.getPaymentMethod() == PaymentMethod.COD) {
             clearCart(cart);
         }
         return mapToOrderResponse(order);
@@ -113,10 +113,8 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> orders = orderRepository.findAllByFilters(user.getUsername(), pageable);
         List<OrderResponse> orderResponses = orders.getContent().stream()
                 .map(this::mapToOrderResponse)
-                .collect(Collectors.toList());
-
-        Collections.reverse(orderResponses);
-
+                .collect(Collectors.toList())
+                .reversed();
         OrderPageResponse response = new OrderPageResponse();
         response.setOrderResponseList(orderResponses);
         response.setTotalElements(orders.getTotalElements());
@@ -135,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
         if (user.getRole().getName().equals(PredefinedRole.STAFF)) {
             Page<Order> orders = orderRepository.findAll(pageable);
             List<OrderResponse> orderResponses = orders.getContent().stream()
-                    .map(this::mapToOrderResponse)  // FIX lỗi orderResponseItemList = null
+                    .map(this::mapToOrderResponse)
                     .collect(Collectors.toList());
             OrderPageResponse response = new OrderPageResponse();
             response.setOrderResponseList(orderResponses);
@@ -148,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
         if (user.getRole().getName().equals(PredefinedRole.DELIVERY)) {
             Page<Order> orders = orderRepository.findAllByFiltersDelivery(pageable);
             List<OrderResponse> orderResponses = orders.getContent().stream()
-                    .map(this::mapToOrderResponse)  // FIX lỗi orderResponseItemList = null
+                    .map(this::mapToOrderResponse)
                     .collect(Collectors.toList());
             OrderPageResponse response = new OrderPageResponse();
             response.setOrderResponseList(orderResponses);
@@ -160,7 +158,7 @@ public class OrderServiceImpl implements OrderService {
         }
         Page<Order> orders = orderRepository.findAll(pageable);
         List<OrderResponse> orderResponses = orders.getContent().stream()
-                .map(this::mapToOrderResponse)  // FIX lỗi orderResponseItemList = null
+                .map(this::mapToOrderResponse)
                 .collect(Collectors.toList());
         OrderPageResponse response = new OrderPageResponse();
         response.setOrderResponseList(orderResponses);
@@ -188,8 +186,8 @@ public class OrderServiceImpl implements OrderService {
                 for (Batch batch : batchList) {
                     if(batch.getQuantity() > 0){
                         if (orderItem.getQuantity() > batch.getQuantity()) {
-                            quantityDu = orderItem.getQuantity() - batch.getQuantity();
-                            batch.setQuantity(batch.getQuantity() - orderItem.getQuantity() - quantityDu);
+                            quantityDu = orderItem.getQuantity() - batch.getQuantity(); // du = 3, orderitem = 8, batchitem = 5
+                            batch.setQuantity(batch.getQuantity() - orderItem.getQuantity() + quantityDu);
                             batch.setOrderItem(orderItem);
                         } else {
                             batch.setQuantity(batch.getQuantity() - orderItem.getQuantity());

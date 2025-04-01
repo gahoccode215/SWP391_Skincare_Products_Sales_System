@@ -78,7 +78,7 @@ public class OrderController {
         }
     }
 
-    @PostMapping("/payment-success")
+    @GetMapping("/payment-callback")
     public ApiResponse<String> handlePaymentCallback(@RequestParam Map<String, String> params) {
         log.info("PAYMENT DAY");
         log.info("{}", params);
